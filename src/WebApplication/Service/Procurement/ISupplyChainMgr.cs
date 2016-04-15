@@ -1,0 +1,43 @@
+using System.Collections.Generic;
+using com.Sconit.Entity.MasterData;
+using com.Sconit.Entity.Procurement;
+
+//TODO: Add other using statements here.
+
+namespace com.Sconit.Service.Procurement
+{
+    public interface ISupplyChainMgr
+    {
+        #region Customized Methods
+
+        IList<SupplyChain> GenerateSupplyChain(string flowCode, string itemCode);
+
+        SupplyChain GenerateSupplyChain(FlowDetail flowDetail);
+
+        SupplyChain GenerateSupplyChain(Flow flow, FlowDetail flowDetail);
+
+        IList<SupplyChain> GenerateSupplyChainUp(string flowCode, string itemCode);
+
+        #endregion Customized Methods
+    }
+}
+
+
+
+#region Extend Interface
+
+
+
+
+
+
+namespace com.Sconit.Service.Ext.Procurement
+{
+    public partial interface ISupplyChainMgrE : com.Sconit.Service.Procurement.ISupplyChainMgr
+    {
+        
+    }
+}
+
+#endregion
+

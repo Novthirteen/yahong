@@ -1,0 +1,11 @@
+﻿尊敬的##SupplierName##:
+<br />
+我们给您下了采购订单:##OrderNo##,
+<br />
+请登录到我们的网站上查看:<a href="http://sconit.yahong-mould.com">http://sconit.yahong-mould.com</a>
+<br />
+谢谢合作!
+<br/>
+<br/>
+上海亚虹塑料模具制造有限公司
+

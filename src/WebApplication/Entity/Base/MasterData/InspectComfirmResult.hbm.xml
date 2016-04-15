@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.Entity.MasterData.InspectComfirmResult, com.Sconit.Entity" table="InspectComfirmResult" lazy="false">
+		<id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      		<generator class="identity" />
+        </id>
+		<property name="InspComfirmResultNo" column="InspComfirmResultNo" type="String" length="50" />	
+		<property name="InspResultId" column="InspResultId" type="Int32"  />	
+		<property name="InspDetId" column="InspDetId" type="Int32"  />	
+		<property name="Disposition" column="Disposition" type="String" length="50" />	
+		<property name="QualifiedQty" column="QualifyQty" type="Decimal"  />	
+		<property name="RejectedQty" column="RejectQty" type="Decimal"  />	
+		<property name="CreateDate" column="CreateDate" type="DateTime"  />	
+		<property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="CreateUserNm" column="CreateUserNm" type="String" length="50" />
+  </class>
+</hibernate-mapping>

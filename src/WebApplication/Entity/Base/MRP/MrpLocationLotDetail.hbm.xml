@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.Entity.MRP.MrpLocationLotDetail, com.Sconit.Entity" table="MRP_LocLotDet" lazy="false">
+		<id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      		<generator class="identity" />
+        </id>
+		<property name="Location" column="Location" type="String" length="50" />	
+		<property name="Item" column="Item" type="String" length="50" />	
+		<property name="SafeQty" column="SafeQty" type="Decimal"  />	
+		<property name="StaticQty" column="Qty" type="Decimal"  />	
+		<property name="EffectiveDate" column="EffDate" type="DateTime"  />	
+  	</class>
+</hibernate-mapping>

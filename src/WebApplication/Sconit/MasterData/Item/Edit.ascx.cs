@@ -1,0 +1,225 @@
+﻿using System;
+using System.IO;
+using System.Web.UI.WebControls;
+using com.Sconit.Control;
+using com.Sconit.Entity.MasterData;
+using com.Sconit.Utility;
+using com.Sconit.Web;
+
+public partial class MasterData_Item_Edit : EditModuleBase
+{
+    public event EventHandler BackEvent;
+
+    protected string ItemCode
+    {
+        get
+        {
+            return (string)ViewState["ItemCode"];
+        }
+        set
+        {
+            ViewState["ItemCode"] = value;
+        }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void FV_Item_DataBound(object sender, EventArgs e)
+    {
+        //Item item = ItemMgr.LoadItem(ItemCode);
+
+        Item item = (Item)(ItemBase)(((FormView)(sender)).DataItem);
+        if (item != null)
+        {
+            ((TextBox)(this.FV_Item.FindControl("tbUom"))).Text = (item.Uom == null) ? string.Empty : item.Uom.Code;
+            ((CodeMstrDropDownList)(this.FV_Item.FindControl("ddlType"))).SelectedValue = item.Type;
+            ((Controls_TextBox)(this.FV_Item.FindControl("tbLocation"))).Text = (item.Location) == null ? string.Empty : item.Location.Code;
+
+            ((System.Web.UI.WebControls.DropDownList)(this.FV_Item.FindControl("ddlCategory1"))).SelectedValue = (item.Category1 == null) ? string.Empty : item.Category1.Code;
+            ((System.Web.UI.WebControls.DropDownList)(this.FV_Item.FindControl("ddlCategory2"))).SelectedValue = (item.Category2 == null) ? string.Empty : item.Category2.Code;
+
+            //((Controls_TextBox)(this.FV_Item.FindControl("tbBom"))).Text = (item.Bom == null) ? string.Empty : item.Bom.Code;
+            //((Controls_TextBox)(this.FV_Item.FindControl("tbRouting"))).Text = (item.Routing == null) ? string.Empty : item.Routing.Code;
+            ((Controls_TextBox)(this.FV_Item.FindControl("tbItemCategory"))).Text = (item.ItemCategory == null) ? string.Empty : item.ItemCategory.Code;
+            ((System.Web.UI.WebControls.Image)(this.FV_Item.FindControl("imgUpload"))).ImageUrl = (item.ImageUrl == null || item.ImageUrl.Trim() == string.Empty) ? null : item.ImageUrl;
+            if (item.ImageUrl == null || item.ImageUrl.Trim() == string.Empty)
+            {
+                ((CheckBox)(this.FV_Item.FindControl("cbDeleteImage"))).Visible = false;
+                ((Literal)(this.FV_Item.FindControl("ltlDeleteImage"))).Visible = false;
+            }
+        }
+    }
+
+    public void InitPageParameter(string code)
+    {
+        this.ItemCode = code;
+        this.ODS_Item.SelectParameters["code"].DefaultValue = this.ItemCode;
+        this.ODS_Item.DataBind();
+
+        //if (!this.CurrentUser.HasPermission(BusinessConstants.PERMISSION_PAGE_MASTERDATA_VALUE_PAGE_EDITITEM))
+        //{
+        //    ((TextBox)(this.FV_Item.FindControl("tbUom"))).ReadOnly = true;
+        //    ((CodeMstrDropDownList)(this.FV_Item.FindControl("ddlType"))).Enabled = false;
+        //    ((Controls_TextBox)(this.FV_Item.FindControl("tbLocation"))).ReadOnly = true;
+        //    ((Controls_TextBox)(this.FV_Item.FindControl("tbBom"))).ReadOnly = true;
+        //    ((Controls_TextBox)(this.FV_Item.FindControl("tbRouting"))).ReadOnly = true;
+        //    ((Controls_TextBox)(this.FV_Item.FindControl("tbItemCategory"))).ReadOnly = true;
+        //    ((System.Web.UI.WebControls.Image)(this.FV_Item.FindControl("imgUpload"))).Visible = false;
+        //}
+    }
+
+    protected void btnBack_Click(object sender, EventArgs e)
+    {
+        if (BackEvent != null)
+        {
+            BackEvent(this, e);
+        }
+    }
+
+    protected void ODS_Item_Updated(object sender, ObjectDataSourceStatusEventArgs e)
+    {
+        ShowSuccessMessage("MasterData.Item.UpdateItem.Successfully", ItemCode);
+    }
+
+    protected void ODS_Item_Updating(object sender, ObjectDataSourceMethodEventArgs e)
+    {
+        Item item = (Item)e.InputParameters[0];
+
+        item.Desc1 = item.Desc1.Trim();
+        item.Desc2 = item.Desc2.Trim();
+        item.Memo = item.Memo.Trim();
+
+        item.Type = ((CodeMstrDropDownList)(this.FV_Item.FindControl("ddlType"))).SelectedValue;
+
+        string uom = ((TextBox)(this.FV_Item.FindControl("tbUom"))).Text.Trim();
+        item.Uom = TheUomMgr.LoadUom(uom);
+
+        string location = ((Controls_TextBox)(this.FV_Item.FindControl("tbLocation"))).Text.Trim();
+        item.Location = TheLocationMgr.LoadLocation(location);
+
+        //string bom = ((Controls_TextBox)(this.FV_Item.FindControl("tbBom"))).Text.Trim();
+        //item.Bom = TheBomMgr.LoadBom(bom);
+
+        //string routing = ((Controls_TextBox)(this.FV_Item.FindControl("tbRouting"))).Text.Trim();
+        //item.Routing = TheRoutingMgr.LoadRouting(routing);
+
+        string itemCategory = ((Controls_TextBox)(this.FV_Item.FindControl("tbItemCategory"))).Text.Trim();
+        item.ItemCategory = TheItemCategoryMgr.LoadItemCategory(itemCategory);
+
+        string category1 = ((System.Web.UI.WebControls.DropDownList)(this.FV_Item.FindControl("ddlCategory1"))).SelectedValue;
+        if(category1 != string.Empty)
+        {
+            item.Category1 = TheItemTypeMgr.LoadItemType(category1);
+        }
+
+        string category2 = ((System.Web.UI.WebControls.DropDownList)(this.FV_Item.FindControl("ddlCategory2"))).SelectedValue;
+        if(category2 != string.Empty)
+        {
+            item.Category2 = TheItemTypeMgr.LoadItemType(category2);
+        }
+
+        decimal uc = item.UnitCount;
+        uc = System.Decimal.Round(uc, 8);
+        if (uc == 0)
+        {
+            ShowErrorMessage("MasterData.Item.UC.Zero");
+            e.Cancel = true;
+        }
+
+        string imageUrl;
+        string imgUpload = ((System.Web.UI.WebControls.Image)(this.FV_Item.FindControl("imgUpload"))).ImageUrl;
+
+        if (((CheckBox)(this.FV_Item.FindControl("cbDeleteImage"))).Checked == true)
+        {
+            imageUrl = null;
+            if (File.Exists(Server.MapPath(imgUpload)))
+            {
+                File.Delete(Server.MapPath(imgUpload));
+            }
+        }
+        else
+        {
+            imageUrl = UploadItemImage(item.Code);
+            if (imageUrl == null)
+            {
+                imageUrl = imgUpload;
+            }
+        }
+
+        item.ImageUrl = imageUrl;
+        item.LastModifyDate = DateTime.Now;
+        item.LastModifyUser = this.CurrentUser.Code;
+    }
+    protected void ODS_Item_Deleting(object sender, ObjectDataSourceMethodEventArgs e)
+    {
+        //DeleteItem = (Item)e.InputParameters[0];
+    }
+
+    protected void ODS_Item_Deleted(object sender, ObjectDataSourceStatusEventArgs e)
+    {
+        if (e.Exception == null)
+        {
+            string imgUpload = ((System.Web.UI.WebControls.Image)(this.FV_Item.FindControl("imgUpload"))).ImageUrl;
+            if (File.Exists(Server.MapPath(imgUpload)))
+            {
+                File.Delete(Server.MapPath(imgUpload));
+            }
+            btnBack_Click(this, e);
+            ShowSuccessMessage("MasterData.Item.DeleteItem.Successfully", ItemCode);
+        }
+        else if (e.Exception.InnerException is Castle.Facilities.NHibernateIntegration.DataException)
+        {
+            ShowErrorMessage("MasterData.Item.DeleteItem.Fail", ItemCode);
+            e.ExceptionHandled = true;
+        }
+    }
+
+    private string UploadItemImage(string itemCode)
+    {
+        string mapPath = TheEntityPreferenceMgr.LoadEntityPreference("ItemImageDir").Value;//"~/Images/Item/";
+        string filePath = Server.MapPath(mapPath);
+        if (!Directory.Exists(filePath))
+        {
+            Directory.CreateDirectory(filePath);
+        }
+
+        System.Web.UI.WebControls.FileUpload fileUpload = (System.Web.UI.WebControls.FileUpload)(this.FV_Item.FindControl("fileUpload"));
+        Literal lblUploadMessage = (Literal)(this.FV_Item.FindControl("lblUploadMessage"));
+
+        if (fileUpload.HasFile)
+        {
+            if (fileUpload.FileName != "" && fileUpload.FileContent.Length != 0)
+            {
+                string fileExtension = Path.GetExtension(fileUpload.FileName);
+                if (fileExtension.ToLower() == ".gif" || fileExtension.ToLower() == ".png" || fileExtension.ToLower() == ".jpg")
+                {
+                    string fileName = itemCode + ".jpg";
+                    string fileFullPath = filePath + "\\" + fileName;
+
+                    #region 调整图片大小
+                    AdjustImageHelper.AdjustImage(150, fileFullPath, fileUpload.FileContent);
+                    #endregion
+
+                    if (File.Exists(fileFullPath))
+                    {
+                        ShowWarningMessage("MasterData.Item.AddImage.Replace", fileName);
+                    }
+                    else
+                    {
+                        ShowSuccessMessage("MasterData.Item.AddImage.Successfully", fileName);
+                    }
+                    return mapPath + fileName;
+                }
+                else
+                {
+                    ShowWarningMessage("MasterData.Item.AddImage.UnSupportFormat");
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+}

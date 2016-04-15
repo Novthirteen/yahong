@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.Entity.MRP.MrpPlanTransaction, com.Sconit.Entity" table="MRP_PlanTrans" lazy="false">
+		<id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      		<generator class="identity" />
+        </id>
+		<property name="Flow" column="Flow" type="String" length="50" />	
+		<property name="FlowType" column="FlowType" type="String" length="50" />	
+		<property name="Item" column="Item" type="String" length="50" />	
+		<property name="Qty" column="Qty" type="Decimal"  />	
+		<property name="Uom" column="Uom" type="String" length="5" />	
+		<property name="UnitCount" column="UC" type="Decimal"  />	
+		<property name="StartTime" column="StartTime" type="DateTime"  />	
+		<property name="WindowTime" column="WindowTime" type="DateTime"  />	
+		<property name="Location" column="Location" type="String" length="50" />	
+		<property name="SourceType" column="SourceType" type="String" length="50" />	
+		<property name="PeriodType" column="PeriodType" type="String" length="50" />	
+		<property name="EffectiveDate" column="EffDate" type="DateTime"  />	
+		<property name="CreateDate" column="CreateDate" type="DateTime"  />	
+		<property name="CreateUser" column="CreateUser" type="String" length="50" />	
+		<property name="Reference" column="Ref" type="String" length="50" />	
+  	</class>
+</hibernate-mapping>
