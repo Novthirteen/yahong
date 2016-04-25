@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.ISI.Entity.SummaryDet, com.Sconit.ISI" table="ISI_SummaryDet" lazy="false">
+		<id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      		<generator class="identity" />
+        </id>    
+    	<property name="SummaryCode" column="SummaryCode" type="String" length="50" />	
+		<property name="TaskCode" column="TaskCode" type="String" length="50" />	
+		<property name="Subject" column="Subject" type="String" length="200" />	
+		<property name="Conment" column="Conment" type="String" />	
+		<property name="ApproveDesc" column="ApproveDesc" type="String" length="400" />	
+		<property name="Type" column="Type" type="String" length="20" />	
+		<property name="ApproveUser" column="ApproveUser" type="String" length="50" />	
+		<property name="ApproveUserNm" column="ApproveUserNm" type="String" length="50" />
+    	<property name="Seq" column="Seq" type="Int32" />
+  </class>
+</hibernate-mapping>

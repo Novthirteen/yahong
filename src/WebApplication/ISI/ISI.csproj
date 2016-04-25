@@ -1,0 +1,676 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{90393DDB-4C98-481B-9A79-FC892A075BA0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>com.Sconit.ISI</RootNamespace>
+    <AssemblyName>com.Sconit.ISI</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.AutomaticTransactionManagement">
+      <HintPath>..\DllLib\Castle.Facilities.AutomaticTransactionManagement.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.NHibernateIntegration">
+      <HintPath>..\DllLib\Castle.Facilities.NHibernateIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Transaction, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Castle.Services.Transaction.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\DllLib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa">
+      <HintPath>..\DllLib\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xtra">
+      <HintPath>..\DllLib\itextsharp.xtra.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="NHibernate, Version=1.2.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=1.2.3.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Batch\RepJob.cs" />
+    <Compile Include="Entity\Base\ISI\AccountBase.cs" />
+    <Compile Include="Entity\Base\ISI\ApplyBase.cs" />
+    <Compile Include="Entity\Base\ISI\AttachmentDetailBase.cs" />
+    <Compile Include="Entity\Base\ISI\BillIODet.cs" />
+    <Compile Include="Entity\Base\ISI\BillView.cs" />
+    <Compile Include="Entity\Base\ISI\BudgetBase.cs" />
+    <Compile Include="Entity\Base\ISI\BudgetDetBase.cs" />
+    <Compile Include="Entity\Base\ISI\CheckupBase.cs" />
+    <Compile Include="Entity\Base\ISI\CheckupProjectBase.cs" />
+    <Compile Include="Entity\Base\ISI\CheckupRemindBase.cs" />
+    <Compile Include="Entity\Base\ISI\CommentDetailBase.cs" />
+    <Compile Include="Entity\Base\ISI\CostBase.cs" />
+    <Compile Include="Entity\Base\ISI\EmppDetailBase.cs" />
+    <Compile Include="Entity\Base\ISI\EvaluationBase.cs" />
+    <Compile Include="Entity\Base\ISI\FailureModeBase.cs" />
+    <Compile Include="Entity\Base\ISI\FastTrack.cs" />
+    <Compile Include="Entity\Base\ISI\FilterBase.cs" />
+    <Compile Include="Entity\Base\ISI\HelpLotDetailBase.cs" />
+    <Compile Include="Entity\Base\ISI\Mould.cs" />
+    <Compile Include="Entity\Base\ISI\MouldDetail.cs" />
+    <Compile Include="Entity\Base\ISI\OrgChart.cs" />
+    <Compile Include="Entity\Base\ISI\PositionBase.cs" />
+    <Compile Include="Entity\Base\ISI\ProcessApplyBase.cs" />
+    <Compile Include="Entity\Base\ISI\ProcessDefinitionBase.cs" />
+    <Compile Include="Entity\Base\ISI\ProcessInstanceBase.cs" />
+    <Compile Include="Entity\Base\ISI\ProjectTaskBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResMatrixBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResMatrixLogBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResPatrolBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResRoleBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResSopBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResTask.cs" />
+    <Compile Include="Entity\Base\ISI\ResTaskDet.cs" />
+    <Compile Include="Entity\Base\ISI\ResUserBase.cs" />
+    <Compile Include="Entity\Base\ISI\ResWokShopBase.cs" />
+    <Compile Include="Entity\Base\ISI\SchedulingBase.cs" />
+    <Compile Include="Entity\Base\ISI\SummaryBase.cs" />
+    <Compile Include="Entity\Base\ISI\SummaryDetBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskAddressBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskApplyBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskApplyViewBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskDetailBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskMstrBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskReportBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskStatusBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskStatusViewBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskSubTypeBase.cs" />
+    <Compile Include="Entity\Base\ISI\TaskWeekStatisticsViewBase.cs" />
+    <Compile Include="Entity\Base\ISI\TraceViewBase.cs" />
+    <Compile Include="Entity\Base\ISI\UserSubscriptionBase.cs" />
+    <Compile Include="Entity\Base\ISI\WFDetailBase.cs" />
+    <Compile Include="Entity\Base\ISI\WorkDetBase.cs" />
+    <Compile Include="Entity\ISI\Account.cs" />
+    <Compile Include="Entity\ISI\Apply.cs" />
+    <Compile Include="Entity\ISI\AttachmentDetail.cs" />
+    <Compile Include="Entity\ISI\Budget.cs" />
+    <Compile Include="Entity\ISI\BudgetDet.cs" />
+    <Compile Include="Entity\ISI\Checkup.cs" />
+    <Compile Include="Entity\ISI\CheckupProject.cs" />
+    <Compile Include="Entity\ISI\CheckupRemind.cs" />
+    <Compile Include="Entity\ISI\CommentDetail.cs" />
+    <Compile Include="Entity\ISI\Cost.cs" />
+    <Compile Include="Entity\ISI\CostDet.cs" />
+    <Compile Include="Entity\ISI\EmppDetail.cs" />
+    <Compile Include="Entity\ISI\Entity.cs" />
+    <Compile Include="Entity\ISI\Evaluation.cs" />
+    <Compile Include="Entity\ISI\FailureMode.cs" />
+    <Compile Include="Entity\ISI\Filter.cs" />
+    <Compile Include="Entity\ISI\HelpLotDetail.cs" />
+    <Compile Include="Entity\ISI\Position.cs" />
+    <Compile Include="Entity\ISI\ProcessApply.cs" />
+    <Compile Include="Entity\ISI\ProcessDefinition.cs" />
+    <Compile Include="Entity\ISI\ProcessInstance.cs" />
+    <Compile Include="Entity\ISI\ProjectTask.cs" />
+    <Compile Include="Entity\ISI\ResMatrix.cs" />
+    <Compile Include="Entity\ISI\ResMatrixLog.cs" />
+    <Compile Include="Entity\ISI\ResPatrol.cs" />
+    <Compile Include="Entity\ISI\ResRole.cs" />
+    <Compile Include="Entity\ISI\ResSop.cs" />
+    <Compile Include="Entity\ISI\ResUser.cs" />
+    <Compile Include="Entity\ISI\ResWokShop.cs" />
+    <Compile Include="Entity\ISI\Scheduling.cs" />
+    <Compile Include="Entity\ISI\SchedulingView.cs" />
+    <Compile Include="Entity\ISI\Summary.cs" />
+    <Compile Include="Entity\ISI\SummaryDet.cs" />
+    <Compile Include="Entity\ISI\Task.cs" />
+    <Compile Include="Entity\ISI\TaskAddress.cs" />
+    <Compile Include="Entity\ISI\TaskApply.cs" />
+    <Compile Include="Entity\ISI\TaskApplyView.cs" />
+    <Compile Include="Entity\ISI\TaskDetail.cs" />
+    <Compile Include="Entity\ISI\TaskMstr.cs" />
+    <Compile Include="Entity\ISI\TaskReport.cs" />
+    <Compile Include="Entity\ISI\TaskReportView.cs" />
+    <Compile Include="Entity\ISI\TaskStatus.cs" />
+    <Compile Include="Entity\ISI\TaskStatusView.cs" />
+    <Compile Include="Entity\ISI\TaskSubType.cs" />
+    <Compile Include="Entity\ISI\TaskView.cs" />
+    <Compile Include="Entity\ISI\TaskWeekStatisticsView.cs" />
+    <Compile Include="Entity\ISI\TraceView.cs" />
+    <Compile Include="Entity\ISI\UserSub.cs" />
+    <Compile Include="Entity\ISI\UserSubscription.cs" />
+    <Compile Include="Entity\ISI\UserSubView.cs" />
+    <Compile Include="Entity\ISI\WFDetail.cs" />
+    <Compile Include="Entity\ISI\WorkDet.cs" />
+    <Compile Include="Entity\Util\ISIConstants.cs" />
+    <Compile Include="Persistence\Base\ISI\IAccountBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IApplyBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IAttachmentDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IBudgetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IBudgetDetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ICheckupBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ICheckupProjectBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ICheckupRemindBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ICommentDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ICostBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IEmppDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IEvaluationBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IFailureModeBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IFilterBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IHelpLotDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IPositionBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IProcessApplyBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IProcessDefinitionBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IProcessInstanceBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IProjectTaskBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResMatrixBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResMatrixLogBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResPatrolBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResRoleBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResSopBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResUserBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IResWokShopBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ISchedulingBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ISummaryBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ISummaryDetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskAddressBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskApplyBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskApplyViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskMstrBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskReportBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskStatusBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskStatusViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskSubTypeBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITaskWeekStatisticsViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\ITraceViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IUserSubscriptionBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IWFDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\IWorkDetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHAccountBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHApplyBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHAttachmentDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHBudgetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHBudgetDetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHCheckupBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHCheckupProjectBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHCheckupRemindBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHCommentDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHCostBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHEmppDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHEvaluationBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHFailureModeBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHFilterBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHHelpLotDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHPositionBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHProcessApplyBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHProcessDefinitionBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHProcessInstanceBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHProjectTaskBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResMatrixBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResMatrixLogBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResPatrolBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResRoleBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResSopBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResUserBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHResWokShopBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHSchedulingBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHSummaryBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHSummaryDetBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskAddressBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskApplyBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskApplyViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskMstrBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskReportBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskStatusBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskStatusViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskSubTypeBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTaskWeekStatisticsViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHTraceViewBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHUserSubscriptionBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHWFDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\ISI\NH\NHWorkDetBaseDao.cs" />
+    <Compile Include="Persistence\ISI\IAccountDao.cs" />
+    <Compile Include="Persistence\ISI\IApplyDao.cs" />
+    <Compile Include="Persistence\ISI\IAttachmentDetailDao.cs" />
+    <Compile Include="Persistence\ISI\IBudgetDao.cs" />
+    <Compile Include="Persistence\ISI\IBudgetDetDao.cs" />
+    <Compile Include="Persistence\ISI\ICheckupDao.cs" />
+    <Compile Include="Persistence\ISI\ICheckupProjectDao.cs" />
+    <Compile Include="Persistence\ISI\ICheckupRemindDao.cs" />
+    <Compile Include="Persistence\ISI\ICommentDetailDao.cs" />
+    <Compile Include="Persistence\ISI\ICostDao.cs" />
+    <Compile Include="Persistence\ISI\IEmppDetailDao.cs" />
+    <Compile Include="Persistence\ISI\IEvaluationDao.cs" />
+    <Compile Include="Persistence\ISI\IFailureModeDao.cs" />
+    <Compile Include="Persistence\ISI\IFilterDao.cs" />
+    <Compile Include="Persistence\ISI\IHelpLotDetailDao.cs" />
+    <Compile Include="Persistence\ISI\IPositionDao.cs" />
+    <Compile Include="Persistence\ISI\IProcessApplyDao.cs" />
+    <Compile Include="Persistence\ISI\IProcessDefinitionDao.cs" />
+    <Compile Include="Persistence\ISI\IProcessInstanceDao.cs" />
+    <Compile Include="Persistence\ISI\IProjectTaskDao.cs" />
+    <Compile Include="Persistence\ISI\IResMatrixDao.cs" />
+    <Compile Include="Persistence\ISI\IResMatrixLogDao.cs" />
+    <Compile Include="Persistence\ISI\IResPatrolDao.cs" />
+    <Compile Include="Persistence\ISI\IResRoleDao.cs" />
+    <Compile Include="Persistence\ISI\IResSopDao.cs" />
+    <Compile Include="Persistence\ISI\IResUserDao.cs" />
+    <Compile Include="Persistence\ISI\IResWokShopDao.cs" />
+    <Compile Include="Persistence\ISI\ISchedulingDao.cs" />
+    <Compile Include="Persistence\ISI\ISummaryDao.cs" />
+    <Compile Include="Persistence\ISI\ISummaryDetDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskAddressDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskApplyDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskApplyViewDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskDetailDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskMstrDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskReportDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskStatusDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskStatusViewDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskSubTypeDao.cs" />
+    <Compile Include="Persistence\ISI\ITaskWeekStatisticsViewDao.cs" />
+    <Compile Include="Persistence\ISI\ITraceViewDao.cs" />
+    <Compile Include="Persistence\ISI\IUserSubscriptionDao.cs" />
+    <Compile Include="Persistence\ISI\IWFDetailDao.cs" />
+    <Compile Include="Persistence\ISI\IWorkDetDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHAccountDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHApplyDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHAttachmentDetailDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHBudgetDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHBudgetDetDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHCheckupDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHCheckupProjectDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHCheckupRemindDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHCommentDetailDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHCostDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHEmppDetailDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHEvaluationDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHFailureModeDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHFilterDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHHelpLotDetailDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHPositionDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHProcessApplyDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHProcessDefinitionDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHProcessInstanceDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHProjectTaskDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResMatrixDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResMatrixLogDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResPatrolDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResRoleDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResSopDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResUserDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHResWokShopDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHSchedulingDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHSummaryDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHSummaryDetDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskAddressDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskApplyDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskApplyViewDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskDetailDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskMstrDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskReportDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskStatusDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskStatusViewDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskSubTypeDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTaskWeekStatisticsViewDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHTraceViewDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHUserSubscriptionDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHWFDetailDao.cs" />
+    <Compile Include="Persistence\ISI\NH\NHWorkDetDao.cs" />
+    <Compile Include="Service\Base\ISI\IAccountBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IApplyBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IAttachmentDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IBudgetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IBudgetDetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ICheckupBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ICheckupProjectBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ICheckupRemindBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ICommentDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ICostBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IEmppDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IEvaluationBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IFailureModeBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IFilterBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IHelpLotDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\AccountBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ApplyBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\AttachmentDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\BudgetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\BudgetDetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\CheckupBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\CheckupProjectBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\CheckupRemindBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\CommentDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\CostBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\EmppDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\EvaluationBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\FailureModeBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\FilterBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\HelpLotDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\PositionBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ProcessApplyBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ProcessDefinitionBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ProcessInstanceBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ProjectTaskBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResMatrixBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResMatrixLogBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResPatrolBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResRoleBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResSopBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResUserBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\ResWokShopBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\SchedulingBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\SummaryBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\SummaryDetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskAddressBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskApplyBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskApplyViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskMstrBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskReportBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskStatusBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskStatusViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskSubTypeBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TaskWeekStatisticsViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\TraceViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\UserSubscriptionBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\WFDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\Impl\WorkDetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IPositionBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IProcessApplyBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IProcessDefinitionBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IProcessInstanceBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IProjectTaskBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResMatrixBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResMatrixLogBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResPatrolBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResRoleBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResSopBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResUserBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IResWokShopBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ISchedulingBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ISummaryBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ISummaryDetBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskAddressBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskApplyBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskApplyViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskMstrBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskReportBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskStatusBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskStatusViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskSubTypeBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITaskWeekStatisticsViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\ITraceViewBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IUserSubscriptionBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IWFDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\ISI\IWorkDetBaseMgr.cs" />
+    <Compile Include="Service\ISI\IAccountMgr.cs" />
+    <Compile Include="Service\ISI\IApplyMgr.cs" />
+    <Compile Include="Service\ISI\IAttachmentDetailMgr.cs" />
+    <Compile Include="Service\ISI\IBudgetDetMgr.cs" />
+    <Compile Include="Service\ISI\IBudgetMgr.cs" />
+    <Compile Include="Service\ISI\ICheckupMgr.cs" />
+    <Compile Include="Service\ISI\ICheckupProjectMgr.cs" />
+    <Compile Include="Service\ISI\ICheckupRemindMgr.cs" />
+    <Compile Include="Service\ISI\ICommentDetailMgr.cs" />
+    <Compile Include="Service\ISI\IEmppDetailMgr.cs" />
+    <Compile Include="Service\ISI\IEmppMgr.cs" />
+    <Compile Include="Service\ISI\IEvaluationMgr.cs" />
+    <Compile Include="Service\ISI\IFailureModeMgr.cs" />
+    <Compile Include="Service\ISI\IFilterMgr.cs" />
+    <Compile Include="Service\ISI\IHelpLotDetailMgr.cs" />
+    <Compile Include="Service\ISI\IMouldDetailMgr.cs" />
+    <Compile Include="Service\ISI\IMouldMgr.cs" />
+    <Compile Include="Service\ISI\Impl\AccountMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ApplyMgr.cs" />
+    <Compile Include="Service\ISI\Impl\AttachmentDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\BudgetDetMgr.cs" />
+    <Compile Include="Service\ISI\Impl\BudgetMgr.cs" />
+    <Compile Include="Service\ISI\Impl\CheckupMgr.cs" />
+    <Compile Include="Service\ISI\Impl\CheckupProjectMgr.cs" />
+    <Compile Include="Service\ISI\Impl\CheckupRemindMgr.cs" />
+    <Compile Include="Service\ISI\Impl\CommentDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\EmppDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\EmppMgr.cs" />
+    <Compile Include="Service\ISI\Impl\EvaluationMgr.cs" />
+    <Compile Include="Service\ISI\Impl\FailureModeMgr.cs" />
+    <Compile Include="Service\ISI\Impl\FilterMgr.cs" />
+    <Compile Include="Service\ISI\Impl\HelpLotDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\MouldDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\MouldMgr.cs" />
+    <Compile Include="Service\ISI\Impl\NothingMgr.cs" />
+    <Compile Include="Service\ISI\Impl\PositionMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ProcessApplyMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ProcessDefinitionMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ProcessInstanceMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ProjectTaskMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResMatrixLogMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResMatrixMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResPatrolMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResRoleMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResSopMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResUserMgr.cs" />
+    <Compile Include="Service\ISI\Impl\ResWokShopMgr.cs" />
+    <Compile Include="Service\ISI\Impl\SchedulingMgr.cs" />
+    <Compile Include="Service\ISI\Impl\SmtpMgr.cs" />
+    <Compile Include="Service\ISI\Impl\SummaryDetMgr.cs" />
+    <Compile Include="Service\ISI\Impl\SummaryMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskAddressMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskApplyMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskApplyViewMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskMstrMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskReportMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskStatusMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskStatusViewMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskSubTypeMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TaskWeekStatisticsViewMgr.cs" />
+    <Compile Include="Service\ISI\Impl\TraceViewMgr.cs" />
+    <Compile Include="Service\ISI\Impl\UserSubscriptionMgr.cs" />
+    <Compile Include="Service\ISI\Impl\WFDetailMgr.cs" />
+    <Compile Include="Service\ISI\Impl\WorkDetMgr.cs" />
+    <Compile Include="Service\ISI\Impl\WorkFlowMgr.cs" />
+    <Compile Include="Service\ISI\IPositionMgr.cs" />
+    <Compile Include="Service\ISI\IProcessApplyMgr.cs" />
+    <Compile Include="Service\ISI\IProcessDefinitionMgr.cs" />
+    <Compile Include="Service\ISI\IProcessInstanceMgr.cs" />
+    <Compile Include="Service\ISI\IProjectTaskMgr.cs" />
+    <Compile Include="Service\ISI\IResMatrixLogMgr.cs" />
+    <Compile Include="Service\ISI\IResMatrixMgr.cs" />
+    <Compile Include="Service\ISI\IResPatrolMgr.cs" />
+    <Compile Include="Service\ISI\IResRoleMgr.cs" />
+    <Compile Include="Service\ISI\IResSopMgr.cs" />
+    <Compile Include="Service\ISI\IResUserMgr.cs" />
+    <Compile Include="Service\ISI\IResWokShopMgr.cs" />
+    <Compile Include="Service\ISI\ISchedulingMgr.cs" />
+    <Compile Include="Service\ISI\ISmtpMgr.cs" />
+    <Compile Include="Service\ISI\ISummaryDetMgr.cs" />
+    <Compile Include="Service\ISI\ISummaryMgr.cs" />
+    <Compile Include="Service\ISI\ITaskAddressMgr.cs" />
+    <Compile Include="Service\ISI\ITaskApplyMgr.cs" />
+    <Compile Include="Service\ISI\ITaskApplyViewMgr.cs" />
+    <Compile Include="Service\ISI\ITaskDetailMgr.cs" />
+    <Compile Include="Service\ISI\ITaskMgr.cs" />
+    <Compile Include="Service\ISI\ITaskMstrMgr.cs" />
+    <Compile Include="Service\ISI\ITaskReportMgr.cs" />
+    <Compile Include="Service\ISI\ITaskStatusMgr.cs" />
+    <Compile Include="Service\ISI\ITaskStatusViewMgr.cs" />
+    <Compile Include="Service\ISI\ITaskSubTypeMgr.cs" />
+    <Compile Include="Service\ISI\ITaskWeekStatisticsViewMgr.cs" />
+    <Compile Include="Service\ISI\ITraceViewMgr.cs" />
+    <Compile Include="Service\ISI\IUserSubscriptionMgr.cs" />
+    <Compile Include="Service\ISI\IWFDetailMgr.cs" />
+    <Compile Include="Service\ISI\IWorkDetMgr.cs" />
+    <Compile Include="Service\ISI\IWorkFlowMgr.cs" />
+    <Compile Include="Service\Job\CheckupApproveRemindJob.cs" />
+    <Compile Include="Service\Job\CheckupRemindJob.cs" />
+    <Compile Include="Service\Job\CompleteRemindJob.cs" />
+    <Compile Include="Service\Job\FiveSRemindJob.cs" />
+    <Compile Include="Service\Job\OpenRemindJob.cs" />
+    <Compile Include="Service\Job\PlanRemindJob.cs" />
+    <Compile Include="Service\Job\ProductionInOutJob.cs" />
+    <Compile Include="Service\Job\ProjectReportJob.cs" />
+    <Compile Include="Service\Job\PSIBillJob.cs" />
+    <Compile Include="Service\Job\SchedulingJob.cs" />
+    <Compile Include="Service\Job\StartPercentRemindJob.cs" />
+    <Compile Include="Service\Job\StatisticsRepJob.cs" />
+    <Compile Include="Service\Job\SummaryJob.cs" />
+    <Compile Include="Service\Job\TaskJob.cs" />
+    <Compile Include="Service\Job\TaskReportCheckJob.cs" />
+    <Compile Include="Service\Job\TaskReportJob.cs" />
+    <Compile Include="Service\Job\UserSubJob.cs" />
+    <Compile Include="Service\Job\WFSRemindJob.cs" />
+    <Compile Include="Service\Rep\RepLXFYMgr.cs" />
+    <Compile Include="Service\Rep\RepPlanMgr.cs" />
+    <Compile Include="Service\Rep\RepSCBTMgr.cs" />
+    <Compile Include="Service\Rep\RepWFSMgr.cs" />
+    <Compile Include="Service\Rep\RepZKSQ2Mgr.cs" />
+    <Compile Include="Service\Rep\RepZKSQMgr.cs" />
+    <Compile Include="Service\Util\ISIUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="**\*.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Entity\Entity.csproj">
+      <Project>{cada5382-5233-4d03-9f4f-655382538ab1}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence\Persistence.csproj">
+      <Project>{c8d4d3dc-f7b1-4ac8-b123-5b319e99c2d3}</Project>
+      <Name>Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service\Service.csproj">
+      <Project>{1d995c1b-a6a9-4c85-bdb4-d3d2381937bf}</Project>
+      <Name>Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{49eed42c-851f-4f50-b7d0-59c6c5a6f21e}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="EMPPLib">
+      <Guid>{C777EB8F-8635-434C-B506-490D672F39FA}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Batch\Rep\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)$(SolutionName)\bin</PostBuildEvent>
+  </PropertyGroup>
+</Project>

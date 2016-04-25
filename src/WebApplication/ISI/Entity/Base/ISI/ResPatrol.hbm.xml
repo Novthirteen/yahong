@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.ResPatrol, com.Sconit.ISI" table="ISI_ResPatrol" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <property name="WorkShop" column="WorkShop" type="String" length="50" />
+    <property name="Role" column="Role" type="String" length="50" />
+    <property name="WinTime1" column="WinTime1" type="String" length="255" />
+    <property name="WinTime2" column="WinTime2" type="String" length="255" />
+    <property name="WinTime3" column="WinTime3" type="String" length="255" />
+    <property name="WinTime4" column="WinTime4" type="String" length="255" />
+    <property name="WinTime5" column="WinTime5" type="String" length="255" />
+    <property name="WinTime6" column="WinTime6" type="String" length="255" />
+    <property name="WinTime7" column="WinTime7" type="String" length="255" />
+    <!--<property name="NextOrderTime" column="NextOrderTime" type="DateTime"  />-->
+    <!--<property name="NextWinTime" column="NextWinTime" type="DateTime"  />-->
+    <property name="WeekInterval" column="WeekInterval" type="Int32"  />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="LeadTime" column="LeadTime" type="Double"  />
+  </class>
+</hibernate-mapping>

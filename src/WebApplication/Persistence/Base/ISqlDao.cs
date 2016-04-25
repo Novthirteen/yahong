@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace com.Sconit.Persistence
 {
@@ -21,6 +22,6 @@ namespace com.Sconit.Persistence
         int Update(string sql, SqlParameter[] commandParameters);
 
         int Delete(string sql, SqlParameter[] commandParameters);
-       
+        void BulkInsert(DataTable dataTable);
     }
 }

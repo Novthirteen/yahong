@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.Mould, com.Sconit.ISI" table="ISI_Mould" lazy="false">
+    <id name="Code" column="Code" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <version name="Version" column="Version" type="Int32" />
+    <property name="Type" column="Type" type="String"  />
+    <property name="Qty" column="Qty" type="Int32" />    
+    <property name="Desc1" column="Desc_" type="String"  />
+    <property name="PrjCode" column="PrjCode" type="String"  />
+    <property name="PrjDesc" column="PrjDesc" type="String"  />
+    <property name="FCID" column="FCID" type="String"  />        
+    <property name="QS" column="QS" type="Decimal"  />
+    <property name="Status" column="Status" type="String"  />
+    <property name="MouldUser" column="MouldUser" type="String"  />
+    <property name="MouldUserNm" column="MouldUserNm" type="String"  />
+    <property name="SOUser" column="SOUser" type="String"  />
+    <property name="SOUserNm" column="SOUserNm" type="String"  />
+    <property name="Customer" column="Customer" type="String"  />
+    <property name="CustomerName" column="CustomerName" type="String"  />
+    <property name="SOContractNo" column="SOContractNo" type="String"  />
+    <property name="SOAmount" column="SOAmount" type="Decimal"  />
+    <property name="SOBilledAmount" column="SOBilledAmount" type="Decimal"  />
+    <property name="SOPayAmount" column="SOPayAmount" type="Decimal"  />
+    <property name="SOAmount1" column="SOAmount1" type="Decimal"  />
+    <property name="SOBillDate1" column="SOBillDate1" type="DateTime"  />
+    <property name="SOPayDate1" column="SOPayDate1" type="DateTime"  />
+    <property name="SOBilledAmount1" column="SOBilledAmount1" type="Decimal"  />
+    <property name="SOPayAmount1" column="SOPayAmount1" type="Decimal"  />
+    <property name="SOAmount2" column="SOAmount2" type="Decimal"  />
+    <property name="SOBillDate2" column="SOBillDate2" type="DateTime"  />
+    <property name="SOPayDate2" column="SOPayDate2" type="DateTime"  />
+    <property name="SOBilledAmount2" column="SOBilledAmount2" type="Decimal"  />
+    <property name="SOPayAmount2" column="SOPayAmount2" type="Decimal"  />
+    <property name="SOAmount3" column="SOAmount3" type="Decimal"  />
+    <property name="SOBillDate3" column="SOBillDate3" type="DateTime"  />
+    <property name="SOPayDate3" column="SOPayDate3" type="DateTime"  />
+    <property name="SOBilledAmount3" column="SOBilledAmount3" type="Decimal"  />
+    <property name="SOPayAmount3" column="SOPayAmount3" type="Decimal"  />
+
+    <property name="SOAmount4" column="SOAmount4" type="Decimal"  />
+    <property name="SOBillDate4" column="SOBillDate4" type="DateTime"  />
+    <property name="SOPayDate4" column="SOPayDate4" type="DateTime"  />
+    <property name="SOBilledAmount4" column="SOBilledAmount4" type="Decimal"  />
+    <property name="SOPayAmount4" column="SOPayAmount4" type="Decimal"  />
+    <property name="POAmount" column="POAmount" type="Decimal"  />
+    <property name="POBilledAmount" column="POBilledAmount" type="Decimal"  />
+    <property name="POPayAmount" column="POPayAmount" type="Decimal"  />
+    <property name="POAmount1" column="POAmount1" type="Decimal"  />  
+    <property name="POBilledAmount1" column="POBilledAmount1" type="Decimal"  />
+    <property name="POPayAmount1" column="POPayAmount1" type="Decimal"  />
+    <property name="POAmount2" column="POAmount2" type="Decimal"  />  
+    <property name="POBilledAmount2" column="POBilledAmount2" type="Decimal"  />
+    <property name="POPayAmount2" column="POPayAmount2" type="Decimal"  />
+    <property name="POAmount3" column="POAmount3" type="Decimal"  />  
+    <property name="POBilledAmount3" column="POBilledAmount3" type="Decimal"  />
+    <property name="POPayAmount3" column="POPayAmount3" type="Decimal"  />
+    <property name="POAmount4" column="POAmount4" type="Decimal"  />
+    <property name="POBilledAmount4" column="POBilledAmount4" type="Decimal"  />
+    <property name="POPayAmount4" column="POPayAmount4" type="Decimal"  />
+    <property name="POUser" column="POUser" type="String"  />
+    <property name="POUserNm" column="POUserNm" type="String"  />
+    <property name="Supplier" column="Supplier" type="String"  />
+    <property name="SupplierName" column="SupplierName" type="String"  />
+    <property name="SupplierContractNo" column="SupplierContractNo" type="String"  />
+    <property name="SupplierAmount" column="SupplierAmount" type="Decimal"  />
+    <property name="SupplierBilledAmount" column="SupplierBilledAmount" type="Decimal"  />
+    <property name="SupplierPayAmount" column="SupplierPayAmount" type="Decimal"  />
+    <property name="SupplierAmount1" column="SupplierAmount1" type="Decimal"  />
+    <property name="SupplierBillDate1" column="SupplierBillDate1" type="DateTime"  />
+    <property name="SupplierPayDate1" column="SupplierPayDate1" type="DateTime"  />
+    <property name="SupplierBilledAmount1" column="SupplierBilledAmount1" type="Decimal"  />
+    <property name="SupplierPayAmount1" column="SupplierPayAmount1" type="Decimal"  />
+    <property name="SupplierAmount2" column="SupplierAmount2" type="Decimal"  />
+    <property name="SupplierBillDate2" column="SupplierBillDate2" type="DateTime"  />
+    <property name="SupplierPayDate2" column="SupplierPayDate2" type="DateTime"  />
+    <property name="SupplierBilledAmount2" column="SupplierBilledAmount2" type="Decimal"  />
+    <property name="SupplierPayAmount2" column="SupplierPayAmount2" type="Decimal"  />
+    <property name="SupplierAmount3" column="SupplierAmount3" type="Decimal"  />
+    <property name="SupplierBillDate3" column="SupplierBillDate3" type="DateTime"  />
+    <property name="SupplierPayDate3" column="SupplierPayDate3" type="DateTime"  />
+    <property name="SupplierBilledAmount3" column="SupplierBilledAmount3" type="Decimal"  />
+    <property name="SupplierPayAmount3" column="SupplierPayAmount3" type="Decimal"  />
+
+    <property name="SupplierAmount4" column="SupplierAmount4" type="Decimal"  />
+    <property name="SupplierBillDate4" column="SupplierBillDate4" type="DateTime"  />
+    <property name="SupplierPayDate4" column="SupplierPayDate4" type="DateTime"  />
+    <property name="SupplierBilledAmount4" column="SupplierBilledAmount4" type="Decimal"  />
+    <property name="SupplierPayAmount4" column="SupplierPayAmount4" type="Decimal"  />
+
+
+    <property name="Remark" column="Remark" type="String"  />
+    <property name="CreateUser" column="CreateUser" type="String"  />
+    <property name="CreateUserNm" column="CreateUserNm" type="String"  />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="SubmitUser" column="SubmitUser" type="String"  />
+    <property name="SubmitUserNm" column="SubmitUserNm" type="String"  />
+    <property name="SubmitDate" column="SubmitDate" type="DateTime"  />
+    <property name="SOCompleteUser" column="SOCompleteUser" type="String"  />
+    <property name="SOCompleteUserNm" column="SOCompleteUserNm" type="String"  />
+    <property name="SOCompleteDate" column="SOCompleteDate" type="DateTime"  />
+    <property name="POCompleteUser" column="POCompleteUser" type="String"  />
+    <property name="POCompleteUserNm" column="POCompleteUserNm" type="String"  />
+    <property name="POCompleteDate" column="POCompleteDate" type="DateTime"  />
+    <property name="CloseUser" column="CloseUser" type="String"  />
+    <property name="CloseUserNm" column="CloseUserNm" type="String"  />
+    <property name="CloseDate" column="CloseDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String"  />
+    <property name="LastModifyUserNm" column="LastModifyUserNm" type="String"  />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+
+  </class>
+</hibernate-mapping>

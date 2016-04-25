@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.Facility.Entity.FacilityDistribution, com.Sconit.Facility" table="Fac_FacilityDistribution" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <property name="FCID" column="FCID" type="String" length="50" />
+    <property name="SupplierName" column="SupplierName" type="String" length="50" />
+    <property name="CustomerName" column="CustomerName" type="String" length="50" />
+    <property name="PurchaseContractCode" column="PurchaseContractCode" type="String" length="50" />
+    <property name="PurchaseContractAmount" column="PurchaseContractAmount" type="Decimal"  />
+    <property name="PurchaseBilledAmount" column="PurchaseBilledAmount" type="Decimal"  />
+    <property name="PurchasePayAmount" column="PurchasePayAmount" type="Decimal"  />
+    <property name="DistributionContractCode" column="DistributionContractCode" type="String" length="50" />
+    <property name="DistributionContractAmount" column="DistributionContractAmount" type="Decimal"  />
+    <property name="DistributionBilledAmount" column="DistributionBilledAmount" type="Decimal"  />
+    <property name="DistributionPayAmount" column="DistributionPayAmount" type="Decimal"  />
+    <property name="Status" column="Status"   type="String" length="50" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="Remark" column="Remark" type="String" length="255" />
+    <property name="PurchaseContact" column="PurchaseContact" type="String" length="255" />
+    <property name="DistributionContact" column="DistributionContact" type="String" length="255" />
+    <property name="Code" column="Code" type="String" length="255" />
+  </class>
+</hibernate-mapping>

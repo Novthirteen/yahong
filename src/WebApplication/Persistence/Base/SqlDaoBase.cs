@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace com.Sconit.Persistence
 {
@@ -37,7 +38,10 @@ namespace com.Sconit.Persistence
         {
             return sqlHelperDao.ExecuteSql(sqlString, commandParameters);
         }
-
+        public virtual void BulkInsert(DataTable dataTable)
+        {
+            sqlHelperDao.BulkInsert(dataTable);
+        }
         #endregion
 
 

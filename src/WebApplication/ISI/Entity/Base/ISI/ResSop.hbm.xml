@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.ResSop, com.Sconit.ISI" table="ISI_ResSop" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <property name="WorkShop" column="WorkShop"  type="String" length="50" />
+    <property name="Operate" column="Operate" type="Int32" />
+    <property name="OperateDesc" column="OperateDesc" type="String" length="1000" />
+    <property name="Instruction" column="Instruction" type="Int32"  />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+  </class>
+</hibernate-mapping>

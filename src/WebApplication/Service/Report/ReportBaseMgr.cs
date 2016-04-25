@@ -503,6 +503,19 @@ namespace com.Sconit.Service.Report
             throw new NotImplementedException();
         }
 
+
+
+        protected ICellStyle GetCellStyle(int rowIndex, int cellIndex)
+        {
+            ICell cell = this.GetCell(rowIndex, cellIndex);
+            ICellStyle cellStyle = workbook.CreateCellStyle();
+            if (cell.CellStyle != null)
+            {
+                cellStyle.CloneStyleFrom(cell.CellStyle);
+            }
+            return cellStyle;
+        }
+      
     }
 }
 

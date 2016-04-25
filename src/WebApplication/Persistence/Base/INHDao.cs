@@ -124,7 +124,41 @@ namespace com.Sconit.Persistence
         void FlushSession();
 
         void CleanSession();
+        void GetTableProperty(object entity, out string tableName, out Dictionary<string, string> propertyAndColumnNames);
+
 
         ISession GetSession();
+        #region FindWithSql
+        IList<T> FindEntityWithNativeSql<T>(string sql);
+
+        IList<T> FindEntityWithNativeSql<T>(string sql, object value);
+
+        IList<T> FindEntityWithNativeSql<T>(string sql, object value, IType type);
+
+        IList<T> FindEntityWithNativeSql<T>(string sql, object[] values);
+
+        IList<T> FindEntityWithNativeSql<T>(string sql, object[] values, IType[] types);
+
+        IList FindAllWithNativeSql(string sql, object[] values, IType[] types);
+
+        IList<T> FindAllWithNativeSql<T>(string sql);
+
+        IList<T> FindAllWithNativeSql<T>(string sql, object value);
+
+        IList<T> FindAllWithNativeSql<T>(string sql, object value, IType type);
+
+        IList<T> FindAllWithNativeSql<T>(string sql, object[] values);
+
+        IList<T> FindAllWithNativeSql<T>(string sql, object[] values, IType[] types);
+
+        IList FindAllWithNativeSql(string sql);
+
+        IList FindAllWithNativeSql(string sql, object value);
+
+        IList FindAllWithNativeSql(string sql, object value, IType type);
+
+        IList FindAllWithNativeSql(string sql, object[] values);
+
+        #endregion
     }
 }

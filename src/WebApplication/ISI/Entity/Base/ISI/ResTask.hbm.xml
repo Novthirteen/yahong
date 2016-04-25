@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.ResTask, com.Sconit.ISI" table="ISI_ResTask" lazy="false">
+    <id name="TaskCode" column="TaskCode" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <property name="TimePeriodType" column="TimePeriodType" type="String" length="50" />
+    <property name="ResRole" column="ResRole" type="String" length="50" />
+    <property name="UserCode" column="UserCode" type="String" length="50" />
+    <property name="TaskSubType" column="TaskSubType" type="String" length="50" />
+    <property name="ResId" column="ResId" type="Int32"  />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+  </class>
+</hibernate-mapping>

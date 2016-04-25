@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" table="ISI_TaskSubType" lazy="false">
+    <id name="Code" column="Code" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <version name="Version" column="Version" type="Int32" />
+    <property name="Desc2" column="Desc2" type="String" length="1000" />
+    <property name="Desc" column="Desc_" type="String" length="50" />
+    <property name="Org" column="Org" type="String" length="50" />
+    <many-to-one name="Parent" column="Parent" class="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" cascade="none" />
+    <property name="Type" column="Type" type="String" length="20"  />
+    <property name="IsActive" column="IsActive" type="Boolean"  />
+    <property name="IsCtrl" column="IsCtrl" type="Boolean"  />
+    <property name="Seq" column="Seq" type="Int32"  />
+    <property name="AssignUser" column="AssignUser" type="String" length="300" />
+    <property name="IsAutoAssign" column="IsAutoAssign" type="Boolean"  />
+    <property name="IsAutoStart" column="IsAutoStart" type="Boolean"  />
+    <property name="IsAutoComplete" column="IsAutoComplete" type="Boolean"  />
+    <property name="IsAutoStatus" column="IsAutoStatus" type="Boolean"  />
+    <property name="IsAutoClose" column="IsAutoClose" type="Boolean"  />
+    <property name="IsAttachment" column="IsAttachment" type="Boolean"  />
+    <property name="IsPublic" column="IsPublic" type="Boolean"  />
+    <property name="StartUser" column="StartUser" type="String" length="300" />
+    <property name="IsAssignUp" column="IsAssignUp" type="Boolean"  />
+    <property name="AssignUpTime" column="AssignUpTime" type="Decimal"  />
+    <property name="AssignUpUser" column="AssignUpUser" type="String" length="300" />
+    <property name="IsStartUp" column="IsStartUp" type="Boolean"  />
+    <property name="StartUpTime" column="StartUpTime" type="Decimal"  />
+    <property name="StartUpUser" column="StartUpUser" type="String" length="300" />
+    <property name="IsCloseUp" column="IsCloseUp" type="Boolean"   />
+    <property name="CloseUpTime" column="CloseUpTime" type="Decimal"  />
+    <property name="CloseUpUser" column="CloseUpUser" type="String" length="300" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="Color" column="Color" type="String" length="10" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="IsStart" column="IsStart" type="Boolean" />
+    <property name="StartPercent" column="StartPercent" type="Decimal"  />
+    <property name="ECType" column="ECType" type="String" length="20"  />
+    <property name="ECUser" column="ECUser" type="String" length="300" />
+    <property name="IsEC" column="IsEC" type="Boolean"  />
+    <property name="IsRemoveForm" column="IsRemoveForm" type="Boolean"  />
+    <property name="ProjectType" column="ProjectType" type="String" length="20"  />
+    <property name="IsQuote" column="IsQuote" type="Boolean"  />
+    <property name="IsInitiation" column="IsInitiation" type="Boolean"  />
+    <property name="IsCompleteUp" column="IsCompleteUp" type="Boolean"  />
+    <property name="IsReport" column="IsReport" type="Boolean"  />
+    <property name="CompleteUpTime" column="CompleteUpTime" type="Decimal"  />
+    <property name="ViewUser" column="ViewUser" type="String" length="300" />
+    <property name="IsOpen" column="IsOpen" type="Boolean"   />
+    <property name="IsWF" column="IsWF" type="Boolean"   />
+    <property name="IsTrace" column="IsTrace" type="Boolean"   />
+    <property name="IsCostCenter" column="IsCostCenter" type="Boolean"   />
+    <property name="IsApply" column="IsApply" type="Boolean"   />
+    <property name="OpenTime" column="OpenTime" type="Decimal"  />
+    <property name="RegisterNo" column="RegisterNo" type="String" length="50"  />
+    <property name="IsAssignUser" column="IsAssignUser" type="Boolean"   />
+    <property name="IsPrint" column="IsPrint" type="Boolean"  />
+    <property name="ExtNo" column="ExtNo" type="String" length="255"  />
+    <property name="ProcessNo" column="ProcessNo" type="String" length="50"  />
+    <property name="Template" column="Template" type="String" length="50"  />
+    <property name="IsRemind" column="IsRemind" type="Boolean"  />
+    <property name="IsCost" column="IsCost" type="Boolean"  />
+    <property name="FormType" column="FormType" type="String" length="50"   />
+    <property name="IsAmount" column="IsAmount" type="Boolean"  />
+    <property name="IsAmountDetail" column="IsAmountDetail" type="Boolean"  />
+    <property name="IsBudget" column="IsBudget" type="Boolean"  />
+    <property name="CostCenter" column="CostCenter" type="String" length="50" />
+    <property name="Account1" column="Account1" type="String" length="50" />
+    <property name="Account2" column="Account2" type="String" length="50" />
+    <bag name="Schedulings" table="ISI_Scheduling" inverse="true" lazy="true" cascade="delete" >
+      <key column="TaskSubType" />
+      <one-to-many class="com.Sconit.ISI.Entity.Scheduling, com.Sconit.ISI" />
+    </bag>
+    <bag name="Children" table="ISI_TaskSubType" inverse="true" lazy="true" order-by="Code asc">
+      <key column="Parent" />
+      <one-to-many class="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" />
+    </bag>
+  </class>
+</hibernate-mapping>

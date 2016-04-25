@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.TaskMstr, com.Sconit.ISI" table="ISI_TaskMstr" lazy="false">
+    <id name="Code" column="Code" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <version name="Version" column="Version" type="Int32" />
+    <property name="TaskAddress" column="Address" type="String" length="100" />
+    <property name="Type" column="Type" type="String" length="20" />
+    <property name="Subject" column="Subject" type="String" length="200" />
+    <property name="Desc1" column="Desc1" type="String" length="4000" />
+    <property name="Desc2" column="Desc2" type="String" length="1000" />
+    <property name="Status" column="Status" type="String" length="10" />
+    <property name="Priority" column="Priority" type="String" length="50" />
+    <many-to-one name="TaskSubType" column="TaskSubType" class="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" cascade="none" />
+    <property name="CostCenterCode" column="CostCenter" type="String" length="50" />
+    <property name="CostCenterDesc" column="CostCenterDesc" type="String" length="50" />
+    <property name="Dept" column="Dept" type="String" length="50" />
+    <many-to-one name="FailureMode" column="FailureMode" class="com.Sconit.ISI.Entity.FailureMode, com.Sconit.ISI" cascade="none" />
+    <property name="BackYards" column="BackYards" type="String" length="50" />
+    <property name="Flag" column="Flag" type="String" length="10" />
+    <property name="Color" column="Color" type="String" length="10" />
+    <property name="PlanStartDate" column="PlanStartDate" type="DateTime"  />
+    <property name="PlanCompleteDate" column="PlanCompleteDate" type="DateTime"  />
+    <property name="Wiki" column="Wiki" type="String" length="1000" />
+    <property name="UserName" column="UserName" type="String" length="50" />
+    <property name="Email" column="Email" type="String" length="50" />
+    <property name="MobilePhone" column="MobilePhone" type="String" length="50" />
+    <property name="ExpectedResults" column="ExpectedResults" type="String" length="1000" />
+    <property name="Scheduling" column="Scheduling" type="Int32"  />
+    <property name="SchedulingStartUser" column="SchedulingStartUser" type="String" length="300" />
+    <property name="SchedulingShift" column="SchedulingShift" type="String" length="50" />
+    <property name="SchedulingShiftTime" column="SchedulingShiftTime" type="String" length="255" />
+    <property name="AssignStartUser" column="AssignStartUser" type="String" length="500" />
+    <property name="AssignStartUserNm" column="AssignStartUserNm" type="String" length="500" />
+    <property name="SubmitUser" column="SubmitUser" type="String" length="50" />
+    <property name="SubmitUserNm" column="SubmitUserNm" type="String" length="50" />
+    <property name="SubmitDate" column="SubmitDate" type="DateTime"  />
+    <property name="CancelUser" column="CancelUser" type="String" length="50" />
+    <property name="CancelUserNm" column="CancelUserNm" type="String" length="50" />
+    <property name="CancelDate" column="CancelDate" type="DateTime"  />
+    <property name="ReturnUser" column="ReturnUser" type="String" length="50" />
+    <property name="ReturnUserNm" column="ReturnUserNm" type="String" length="50" />
+    <property name="ReturnDate" column="ReturnDate" type="DateTime"  />
+    <property name="ApproveUser" column="ApproveUser" type="String" length="50" />
+    <property name="ApproveUserNm" column="ApproveUserNm" type="String" length="50" />
+    <property name="ApproveDate" column="ApproveDate" type="DateTime"  />
+    <property name="InApproveUser" column="InApproveUser" type="String" length="50" />
+    <property name="InApproveUserNm" column="InApproveUserNm" type="String" length="50" />
+    <property name="InApproveDate" column="InApproveDate" type="DateTime"  />
+    <property name="RefuseUser" column="RefuseUser" type="String" length="50" />
+    <property name="RefuseUserNm" column="RefuseUserNm" type="String" length="50" />
+    <property name="RefuseDate" column="RefuseDate" type="DateTime"  />
+    <property name="InDisputeUser" column="InDisputeUser" type="String" length="50" />
+    <property name="InDisputeUserNm" column="InDisputeUserNm" type="String" length="50" />
+    <property name="InDisputeDate" column="InDisputeDate" type="DateTime"  />    
+    <property name="SuspendUser" column="SuspendUser" type="String" length="50" />
+    <property name="SuspendUserNm" column="SuspendUserNm" type="String" length="50" />
+    <property name="SuspendDate" column="SuspendDate" type="DateTime"  />
+    <property name="AssignUser" column="AssignUser" type="String" length="50" />
+    <property name="AssignUserNm" column="AssignUserNm" type="String" length="50" />
+    <property name="AssignDate" column="AssignDate" type="DateTime"  />
+    <property name="StartUser" column="StartUser" type="String" length="50" />
+    <property name="StartUserNm" column="StartUserNm" type="String" length="50" />
+    <property name="StartDate" column="StartDate" type="DateTime"  />
+    <property name="CompleteUser" column="CompleteUser" type="String" length="50" />
+    <property name="CompleteUserNm" column="CompleteUserNm" type="String" length="50" />
+    <property name="CompleteDate" column="CompleteDate" type="DateTime"  />
+    <property name="CloseUser" column="CloseUser" type="String" length="50" />
+    <property name="CloseUserNm" column="CloseUserNm" type="String" length="50" />
+    <property name="CloseDate" column="CloseDate" type="DateTime"  />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="CreateUserNm" column="CreateUserNm" type="String" length="50" />
+    <property name="OpenUser" column="OpenUser" type="String" length="50" />
+    <property name="OpenUserNm" column="OpenUserNm" type="String" length="50" />
+    <property name="OpenDate" column="OpenDate" type="DateTime"  />
+    <property name="RejectUser" column="RejectUser" type="String" length="50" />
+    <property name="RejectUserNm" column="RejectUserNm" type="String" length="50" />
+    <property name="RejectDate" column="RejectDate" type="DateTime"  />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="LastModifyUserNm" column="LastModifyUserNm" type="String" length="50" />
+    <property name="ExtNo" column="ExtNo" type="String" length="50" />
+    <property name="RefNo" column="RefNo" type="String" length="50" />
+    <property name="Seq" column="Seq" type="String" length="10" />
+    <property name="Phase" column="Phase" type="String" length="10" />
+    <property name="IsWF" column="IsWF" type="Boolean"   />
+    <property name="IsTrace" column="IsTrace" type="Boolean"   />
+    <property name="IsApply" column="IsApply" type="Boolean"   />
+    <property name="ProjectTask" column="ProjectTaskId" type="Int32"  />
+    <property name="Level" column="Level" type="Int32"  />
+    <property name="PreLevel" column="PreLevel" type="Int32"  />
+    <property name="FocusUser" column="FocusUser" type="String" length="500" />
+    <property name="CountersignUser" column="CountersignUser" type="String" length="500" />
+    <property name="CountersignUserNm" column="CountersignUserNm" type="String" length="500" />
+    <property name="WorkHoursUser" column="WorkHoursUser" type="String" length="500" />
+    <property name="WorkHoursUserNm" column="WorkHoursUserNm" type="String" length="500" />
+    <property name="ApprovalUser" column="ApprovalUser" type="String" length="500" />
+    <property name="ApprovalUserNm" column="ApprovalUserNm" type="String" length="500" />
+    <property name="ApprovalLevel" column="ApprovalLevel" type="String" length="500" />
+    <property name="IsCountersignSerial" column="IsCountersignSerial" type="Boolean"  />
+    <property name="Qty" column="Qty" type="Decimal" />
+    <property name="Template" column="Template" type="String" length="50"  />
+    <property name="SupplierCode" column="SupplierCode" type="String" length="50"  />
+    <property name="SupplierName" column="SupplierName" type="String" length="255"  />
+    <property name="Amount" column="Amount" type="Decimal" />
+    <property name="FormType" column="FormType" type="String" length="50"   />
+    <property name="Account1" column="Account1" type="String" length="50" />
+    <property name="Account1Desc" column="Account1Desc" type="String" length="50" />
+    <property name="Account2" column="Account2" type="String" length="50" />
+    <property name="Account2Desc" column="Account2Desc" type="String" length="50" />
+    <property name="NoTaxAmount" column="NoTaxAmount" type="Decimal"  />
+    <property name="Taxes" column="Taxes" type="Decimal"  />
+    <property name="TotalAmount" column="TotalAmount" type="Decimal"  />
+    <property name="PayeeCode" column="PayeeCode" type="String" length="50" />
+    <property name="PayeeName" column="PayeeName" type="String" length="50" />
+    <property name="TravelType" column="TravelType" type="String" length="50" />
+    <property name="Voucher" column="Voucher" type="Int32"  />
+    <property name="CurrentApprovalUser" column="CurrentApprovalUser" type="String" length="500" />
+    <property name="CurrentApprovalUserNm" column="CurrentApprovalUserNm" type="String" length="500" />
+    <property name="FirstUser" column="FirstUser" type="String" length="50" />
+    <property name="FirstUserNm" column="FirstUserNm" type="String" length="255" />    
+    <bag name="TaskDetails" table="ISI_TaskDet" inverse="true" lazy="true" order-by="CreateDate desc">
+      <key column="TaskCode" />
+      <one-to-many class="com.Sconit.ISI.Entity.TaskDetail, com.Sconit.ISI" />
+    </bag>
+  </class>
+</hibernate-mapping>

@@ -265,6 +265,12 @@ namespace com.Sconit.Entity.MasterData
             }
 
         }
+
+        public string Company
+        {
+            get;
+            set;
+        }
         #endregion
     }
 }

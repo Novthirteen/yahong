@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.OrgChart, com.Sconit.ISI" table="ISI_OrgChart" lazy="false">
+    <id name="Org" column="Org" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <property name="ParentOrg" column="ParentOrg" type="String" />
+    <property name="UserCodes" column="UserCodes" />
+    <property name="UserNames" column="UserNames" />
+
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+  </class>
+</hibernate-mapping>

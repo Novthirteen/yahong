@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.ISI.Entity.FastTrack, com.Sconit.ISI" table="WFS_FastTrack" lazy="false">
+		<id name="GUID" column="GUID" type="String" unsaved-value="0" >
+      		<generator class="assigned" />
+        </id>
+		<property name="UserCode" column="UserCode" type="String" length="50" />	
+		<property name="UserNm" column="UserNm" type="String" length="255" />	
+		<property name="PK" column="PK" type="String" length="50" />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />	
+		<property name="CreateUserNm" column="CreateUserNm" type="String" length="50" />	
+		<property name="CreateDate" column="CreateDate" type="DateTime"  />	
+		<property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />	
+		<property name="LastModifyUserNm" column="LastModifyUserNm" type="String" length="50" />	
+		<property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />	
+  	</class>
+</hibernate-mapping>

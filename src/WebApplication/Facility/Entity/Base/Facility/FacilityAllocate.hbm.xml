@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.Facility.Entity.FacilityAllocate, com.Sconit.Facility" table="Fac_FacilityAllocate" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <many-to-one name="Item" column="ItemCode" class="com.Sconit.Entity.MasterData.Item, com.Sconit.Entity" cascade="none" />
+    <many-to-one name="FacilityMaster" column="FCID" class="com.Sconit.Facility.Entity.FacilityMaster, com.Sconit.Facility" cascade="none" />
+		<property name="IsActive" column="IsActive" type="Boolean"  />
+		<property name="AllocatedQty" column="AllocatedQty" type="Decimal"  />	
+		<property name="AllocateType" column="AllocateType" type="String" length="50" />	
+		<property name="WarnQty" column="WarnQty" type="Decimal"  />	
+		<property name="NextWarnQty" column="NextWarnQty" type="Decimal"  />	
+		<property name="CreateDate" column="CreateDate" type="DateTime"  />	
+		<property name="CreateUser" column="CreateUser" type="String" length="50" />	
+		<property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />	
+		<property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="StartUpUser" column="StartUpUser" type="String" length="255" />
+  	</class>
+</hibernate-mapping>

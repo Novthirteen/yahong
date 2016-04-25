@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+ 	<class name="com.Sconit.ISI.Entity.TaskAddress, com.Sconit.ISI" table="ISI_TaskAddr" lazy="false">
+		<id name="Code" column="Code" type="String" unsaved-value="null" >
+      		<generator class="assigned" />
+        </id>
+		<property name="Desc" column="Desc_" type="String" length="100" />	
+    <many-to-one name="Parent" column="Parent" class="com.Sconit.ISI.Entity.TaskAddress, com.Sconit.ISI" cascade="none" />
+		<property name="Seq" column="Seq" type="Int32"  />	
+		<property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <bag name="Children" table="ISI_TaskAddr" inverse="true" lazy="true" order-by="Code asc">
+      <key column="Parent" />
+      <one-to-many class="com.Sconit.ISI.Entity.TaskAddress, com.Sconit.ISI" />
+    </bag>
+  	</class>
+</hibernate-mapping>

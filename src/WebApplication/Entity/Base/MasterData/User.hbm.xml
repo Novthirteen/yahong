@@ -15,7 +15,13 @@
         <property name="IsActive" column="IsActive" type="Boolean"  />
         <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
         <many-to-one name="LastModifyUser" column="LastModifyUser" class="com.Sconit.Entity.MasterData.User, com.Sconit.Entity" cascade="none" />
-        <bag name="UserPreferences" table="UserPreference" inverse="true" lazy="true">
+		<property name="Department" column="Dept" type="String" length="50"/>
+		<property name="Dept2" column="Dept2" type="String" length="50"/>
+		<property name="JobNo" column="JobNo" type="String" length="10"/>
+		<property name="Position" column="Position" type="String" length="10"/>
+		<property name="CostCenter" column="CostCenter" type="String" length="50"/>
+		<property name="DomainUser" column="DomainUser" type="String" length="50"/>
+		<bag name="UserPreferences" table="UserPreference" inverse="true" lazy="true">
             <key column="USR_Code" />
             <one-to-many class="com.Sconit.Entity.MasterData.UserPreference, com.Sconit.Entity" />
         </bag>

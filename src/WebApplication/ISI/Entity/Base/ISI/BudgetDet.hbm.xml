@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.BudgetDet, com.Sconit.ISI" table="WFS_BudgetDet" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <property name="BudgetCode" column="BudgetCode" type="String" length="50" />
+    <property name="Account1" column="Account1" type="String" length="50" />
+    <property name="Account1Desc" column="Account1Desc" type="String" length="50" />
+    <property name="Account2" column="Account2" type="String" length="50" />
+    <property name="Account2Desc" column="Account2Desc" type="String" length="50" />
+    <property name="NoTaxAmount" column="NoTaxAmount" type="Decimal"  />
+    <property name="Type" column="Type" type="String" length="50" />
+  </class>
+</hibernate-mapping>

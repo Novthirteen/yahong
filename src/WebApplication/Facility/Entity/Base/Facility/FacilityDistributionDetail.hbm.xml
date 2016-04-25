@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.Facility.Entity.FacilityDistributionDetail, com.Sconit.Facility" table="Fac_FacilityDistributionDet" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <many-to-one name="FacilityDistribution" column="FacilityDistributionId" class="com.Sconit.Facility.Entity.FacilityDistribution, com.Sconit.Facility" cascade="none" />
+    <property name="Type" column="Type" type="String" length="50" />
+    <property name="PayDate" column="PayDate" type="DateTime"  />
+    <property name="PayAmount" column="PayAmount" type="Decimal"  />
+    <property name="BillDate" column="BillDate" type="DateTime"  />
+    <property name="BillAmount" column="BillAmount" type="Decimal"  />
+    <property name="Contact" column="Contact" type="String" length="255" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="Remark" column="Remark" type="String" length="255" />
+    <property name="Invoice" column="Invoice" type="String" length="255" />
+    <property name="BatchNo" column="BatchNo" type="String" length="255" />
+  </class>
+</hibernate-mapping>

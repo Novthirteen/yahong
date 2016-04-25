@@ -9,6 +9,7 @@ namespace com.Sconit.Service.MasterData
     public interface IUserRoleMgr : IUserRoleBaseMgr
     {
         #region Customized Methods
+        IDictionary<string, string> GetUsersByRoleCode(string[] roleCodes);
 
         IList<Role> GetRolesNotInUser(string userCode);
 

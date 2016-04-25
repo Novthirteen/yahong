@@ -19,6 +19,7 @@ namespace com.Sconit.Service.MasterData.Impl
     [Transactional]
     public class LanguageMgr : LanguageBaseMgr, ILanguageMgr
     {
+        public IList<string> resourceFileList { get; set; }
         public string languageFileFolder { get; set; }
         public IDictionary<string, IDictionary<string, string>> languageDic;
         public ICodeMasterMgrE codeMasterMgrE { get; set; }
@@ -198,51 +199,41 @@ namespace com.Sconit.Service.MasterData.Impl
                 string resourceFile = languageFileFolder + "/Language_" + languageKey + ".properties";
                 IDictionary<string, string> targetLanguageDic = new Dictionary<string, string>();
 
-                PropertyFileReader propertyFileReader = new PropertyFileReader(resourceFile);
-                while (!propertyFileReader.EndOfStream)
+                if (resourceFileList != null && resourceFileList.Count > 0)
                 {
-                    string[] property = propertyFileReader.GetPropertyLine();
-                    if (property != null)
+                    foreach (var resource in resourceFileList)
                     {
                         try
                         {
-                            targetLanguageDic.Add(property[0].Trim(), property[1].Trim());
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
-                }
+                            string resourceExtFile = languageFileFolder + "/" + resource + "_" + languageKey + ".properties";
 
-                try
-                {
-                    string resourceExtFile = languageFileFolder + "/Language-ext_" + languageKey + ".properties";
-                    if (File.Exists(resourceExtFile))
-                    {
-                        PropertyFileReader propertyExtFileReader = new PropertyFileReader(resourceExtFile);
-                        while (!propertyExtFileReader.EndOfStream)
-                        {
-                            string[] property = propertyExtFileReader.GetPropertyLine();
-                            if (property != null)
+                            if (File.Exists(resourceExtFile))
                             {
-                                try
+                                PropertyFileReader propertyExtFileReader = new PropertyFileReader(resourceExtFile);
+                                while (!propertyExtFileReader.EndOfStream)
                                 {
-                                    if (targetLanguageDic.ContainsKey(property[0].Trim()))
+                                    string[] property = propertyExtFileReader.GetPropertyLine();
+                                    if (property != null)
                                     {
-                                        targetLanguageDic.Remove(property[0].Trim());
+                                        try
+                                        {
+                                            if (targetLanguageDic.ContainsKey(property[0].Trim()))
+                                            {
+                                                targetLanguageDic.Remove(property[0].Trim());
+                                            }
+                                            targetLanguageDic.Add(property[0].Trim(), property[1].Trim());
+                                        }
+                                        catch (Exception)
+                                        {
+                                        }
                                     }
-                                    targetLanguageDic.Add(property[0].Trim(), property[1].Trim());
-                                }
-                                catch (Exception)
-                                {
                                 }
                             }
                         }
-
+                        catch (Exception e)
+                        {
+                        }
                     }
-                }
-                catch (Exception e)
-                {
                 }
 
                 languageDic.Add(languageKey, targetLanguageDic);

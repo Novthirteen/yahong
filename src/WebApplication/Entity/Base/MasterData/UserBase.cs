@@ -195,6 +195,15 @@ namespace com.Sconit.Entity.MasterData
                 _Roles = value;
             }
         }
+
+
+        public string Department { get; set; }
+        public string Dept2 { get; set; }
+        public string JobNo { get; set; }
+        public string Position { get; set; }
+        public string CostCenter { get; set; }
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public string DomainUser { get; set; }
         #endregion
 
 		public override int GetHashCode()

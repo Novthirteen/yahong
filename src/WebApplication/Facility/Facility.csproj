@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{98D3E5A5-548B-4453-B76D-91C84AC76192}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>com.Sconit.Facility</RootNamespace>
+    <AssemblyName>com.Sconit.Facility</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.AutomaticTransactionManagement">
+      <HintPath>..\DllLib\Castle.Facilities.AutomaticTransactionManagement.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.NHibernateIntegration">
+      <HintPath>..\DllLib\Castle.Facilities.NHibernateIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Transaction, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Castle.Services.Transaction.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="NHibernate, Version=1.2.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=1.2.3.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DllLib\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entity\Base\Facility\CheckListDetail.cs" />
+    <Compile Include="Entity\Base\Facility\CheckListMaster.cs" />
+    <Compile Include="Entity\Base\Facility\CheckListOrderDetail.cs" />
+    <Compile Include="Entity\Base\Facility\CheckListOrderMaster.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityAllocateBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityCategoryBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityDistributionBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityDistributionDetailBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityItemBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityMaintainPlanBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityMasterBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityStockBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityStockDetailBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityStockMasterBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityTransBase.cs" />
+    <Compile Include="Entity\Base\Facility\MaintainPlanBase.cs" />
+    <Compile Include="Entity\Base\Facility\RepairOrder.cs" />
+    <Compile Include="Entity\Facility\FacilityAllocate.cs" />
+    <Compile Include="Entity\Facility\FacilityCategory.cs" />
+    <Compile Include="Entity\Facility\FacilityDistribution.cs" />
+    <Compile Include="Entity\Facility\FacilityDistributionDetail.cs" />
+    <Compile Include="Entity\Facility\FacilityItem.cs" />
+    <Compile Include="Entity\Facility\FacilityMaintainPlan.cs" />
+    <Compile Include="Entity\Facility\FacilityMaster.cs" />
+    <Compile Include="Entity\Facility\FacilityStock.cs" />
+    <Compile Include="Entity\Facility\FacilityStockDetail.cs" />
+    <Compile Include="Entity\Facility\FacilityStockMaster.cs" />
+    <Compile Include="Entity\Facility\FacilityTrans.cs" />
+    <Compile Include="Entity\Facility\MaintainPlan.cs" />
+    <Compile Include="Entity\Util\FacilityConstants.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityAllocateBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityCategoryBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityDistributionBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityDistributionDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityItemBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityMaintainPlanBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityMasterBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityStockBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityStockDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityStockMasterBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IFacilityTransBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\IMaintainPlanBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityAllocateBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityCategoryBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityDistributionBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityDistributionDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityItemBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityMaintainPlanBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityMasterBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityStockBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityStockDetailBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityStockMasterBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHFacilityTransBaseDao.cs" />
+    <Compile Include="Persistence\Base\Facility\NH\NHMaintainPlanBaseDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityAllocateDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityCategoryDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityDistributionDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityDistributionDetailDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityItemDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityMaintainPlanDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityMasterDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityStockDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityStockDetailDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityStockMasterDao.cs" />
+    <Compile Include="Persistence\Facility\IFacilityTransDao.cs" />
+    <Compile Include="Persistence\Facility\IMaintainPlanDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityAllocateDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityCategoryDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityDistributionDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityDistributionDetailDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityItemDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityMaintainPlanDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityMasterDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityStockDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityStockDetailDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityStockMasterDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHFacilityTransDao.cs" />
+    <Compile Include="Persistence\Facility\NH\NHMaintainPlanDao.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityAllocateBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityCategoryBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityDistributionBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityDistributionDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityItemBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityMaintainPlanBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityMasterBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityStockBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityStockDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityStockMasterBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IFacilityTransBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\IMaintainPlanBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityAllocateBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityCategoryBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityDistributionBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityDistributionDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityItemBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityMaintainPlanBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityMasterBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityStockBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityStockDetailBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityStockMasterBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\FacilityTransBaseMgr.cs" />
+    <Compile Include="Service\Base\Facility\Impl\MaintainPlanBaseMgr.cs" />
+    <Compile Include="Service\Facility\ICheckListMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityAllocateMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityCategoryMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityDistributionDetailMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityDistributionMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityItemMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityMaintainPlanMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityMasterMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityStockDetailMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityStockMasterMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityStockMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityTransMgr.cs" />
+    <Compile Include="Service\Facility\IMaintainPlanMgr.cs" />
+    <Compile Include="Service\Facility\Impl\CheckListMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityAllocateMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityCategoryMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityDistributionDetailMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityDistributionMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityItemMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityMaintainPlanMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityMasterMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityStockDetailMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityStockMasterMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityStockMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityTransMgr.cs" />
+    <Compile Include="Service\Facility\Impl\MaintainPlanMgr.cs" />
+    <Compile Include="Service\Job\GenerateMaintainJob.cs" />
+    <Compile Include="Service\Rep\RepCheckListOrderMgr.cs" />
+    <Compile Include="Service\Rep\RepFacilityBarCodeMgr.cs" />
+    <Compile Include="Service\Rep\RepFacilityStocktakeMgr.cs" />
+    <Compile Include="Service\Rep\RepRepairOrderSheetMgr.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="**\*.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Entity\Entity.csproj">
+      <Project>{cada5382-5233-4d03-9f4f-655382538ab1}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI\ISI.csproj">
+      <Project>{90393DDB-4C98-481B-9A79-FC892A075BA0}</Project>
+      <Name>ISI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistence\Persistence.csproj">
+      <Project>{c8d4d3dc-f7b1-4ac8-b123-5b319e99c2d3}</Project>
+      <Name>Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service\Service.csproj">
+      <Project>{1d995c1b-a6a9-4c85-bdb4-d3d2381937bf}</Project>
+      <Name>Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{49eed42c-851f-4f50-b7d0-59c6c5a6f21e}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Batch\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)$(SolutionName)\bin</PostBuildEvent>
+  </PropertyGroup>
+</Project>

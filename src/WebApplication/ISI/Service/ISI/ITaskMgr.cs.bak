@@ -1,0 +1,119 @@
+using System;
+using com.Sconit.Entity.MasterData;
+using com.Sconit.ISI.Entity;
+using System.Collections.Generic;
+using System.Text;
+
+//TODO: Add other using statements here.
+
+namespace com.Sconit.ISI.Service
+{
+    public interface ITaskMgr
+    {
+        #region Customized Methods
+
+        bool HasPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isCloser, string currentUser);
+
+        bool HasPermissionByComplete(string status, string type,
+                                                string createUser, string submitUser, string startedUser,
+                                                string assignUser, string assignUpUser,
+                                                string closeUpUser, string[] closeUpLevel,
+                                                bool isISIAdmin, bool isTaskFlowAdmin, bool isCloser, string currentUser);
+
+        bool HasPermissionByProcess(string status, string startedUser, string startUpUser, bool isISIAdmin, bool isTaskFlowAdmin, string currentUser);
+
+        bool HasPermissionByClose(string status, string type, string createUser, string submitUser, bool isISIAdmin, bool isCloser, string currentUser);
+
+        bool HasAssignPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isAssigner, string currentUser);
+
+        bool HasAssignPermission(string createUser, string submitUser, string status, string type,
+                                                bool isISIAdmin, bool isTaskFlowAdmin, bool isAssigner, string currentUser, string ecUser,
+                                                string assignUser, string assignUpUser, bool isAutoAssign);
+
+        string GetInvalidUser(string users, string userCode);
+
+        void CreateTask(TaskMstr taskMstr, User user);
+
+        string GetUserName(string userCodes);
+
+        void SubmitTask(string code, User user);
+
+        void SubmitTask(TaskMstr task, User user);
+
+        void CancelTask(string code, User user);
+
+        void DeleteTask(string code, User user);
+
+        int BatchTask(string type, IList<TaskMstr> taskList, string taskSubTypeCode, string projectSubType, User user);
+        int BatchReplaceTask(IList<TaskMstr> taskList, string oldUser, string newUser, User user);
+        void ConfirmTask(string taskCode, User user);
+
+        void ConfirmTask(string taskCode, DateTime planStartDate, DateTime planCompleteDate, string desc2, string expectedResults, User user);
+
+        void CloseTask(string taskCode, User user);
+
+        void CompleteTask(string taskCode, User user);
+
+        void CompleteTask(string taskCode, string desc2, User user);
+
+        void AssignTask(string taskCode, string backYards, string taskSubTypeCode, string[] assignStartUser, DateTime planStartDate, DateTime planCompleteDate, string desc2, string expectedResults, User user);
+
+        //void ReassignTask(string taskCode, string assignStartUser, User user);
+
+        void HelpTask(string taskCode, string helpUser, bool isRemindCreateUser,
+                                                            bool isRemindAssignUser,
+                                                            bool isRemindStartUser,
+                                                            bool isRemindCommentUser,
+                                                            bool isRemindAdmin, string helpContent, User user);
+
+        void RejectTask(string taskCode, User user);
+
+        void OpenTask(string taskCode, User user);
+
+        void SendUp();
+
+        void CreateCommentDetail(CommentDetail commentDetail, string userCode, string userName);
+
+        void CreateTaskStatus(TaskStatus status);
+
+        void UpdateTaskStatus(TaskStatus taskStatus);
+
+        int CountTask(string action, User user);
+
+        void PlanRemind();
+
+        void Remind(string subject, StringBuilder body);
+
+        void Remind(string subject, StringBuilder body, string mailTo);
+
+        void FiveSRemind();
+
+        string FindEmail(string[] userCodes);
+
+        string FindEmailByPermission(string[] permissionCodes);
+
+        string FindUserNameByPermission(string[] permissionCodes);
+
+        void SendTaskSubTypeReport();
+
+        void CompleteRemind();
+
+        void StartPercentRemind();
+
+        void OpenRemind();
+
+        #endregion Customized Methods
+    }
+}
+
+
+#region Extend Interface
+
+namespace com.Sconit.ISI.Service.Ext
+{
+    public partial interface ITaskMgrE : com.Sconit.ISI.Service.ITaskMgr
+    {
+    }
+}
+
+#endregion Extend Interface

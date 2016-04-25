@@ -7,8 +7,8 @@ using Castle.Services.Transaction;
 using com.Sconit.Entity.MasterData;
 using com.Sconit.Persistence.MasterData;
 using com.Sconit.Service.Ext.Criteria;
-using com.Sconit.Service.Ext.MasterData;
 using NHibernate.Expression;
+using System.Linq;
 
 //TODO: Add other using statements here.
 
@@ -113,6 +113,21 @@ namespace com.Sconit.Service.MasterData.Impl
                 userRole.Role = role;
                 entityDao.CreateUserRole(userRole);
             }
+        }
+
+        public IDictionary<string, string> GetUsersByRoleCode(string[] roleCodes)
+        {
+            IDictionary<string, string> roleUsers = new Dictionary<string, string>();
+            DetachedCriteria criteria = DetachedCriteria.For(typeof(UserRole)).Add(Expression.In("Role.Code", roleCodes));
+            criteria.AddOrder(Order.Asc("Role.Code"));
+            IList<UserRole> urList = criteriaMgrE.FindAll<UserRole>(criteria);
+            foreach (var role in roleCodes)
+            {
+                var userRoleList = urList.Where(ur => ur.Role.Code == role);
+                string userRoles = string.Join(",", userRoleList.Select(ur => ur.User.CodeName).Distinct().ToArray<string>());
+                roleUsers.Add(role, userRoles);
+            }
+            return roleUsers;
         }
         #endregion Customized Methods
     }

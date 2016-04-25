@@ -9,173 +9,180 @@ using NHibernate;
 using NHibernate.Collection;
 using NHibernate.Expression;
 using NHibernate.Proxy;
+using NHibernate.Transform;
 using NHibernate.Type;
 using System.Collections.Generic;
+using com.Sconit.Entity.Exception;
+using com.Sconit.Entity.MasterData;
 
 namespace com.Sconit.Persistence
 {
     /// <summary>
-	/// Summary description for GenericDao.
-	/// </summary>
-	/// <remarks>
-	///  Contributed by Jackey <Jackey.ding@atosorigin.com>
-	/// </remarks>
+    /// Summary description for GenericDao.
+    /// </summary>
+    /// <remarks>
+    ///  Contributed by Jackey <Jackey.ding@atosorigin.com>
+    /// </remarks>
     /// 
     public class NHDaoBase : INHDao
     {
         private readonly ISessionManager sessionManager;
-		private string sessionFactoryAlias = null;
+        private string sessionFactoryAlias = null;
 
         public NHDaoBase(ISessionManager sessionManager)
-		{
-			this.sessionManager = sessionManager;
-		}
+        {
+            this.sessionManager = sessionManager;
+        }
 
-		protected ISessionManager SessionManager
-		{
-			get { return sessionManager; }
-		}
+        protected ISessionManager SessionManager
+        {
+            get { return sessionManager; }
+        }
 
-		public string SessionFactoryAlias
-		{
-			get { return sessionFactoryAlias; }
-			set { sessionFactoryAlias = value; }
-		}
+        public string SessionFactoryAlias
+        {
+            get { return sessionFactoryAlias; }
+            set { sessionFactoryAlias = value; }
+        }
 
 
-		#region IDAOBase Members
+        #region IDAOBase Members
 
-		public virtual IList<T> FindAll<T>()
-		{
-			return FindAll<T>(int.MinValue, int.MinValue);
-		}
+        public virtual IList<T> FindAll<T>()
+        {
+            return FindAll<T>(int.MinValue, int.MinValue);
+        }
 
         public virtual IList<T> FindAll<T>(int firstRow, int maxRows)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					ICriteria criteria = session.CreateCriteria(typeof(T));
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    ICriteria criteria = session.CreateCriteria(typeof(T));
 
-					if (firstRow != int.MinValue) criteria.SetFirstResult(firstRow);
-					if (maxRows != int.MinValue) criteria.SetMaxResults(maxRows);
-					IList<T> result = criteria.List<T>();
-					if (result == null || result.Count == 0) return null;
+                    if (firstRow != int.MinValue) criteria.SetFirstResult(firstRow);
+                    if (maxRows != int.MinValue) criteria.SetMaxResults(maxRows);
+                    IList<T> result = criteria.List<T>();
+                    if (result == null || result.Count == 0) return null;
 
                     return result;
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform FindAll for " + typeof(T).Name, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform FindAll for " + typeof(T).Name, ex);
+                }
+            }
+        }
 
-		public virtual T FindById<T>(object id)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					return session.Load<T>(id);
-				}
-				catch (ObjectNotFoundException)
-				{
-					//throw;
+        public virtual T FindById<T>(object id)
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    return session.Load<T>(id);
+                }
+                catch (ObjectNotFoundException)
+                {
+                    //throw;
                     return default(T);
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform FindByPrimaryKey for " + typeof(T).Name, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform FindByPrimaryKey for " + typeof(T).Name, ex);
+                }
+            }
+        }
 
-		public virtual object Create(object instance)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					return session.Save(instance);
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Create for " + instance.GetType().Name, ex);
-				}
-			}
-		}
+        public virtual object Create(object instance)
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    return session.Save(instance);
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Create for " + instance.GetType().Name, ex);
+                }
+            }
+        }
 
-		public virtual void Delete(object instance)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					session.Delete(instance);
+        public virtual void Delete(object instance)
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    session.Delete(instance);
                     //session.Flush();
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Delete for " + instance.GetType().Name, ex);
-				}
-			}
-		}        
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Delete for " + instance.GetType().Name, ex);
+                }
+            }
+        }
 
-		public virtual void Update(object instance)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{                    
-					session.Update(instance);
+        public virtual void Update(object instance)
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    session.Update(instance);
                     //SaveOrUpdateCopy可以解决在hibernate中同一个session里面有了两个相同标识的错误
                     //a different object with the same identifier value was already associated with the session
                     //不知道有没有什么未知影响
                     //session.SaveOrUpdateCopy(instance);
-                    //session.Flush();
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Update for " + instance.GetType().Name, ex);
-				}
-			}
-		}
+                    session.Flush();
+                }
+                catch (NHibernate.StaleObjectStateException se)
+                {
+                    throw new BusinessErrorException("Common.StaleObjectStateException", se);
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Update for " + instance.GetType().Name, ex);
+                }
+            }
+        }
 
-		public virtual void DeleteAll(Type type)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					session.Delete(String.Format("from {0}", type.Name));
+        public virtual void DeleteAll(Type type)
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    session.Delete(String.Format("from {0}", type.Name));
                     //session.Flush();
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform DeleteAll for " + type.Name, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform DeleteAll for " + type.Name, ex);
+                }
+            }
+        }
 
-		public virtual void Save(object instance)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					session.SaveOrUpdate(instance);
+        public virtual void Save(object instance)
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    session.SaveOrUpdate(instance);
                     //session.Flush();
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Save for " + instance.GetType().Name, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Save for " + instance.GetType().Name, ex);
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
         #region INHDaoBase Members
 
@@ -385,58 +392,58 @@ namespace com.Sconit.Persistence
         }
 
         public virtual IList<T> FindAll<T>(ICriterion[] criterias)
-		{
+        {
             return FindAll<T>(criterias, null, int.MinValue, int.MinValue);
-		}
+        }
 
         public virtual IList<T> FindAll<T>(ICriterion[] criterias, int firstRow, int maxRows)
-		{
+        {
             return FindAll<T>(criterias, null, firstRow, maxRows);
-		}
+        }
 
         public virtual IList<T> FindAll<T>(ICriterion[] criterias, Order[] sortItems)
-		{
+        {
             return FindAll<T>(criterias, sortItems, int.MinValue, int.MinValue);
-		}
+        }
 
         public virtual IList<T> FindAll<T>(ICriterion[] criterias, Order[] sortItems, int firstRow, int maxRows)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					ICriteria criteria = session.CreateCriteria(typeof(T));
+        {
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    ICriteria criteria = session.CreateCriteria(typeof(T));
 
-					if (criterias != null)
-					{
-						foreach (ICriterion cond in criterias)
-							criteria.Add(cond);
-					}
+                    if (criterias != null)
+                    {
+                        foreach (ICriterion cond in criterias)
+                            criteria.Add(cond);
+                    }
 
-					if (sortItems != null)
-					{
-						foreach (Order order in sortItems)
-							criteria.AddOrder(order);
-					}
+                    if (sortItems != null)
+                    {
+                        foreach (Order order in sortItems)
+                            criteria.AddOrder(order);
+                    }
 
-					if (firstRow != int.MinValue) criteria.SetFirstResult(firstRow);
-					if (maxRows != int.MinValue) criteria.SetMaxResults(maxRows);
-					IList<T> result = criteria.List<T>();
-					if (result == null || result.Count == 0) return null;
+                    if (firstRow != int.MinValue) criteria.SetFirstResult(firstRow);
+                    if (maxRows != int.MinValue) criteria.SetMaxResults(maxRows);
+                    IList<T> result = criteria.List<T>();
+                    if (result == null || result.Count == 0) return null;
 
                     return result;
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform FindAll for " + typeof(T).Name, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform FindAll for " + typeof(T).Name, ex);
+                }
+            }
+        }
 
-		public virtual IList<T> FindAllWithCustomQuery<T>(string queryString)
-		{
+        public virtual IList<T> FindAllWithCustomQuery<T>(string queryString)
+        {
             return FindAllWithCustomQuery<T>(queryString, (object[])null, (IType[])null, int.MinValue, int.MinValue);
-		}
+        }
 
         public virtual IList<T> FindAllWithCustomQuery<T>(string queryString, object value)
         {
@@ -479,43 +486,43 @@ namespace com.Sconit.Persistence
         }
 
         public virtual IList<T> FindAllWithCustomQuery<T>(string queryString, object[] values, IType[] types, int firstRow, int maxRows)
-		{
-			if (queryString == null || queryString.Length == 0) throw new ArgumentNullException("queryString");
+        {
+            if (queryString == null || queryString.Length == 0) throw new ArgumentNullException("queryString");
             if (values != null && types != null && types.Length != values.Length) throw new ArgumentException("Length of values array must match length of types array");
 
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					IQuery query = session.CreateQuery(queryString);
-                    if (values != null) 
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    IQuery query = session.CreateQuery(queryString);
+                    if (values != null)
                     {
                         for (int i = 0; i < values.Length; i++)
                         {
-						    if (types != null && types[i] != null) 
+                            if (types != null && types[i] != null)
                             {
                                 query.SetParameter(i, values[i], types[i]);
-						    }
-						    else
+                            }
+                            else
                             {
                                 query.SetParameter(i, values[i]);
-						    }
-					    }
-				    }
+                            }
+                        }
+                    }
 
-					if (firstRow != int.MinValue) query.SetFirstResult(firstRow);
-					if (maxRows != int.MinValue) query.SetMaxResults(maxRows);
-					IList<T> result = query.List<T>();
-					if (result == null || result.Count == 0) return null;
+                    if (firstRow != int.MinValue) query.SetFirstResult(firstRow);
+                    if (maxRows != int.MinValue) query.SetMaxResults(maxRows);
+                    IList<T> result = query.List<T>();
+                    if (result == null || result.Count == 0) return null;
 
                     return result;
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Find for custom query : " + queryString, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Find for custom query : " + queryString, ex);
+                }
+            }
+        }
 
 
         public virtual IList<T> FindAllWithNamedQuery<T>(string namedQuery)
@@ -560,20 +567,20 @@ namespace com.Sconit.Persistence
 
         public virtual IList<T> FindAllWithNamedQuery<T>(string namedQuery, object[] values, int firstRow, int maxRows)
         {
-            return FindAllWithNamedQuery<T>(namedQuery, values, (IType[]) null , firstRow, maxRows);
+            return FindAllWithNamedQuery<T>(namedQuery, values, (IType[])null, firstRow, maxRows);
         }
 
         public virtual IList<T> FindAllWithNamedQuery<T>(string namedQuery, object[] values, IType[] types, int firstRow, int maxRows)
-		{
-			if (namedQuery == null || namedQuery.Length == 0) throw new ArgumentNullException("queryString");
+        {
+            if (namedQuery == null || namedQuery.Length == 0) throw new ArgumentNullException("queryString");
             if (values != null && types != null && types.Length != values.Length) throw new ArgumentException("Length of values array must match length of types array");
 
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					IQuery query = session.GetNamedQuery(namedQuery);
-					if (query == null) throw new ArgumentException("Cannot find named query", "namedQuery");
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    IQuery query = session.GetNamedQuery(namedQuery);
+                    if (query == null) throw new ArgumentException("Cannot find named query", "namedQuery");
                     if (values != null)
                     {
                         for (int i = 0; i < values.Length; i++)
@@ -589,19 +596,19 @@ namespace com.Sconit.Persistence
                         }
                     }
 
-					if (firstRow != int.MinValue) query.SetFirstResult(firstRow);
-					if (maxRows != int.MinValue) query.SetMaxResults(maxRows);
-					IList<T> result = query.List<T>();
-					if (result == null || result.Count == 0) return null;
+                    if (firstRow != int.MinValue) query.SetFirstResult(firstRow);
+                    if (maxRows != int.MinValue) query.SetMaxResults(maxRows);
+                    IList<T> result = query.List<T>();
+                    if (result == null || result.Count == 0) return null;
 
                     return result;
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Find for named query : " + namedQuery, ex);
-				}
-			}
-		}
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Find for named query : " + namedQuery, ex);
+                }
+            }
+        }
 
         public virtual IList<T> FindAllWithCustomQuery<T>(string namedQuery, IDictionary<string, object> param)
         {
@@ -670,51 +677,51 @@ namespace com.Sconit.Persistence
             }
         }
 
-		public void InitializeLazyProperties(object instance)
-		{
-			if (instance == null) throw new ArgumentNullException("instance");
+        public void InitializeLazyProperties(object instance)
+        {
+            if (instance == null) throw new ArgumentNullException("instance");
 
-			using (ISession session = GetSession())
-			{
-				foreach (object val in ReflectionUtil.GetPropertiesDictionary(instance).Values)
-				{
-					if (val is INHibernateProxy || val is IPersistentCollection)
-					{
-						if (!NHibernateUtil.IsInitialized(val))
-						{
-							session.Lock(instance, LockMode.None);
-							NHibernateUtil.Initialize(val);
-						}
-					}
-				}
-			}
-		}
+            using (ISession session = GetSession())
+            {
+                foreach (object val in ReflectionUtil.GetPropertiesDictionary(instance).Values)
+                {
+                    if (val is INHibernateProxy || val is IPersistentCollection)
+                    {
+                        if (!NHibernateUtil.IsInitialized(val))
+                        {
+                            session.Lock(instance, LockMode.None);
+                            NHibernateUtil.Initialize(val);
+                        }
+                    }
+                }
+            }
+        }
 
-		public void InitializeLazyProperty(object instance, string propertyName)
-		{
-			if (instance == null) throw new ArgumentNullException("instance");
-			if (propertyName == null || propertyName.Length == 0) throw new ArgumentNullException("collectionPropertyName");
+        public void InitializeLazyProperty(object instance, string propertyName)
+        {
+            if (instance == null) throw new ArgumentNullException("instance");
+            if (propertyName == null || propertyName.Length == 0) throw new ArgumentNullException("collectionPropertyName");
 
-			IDictionary properties = ReflectionUtil.GetPropertiesDictionary(instance);
-			if (! properties.Contains(propertyName))
-				throw new ArgumentOutOfRangeException("collectionPropertyName", "Property "
-					+ propertyName + " doest not exist for type "
-					+ instance.GetType().ToString() + ".");
+            IDictionary properties = ReflectionUtil.GetPropertiesDictionary(instance);
+            if (!properties.Contains(propertyName))
+                throw new ArgumentOutOfRangeException("collectionPropertyName", "Property "
+                    + propertyName + " doest not exist for type "
+                    + instance.GetType().ToString() + ".");
 
-			using (ISession session = GetSession())
-			{
-				object val = properties[propertyName];
+            using (ISession session = GetSession())
+            {
+                object val = properties[propertyName];
 
                 if (val is INHibernateProxy || val is IPersistentCollection)
-				{
-					if (!NHibernateUtil.IsInitialized(val))
-					{
-						session.Lock(instance, LockMode.None);
-						NHibernateUtil.Initialize(val);
-					}
-				}
-			}
-		}
+                {
+                    if (!NHibernateUtil.IsInitialized(val))
+                    {
+                        session.Lock(instance, LockMode.None);
+                        NHibernateUtil.Initialize(val);
+                    }
+                }
+            }
+        }
 
         public void FlushSession()
         {
@@ -732,16 +739,197 @@ namespace com.Sconit.Persistence
             }
         }
 
-		#endregion
+        #endregion
 
-		#region protected methods
+        #region FindWithSql
+        public IList<T> FindEntityWithNativeSql<T>(string sql)
+        {
+            return FindEntityWithNativeSql<T>(sql, (object[])null, (IType[])null);
+        }
+
+        public IList<T> FindEntityWithNativeSql<T>(string sql, object value)
+        {
+            return FindEntityWithNativeSql<T>(sql, new object[] { value }, (IType[])null);
+        }
+
+        public IList<T> FindEntityWithNativeSql<T>(string sql, object value, IType type)
+        {
+            return FindEntityWithNativeSql<T>(sql, new object[] { value }, new IType[] { type });
+
+        }
+
+        public IList<T> FindEntityWithNativeSql<T>(string sql, object[] values)
+        {
+            return FindEntityWithNativeSql<T>(sql, values, (IType[])null);
+        }
+
+        public IList<T> FindEntityWithNativeSql<T>(string sql, object[] values, IType[] types)
+        {
+            if (sql == null || sql.Length == 0) throw new ArgumentNullException("queryString");
+            if (values != null && types != null && types.Length != values.Length) throw new ArgumentException("Length of values array must match length of types array");
+
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    ISQLQuery query = session.CreateSQLQuery(sql).AddEntity(typeof(T));
+                    if (values != null)
+                    {
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            if (types != null && types[i] != null)
+                            {
+                                query.SetParameter(i, values[i], types[i]);
+                            }
+                            else
+                            {
+                                query.SetParameter(i, values[i]);
+                            }
+                        }
+                    }
+
+                    IList<T> result = query.List<T>();
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Find for custom query : " + sql, ex);
+                }
+            }
+        }
+
+        public IList FindAllWithNativeSql(string sql, object[] values, IType[] types)
+        {
+            if (sql == null || sql.Length == 0) throw new ArgumentNullException("queryString");
+            if (values != null && types != null && types.Length != values.Length) throw new ArgumentException("Length of values array must match length of types array");
+
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    ISQLQuery query = session.CreateSQLQuery(sql);
+                    if (values != null)
+                    {
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            if (types != null && types[i] != null)
+                            {
+                                query.SetParameter(i, values[i], types[i]);
+                            }
+                            else
+                            {
+                                query.SetParameter(i, values[i]);
+                            }
+                        }
+                    }
+
+                    IList result = query.List();
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Find for custom query : " + sql, ex);
+                }
+            }
+        }
+
+        public IList<T> FindAllWithNativeSql<T>(string sql)
+        {
+            return FindAllWithNativeSql<T>(sql, (object[])null, (IType[])null);
+        }
+
+        public IList<T> FindAllWithNativeSql<T>(string sql, object value)
+        {
+            return FindAllWithNativeSql<T>(sql, new object[] { value }, (IType[])null);
+        }
+
+        public IList<T> FindAllWithNativeSql<T>(string sql, object value, IType type)
+        {
+            return FindAllWithNativeSql<T>(sql, new object[] { value }, new IType[] { type });
+
+        }
+
+        public IList<T> FindAllWithNativeSql<T>(string sql, object[] values)
+        {
+            return FindAllWithNativeSql<T>(sql, values, (IType[])null);
+        }
+
+        public IList<T> FindAllWithNativeSql<T>(string sql, object[] values, IType[] types)
+        {
+            if (sql == null || sql.Length == 0) throw new ArgumentNullException("queryString");
+            if (values != null && types != null && types.Length != values.Length) throw new ArgumentException("Length of values array must match length of types array");
+
+            using (ISession session = GetSession())
+            {
+                try
+                {
+                    ISQLQuery query = session.CreateSQLQuery(sql);
+                    if (values != null)
+                    {
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            if (types != null && types[i] != null)
+                            {
+                                query.SetParameter(i, values[i], types[i]);
+                            }
+                            else
+                            {
+                                query.SetParameter(i, values[i]);
+                            }
+                        }
+                    }
+
+                    IList<T> result = query.List<T>();
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw new DataException("Could not perform Find for custom query : " + sql, ex);
+                }
+            }
+        }
+
+        public IList FindAllWithNativeSql(string sql)
+        {
+            return FindAllWithNativeSql(sql, (object[])null, (IType[])null);
+        }
+
+        public IList FindAllWithNativeSql(string sql, object value)
+        {
+            return FindAllWithNativeSql(sql, new object[] { value }, (IType[])null);
+        }
+
+        public IList FindAllWithNativeSql(string sql, object value, IType type)
+        {
+            return FindAllWithNativeSql(sql, new object[] { value }, new IType[] { type });
+
+        }
+
+        public IList FindAllWithNativeSql(string sql, object[] values)
+        {
+            return FindAllWithNativeSql(sql, values, (IType[])null);
+        }
+
+        #endregion
+        public void GetTableProperty(object entity, out string tableName, out Dictionary<string, string> propertyAndColumnNames)
+        {
+            using (ISession session = GetSession())
+            {
+                NHibernateHelper.GetTableProperty(session, entity, out tableName, out propertyAndColumnNames);
+            }
+        }
+      
+        #region protected methods
         public ISession GetSession()
-		{
-			if (sessionFactoryAlias == null || sessionFactoryAlias.Length == 0)
-				return sessionManager.OpenSession();
-			else
-				return sessionManager.OpenSession(sessionFactoryAlias);
-		}
-		#endregion	
+        {
+            if (sessionFactoryAlias == null || sessionFactoryAlias.Length == 0)
+                return sessionManager.OpenSession();
+            else
+                return sessionManager.OpenSession(sessionFactoryAlias);
+        }
+        #endregion
     }
 }

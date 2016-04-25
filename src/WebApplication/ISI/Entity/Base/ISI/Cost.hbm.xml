@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.Cost, com.Sconit.ISI" table="WFS_Cost" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <version name="Version" column="Version" type="Int32" />
+    <property name="TaskCode" column="TaskCode" type="String" length="50" />
+    <property name="TaskSubType" column="TaskSubType" type="String" length="50" />
+    <property name="TaskSubTypeDesc" column="TaskSubTypeDesc" type="String" length="50" />
+    <property name="ExtNo" column="ExtNo" type="String" length="200" />
+    <property name="BudgetDetId" column="BudgetDetId" type="Int32"  />
+    <property name="Account1" column="Account1" type="String" length="50" />
+    <property name="Account1Desc" column="Account1Desc" type="String" length="50" />
+    <property name="Account2" column="Account2" type="String" length="50" />
+    <property name="Account2Desc" column="Account2Desc" type="String" length="50" />
+    <property name="Desc1" column="Desc1" type="String" length="300" />
+    <property name="NoTaxAmount" column="NoTaxAmount" type="Decimal"  />
+    <property name="Taxes" column="Taxes" type="Decimal"  />
+    <property name="TotalAmount" column="TotalAmount" type="Decimal"  />
+    <property name="UserCode" column="UserCode" type="String" length="50" />
+    <property name="UserName" column="UserName" type="String" length="50" />
+    <property name="StartAddr" column="StartAddr" type="String" length="200" />
+    <property name="EndAddr" column="EndAddr" type="String" length="200" />
+    <property name="StartDate" column="StartDate" type="DateTime"  />
+    <property name="EndDate" column="EndDate" type="DateTime"  />
+    <property name="Allowance" column="Allowance" type="Decimal"  />
+    <property name="Fare" column="Fare" type="Decimal"  />
+    <property name="Quarterage" column="Quarterage" type="Decimal"  />
+    <property name="Haulage" column="Haulage" type="Decimal"  />
+    <property name="Item" column="Item" type="String" length="300" />
+    <property name="Uom" column="Uom" type="String" length="50" />
+    <property name="Qty" column="Qty" type="Decimal"  />
+    <property name="Vehicle" column="Vehicle" type="String" length="50" />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="LastModifyUserNm" column="LastModifyUserNm" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+  </class>
+</hibernate-mapping>

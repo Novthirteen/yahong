@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.Facility.Entity.RepairOrder, com.Sconit.Facility" table="Fac_RepairOrder" lazy="false">
+    <id name="OrderNo" column="OrderNo" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <property name="FCID" column="FCID" type="String" length="100" />
+    <property name="AssetNo" column="AssetNo" type="String" length="100" />
+    <property name="FCName" column="FCName" type="String" length="255" />
+    <property name="FaultDescription" column="FaultDescription" type="String" length="1000000" />
+    <property name="SubmitDept" column="SubmitDept" type="String" length="50" />
+    <property name="SubmitTime" column="SubmitTime" type="DateTime"/>
+    <property name="SubmitUser" column="SubmitUser" type="String" length="50" />
+    <property name="SubmitUserName" column="SubmitUserName" type="String" length="50" />
+    <property name="HaltStartTime" column="HaltStartTime" type="DateTime"/>
+    <property name="HaltEndTime" column="HaltEndTime" type="DateTime" />
+    <property name="RepairUser" column="RepairUser" type="String" length="1000000" />
+    <property name="RepairUserName" column="RepairUserName" type="String" length="1000000" />
+    <property name="OperateUser" column="OperateUser" type="String" length="50" />
+    <property name="OperateUserName" column="OperateUserName" type="String" length="50" />
+    <property name="RepairDescription" column="RepairDescription" type="String" length="1000000" />
+    <property name="HaltReason" column="HaltReason" type="String" length="1000000" />
+    <property name="Items" column="Items" type="String" length="1000000" />
+    <property name="RefOrderNo" column="RefOrderNo" type="String" length="1000000" />
+    <property name="Suggestion" column="Suggestion" type="String" length="1000000" />
+    <property name="SuggestionUser" column="SuggestionUser" type="String" length="50" />
+    <property name="SuggestionUserName" column="SuggestionUserName" type="String" length="50" />
+    <property name="Status" column="Status" type="String" length="50" />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="RepairStartTime" column="RepairStartTime" type="DateTime"  />
+    <property name="RepairEndTime" column="RepairEndTime" type="DateTime"  />
+    <property name="AcceptanceTime" column="AcceptanceTime" type="DateTime"  />
+  </class>
+</hibernate-mapping>
+
+

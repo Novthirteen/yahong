@@ -690,12 +690,14 @@ namespace Microsoft.ApplicationBlocks.Data
 
 			// Create a command and prepare it for execution
 			SqlCommand cmd = new SqlCommand();
+            cmd.CommandTimeout = 300;
 			bool mustCloseConnection = false;
 			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection );
     			
 			// Create the DataAdapter & DataSet
 			using( SqlDataAdapter da = new SqlDataAdapter(cmd) )
 			{
+
 				DataSet ds = new DataSet();
 
 				// Fill the DataSet using default values for DataTable names, etc

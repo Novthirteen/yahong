@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.WorkDet, com.Sconit.ISI" table="ISI_WorkDet" lazy="false">
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <property name="TaskSubType" column="TaskSubType" type="String" length="50" />
+    <property name="TaskCode" column="TaskCode" type="String" length="50" />
+    <property name="TaskApplyId" column="TaskApplyId" type="Int32"  />
+    <property name="UOM" column="UOM" type="String" length="50" />
+    <property name="Type" column="Type" type="String" length="50" />
+    <property name="Qty" column="Qty" type="Decimal"  />
+    <property name="Apply" column="Apply" type="String" length="50" />
+    <property name="UserCode" column="UserCode" type="String" length="50" />
+    <property name="UserNm" column="UserNm" type="String" length="50" />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="CreateUserNm" column="CreateUserNm" type="String" length="50" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="ApproveUserNm" column="ApproveUserNm" type="String" length="50" />
+    <property name="ApproveUser" column="ApproveUser" type="String" length="50" />
+    <property name="ApproveDate" column="ApproveDate" type="DateTime"  />
+  </class>
+</hibernate-mapping>

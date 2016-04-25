@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.ResMatrix, com.Sconit.ISI" table="ISI_ResMatrix" lazy="false" dynamic-update="true" dynamic-insert="true" >
+    <id name="Id" column="Id" type="Int32" unsaved-value="0" >
+      <generator class="identity" />
+    </id>
+    <property name="WorkShop" column="WorkShop" type="String" length="50" />
+    <property name="Operate" column="Operate" type="Int32" />
+    <property name="Seq" column="Seq" type="Int32" />
+    <property name="Role" column="Role" type="String" length="50" />
+    <property name="Responsibility" column="Responsibility" type="String" length="4000" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="NeedPatrol" column="NeedPatrol" type="Boolean"  />
+    <property name="TimePeriodType" column="TimePeriodType" type="String" length="50" />
+    <property name="NextPatrolTime" column="NextPatrolTime" type="DateTime"  />
+    <property name="TaskSubType" column="TaskSubType" type="String" length="50" />
+    <property name="IsIndependentTask" column="IsIndependentTask" type="Boolean"  />
+  </class>
+</hibernate-mapping>

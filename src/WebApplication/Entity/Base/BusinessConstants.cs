@@ -663,6 +663,40 @@ namespace com.Sconit.Entity
         public static readonly string EMAIL_SEPRATOR = "<br>";
         public static readonly char[] ISI_SEPRATOR = new char[] { '|', ';', '£ª', ',', '£¨', ' ' };
         public static readonly string ENTITY_PREFERENCE_WEBADDRESS = "WebAddress";
+
+
+
+        #region …Ë ©«®“∆
+        public static readonly string CODE_PREFIX_ISSUE = "ISS";
+
+        public static readonly string CODE_MASTER_ISSUE_STATUS = "IssueStatus";
+        public static readonly string CODE_MASTER_ISSUE_STATUS_VALUE_CREATE = "Create";
+        public static readonly string CODE_MASTER_ISSUE_STATUS_VALUE_SUBMIT = "Submit";
+        public static readonly string CODE_MASTER_ISSUE_STATUS_VALUE_CANCEL = "Cancel";
+        public static readonly string CODE_MASTER_ISSUE_STATUS_VALUE_INPROCESS = "In-Process";
+        public static readonly string CODE_MASTER_ISSUE_STATUS_VALUE_COMPLETE = "Complete";
+        public static readonly string CODE_MASTER_ISSUE_STATUS_VALUE_CLOSE = "Close";
+        public static readonly string CODE_MASTER_SEND_TYPE = "SendType";
+        public static readonly string CODE_MASTER_SEND_TYPE_MAIL_SMS = "Mail&SMS";
+        public static readonly string CODE_MASTER_SEND_TYPE_MAIL = "Mail";
+        public static readonly string CODE_MASTER_SEND_TYPE_SMS = "SMS";
+        public static readonly string CODE_MASTER_SEND_STATUS = "SendStatus";
+        public static readonly string CODE_MASTER_SEND_STATUS_SUCCESS = "Success";
+        public static readonly string CODE_MASTER_SEND_STATUS_FAIL = "Fail";
+        public static readonly string CODE_MASTER_SEND_STATUS_NOTSEND = "NotSend";
+        public static readonly string CODE_MASTER_ISSUE_PRIORITY = "IssuePriority";
+        public static readonly string CODE_MASTER_ISSUE_PRIORITY_NORMAL = "Normal";
+        public static readonly string CODE_MASTER_ISSUE_PRIORITY_URGENT = "Urgent";
+
+
+        public static readonly string PERMISSION_PAGE_VALUE_INVREP = "InvRep";
+        public static readonly string PERMISSION_PAGE_VALUE_INVIOBREP = "InvIOBRep";
+        public static readonly string PERMISSION_PAGE_VALUE_LOADINGSTATISTICSREP = "LoadingStatisticsRep";
+
+        public static readonly string CODE_MASTER_ORDER_RWO_TYPE = "RwoType";
+        public static readonly string CODE_MASTER_ORDER_RWO_TYPE_VALUE_ONLINE = "Online";
+        public static readonly string CODE_MASTER_ORDER_RWO_TYPE_VALUE_INSP = "Insp";
+        #endregion
     }
 }
 

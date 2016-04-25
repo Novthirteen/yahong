@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <class name="com.Sconit.ISI.Entity.Evaluation, com.Sconit.ISI" table="ISI_Evaluation" lazy="false">
+    <id name="UserCode" column="UserCode" type="String" unsaved-value="null" >
+      <generator class="assigned" />
+    </id>
+    <version name="Version" column="Version" type="Int32" />
+    <property name="UserName" column="UserName" type="String" length="50" />
+    <property name="StandardQty" column="StandardQty" type="Int32"  />
+    <property name="Amount" column="Amount" type="Decimal"  />
+    <property name="IsActive" column="IsActive" type="Boolean"  />
+    <property name="IsCheckup" column="IsCheckup" type="Boolean"  />
+    <property name="CreateUser" column="CreateUser" type="String" length="50" />
+    <property name="CreateUserNm" column="CreateUserNm" type="String" length="50" />
+    <property name="CreateDate" column="CreateDate" type="DateTime"  />
+    <property name="LastModifyUser" column="LastModifyUser" type="String" length="50" />
+    <property name="LastModifyUserNm" column="LastModifyUserNm" type="String" length="50" />
+    <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />
+  </class>
+</hibernate-mapping>

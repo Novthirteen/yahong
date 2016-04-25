@@ -117,6 +117,50 @@ namespace com.Sconit.Utility
             return GetShowFileUrl(zipName, true);
         }
 
+
+        public static string WriteToLocalZip(String fileName, string path, IWorkbook workbook)
+        {
+            string tempPath = string.Empty;
+            tempPath = GetTempDirectory();
+
+            string tempFileName = GetRandomFileName(fileName, true);
+            string zipName = tempFileName.Substring(0, tempFileName.LastIndexOf(".")) + ".zip";
+            WriteToFile(tempFileName, workbook, tempPath);
+            using (ZipFile zip = new ZipFile(path + zipName, Encoding.UTF8))
+            {
+                //加密压缩
+                //zip.Password = "123456";
+                //将要压缩的文件夹添加到zip对象中去(要压缩的文件夹路径和名称)  
+                //zip.AddDirectory(@"E:\\temp");
+                //将要压缩的文件添加到zip对象中去,如果文件不存在抛错FileNotFoundExcept  
+                zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
+                zip.AddFile(tempPath + tempFileName, string.Empty);
+                zip.Save();
+            }
+
+            return string.IsNullOrEmpty(path) ? GetShowFileUrl(zipName, true) : path + zipName;
+        }
+
+        public static string WriteToLocalZip(String fileNameZip, string path, IList<String> fileNameList)
+        {
+            using (ZipFile zip = new ZipFile(path + fileNameZip, Encoding.UTF8))
+            {
+                foreach (var fileName in fileNameList)
+                {
+                    //加密压缩
+                    //zip.Password = "123456";
+                    //将要压缩的文件夹添加到zip对象中去(要压缩的文件夹路径和名称)  
+                    //zip.AddDirectory(@"E:\\temp");
+                    //将要压缩的文件添加到zip对象中去,如果文件不存在抛错FileNotFoundExcept  
+                    zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
+                    zip.AddFile(fileName, string.Empty);
+                    zip.Save();
+                }
+            }
+
+            return string.IsNullOrEmpty(path) ? GetShowFileUrl(fileNameZip, true) : path + fileNameZip;
+        }
+
         public static void WriteToFile(String tempFileName, IWorkbook workbook, string tempFilePath)
         {
             if (!Directory.Exists(tempFilePath))
@@ -369,6 +413,21 @@ namespace com.Sconit.Utility
         public static void SetRowCell(ISheet sheet, int rownum, int colnum, string value, IComment comment)
         {
             SetRowCell(sheet, rownum, colnum, value, comment, null);
+        }
+
+        public static void SetRowCell(ISheet sheet, int rownum, int colnum, decimal? value, string format)
+        {
+            if (value.HasValue)
+            {
+                SetRowCell(sheet, rownum, colnum, value.Value);
+            }
+        }
+        public static void SetRowCell(ISheet sheet, int rownum, int colnum, decimal value, string format)
+        {
+            if (value != 0 || format == "P")
+            {
+                SetRowCell(sheet, rownum, colnum, value.ToString(format), null, null);
+            }
         }
 
         /**
