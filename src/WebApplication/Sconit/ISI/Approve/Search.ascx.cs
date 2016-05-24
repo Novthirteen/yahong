@@ -64,20 +64,7 @@ public partial class ISI_Approve_Search : SearchModuleBase
     {
         if (ExportEvent != null)
         {
-            object[] param = this.CollectParam(false);
-            if (param != null)
-            {
-                this.IsExport = true;
-                ExportEvent(param, null);
-            }
-        }
-    }
-
-    protected void btnExportSummary_Click(object sender, EventArgs e)
-    {
-        if (ExportEvent != null)
-        {
-            object[] param = this.CollectParam(true);
+            object[] param = this.CollectParam();
             if (param != null)
             {
                 this.IsExport = true;
@@ -119,13 +106,13 @@ public partial class ISI_Approve_Search : SearchModuleBase
     {
         if (SearchEvent != null)
         {
-            object[] param = CollectParam(null);
+            object[] param = CollectParam();
             if (param != null)
                 SearchEvent(param, null);
         }
     }
 
-    public object[] CollectParam(bool? isSummary)
+    public object[] CollectParam()
     {
         #region org
         IList<string> orgList = new List<string>();
@@ -167,7 +154,7 @@ public partial class ISI_Approve_Search : SearchModuleBase
         }
 
         #endregion
-        return new object[] { orgList, checkupProject, checkupUser, createUser, type, startTime, endTime, statusList, isSummary };
+        return new object[] { orgList, checkupProject, checkupUser, createUser, type, startTime, endTime, statusList };
 
     }
 

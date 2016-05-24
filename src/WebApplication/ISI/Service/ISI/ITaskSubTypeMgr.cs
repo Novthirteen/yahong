@@ -10,9 +10,7 @@ namespace com.Sconit.ISI.Service
     public interface ITaskSubTypeMgr : ITaskSubTypeBaseMgr
     {
         #region Customized Methods
-        IList<TaskSubType> GetCostCenter();
-        IList<TaskSubType> GetCostCenter(bool? isActive);
-        string GetCostCenter(string taskCode, string costCenter);
+
         IList<TaskSubType> GetCacheAllTaskSubType();
 
         IList<TaskSubType> GetTaskSubType(string userCode);
@@ -26,7 +24,7 @@ namespace com.Sconit.ISI.Service
         IList<TaskSubType> GetTaskSubType(string type, string userCode, bool includeInactive);
 
         IList<TaskSubType> GetPublicTaskSubType(string type, string userCode);
-        IList<TaskSubType> GetProjectTaskSubType();
+
         IList<TaskSubType> GetProjectTaskSubType(string type, string userCode, bool isProjectImportCheck);
 
         IList<TaskSubType> GetWFSTaskSubType();
@@ -42,7 +40,7 @@ namespace com.Sconit.ISI.Service
 
         IList<TaskSubType> GetTaskSubTypeNotCode(string code);
 
-        IList<TaskSubType> GetCostCenter2();
+        IList<TaskSubType> GetCostCenter();
 
         #endregion Customized Methods
     }

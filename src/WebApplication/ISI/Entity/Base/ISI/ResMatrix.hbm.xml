@@ -8,7 +8,7 @@
     <property name="Operate" column="Operate" type="Int32" />
     <property name="Seq" column="Seq" type="Int32" />
     <property name="Role" column="Role" type="String" length="50" />
-    <property name="Responsibility" column="Responsibility" type="String" length="4000" />
+    <property name="Responsibility" column="Responsibility" type="String" length="1000" />
     <property name="CreateDate" column="CreateDate" type="DateTime"  />
     <property name="CreateUser" column="CreateUser" type="String" length="50" />
     <property name="LastModifyDate" column="LastModifyDate" type="DateTime"  />

@@ -9,9 +9,7 @@
     <property name="UserCode" column="UserCode" type="String" length="50" />
     <property name="Status" column="Status" type="String" length="10" />
     <property name="Company" column="Company" type="String" length="50" />
-    <property name="Department" column="Department" type="String" length="50"/>
     <property name="Dept2" column="Dept2" type="String" length="50" />
-    <property name="Position" column="Position" type="String" length="20" />
     <property name="JobNo" column="JobNo" type="String" length="10"/>
     <property name="Desc" column="Desc_" type="String" length="6000" />    
     <property name="Date" column="Date" type="DateTime" />

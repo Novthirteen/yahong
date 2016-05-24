@@ -56,7 +56,8 @@ namespace com.Sconit.ISI.Service.Report.Impl
                         || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN
                         || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE
                         || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL
-                        || !task.TaskSubType.IsPrint)
+                        || !task.TaskSubType.IsPrint
+                        || !task.IsApply)
                 {
                     return false;
                 }
@@ -67,87 +68,38 @@ namespace com.Sconit.ISI.Service.Report.Impl
                 int rowIndex = 1;
 
                 this.SetRowCell(pageIndex, rowIndex, 1, task.SubmitUserNm);
-                this.SetRowCell(pageIndex, rowIndex, 3, task.CostCenter);
-                
+                if (task.CostCenter != null)
+                {
+                    this.SetRowCell(pageIndex, rowIndex, 3, task.CostCenter.Description);
+                }
                 this.SetRowCell(pageIndex, rowIndex++, 5, task.SubmitDate.Value.ToString("yyyy-MM-dd"));
                 this.SetRowCell(pageIndex, rowIndex, 1, task.Code);
                 this.SetRowCell(pageIndex, rowIndex, 3, languageMgrE.ProcessLanguage("${ISI.Status." + task.Status + "}", BusinessConstants.CODE_MASTER_LANGUAGE_VALUE_ZH_CN));
                 rowIndex++;
-                if (task.IsApply)
+                var taskApplyList = taskApplyMgrE.GetTaskApply(task.Code);
+
+                //附件张数
+                var apply = taskApplyList.Where(ta => ta.Desc1 == "附件张数").FirstOrDefault();
+                if (apply != null && apply.Qty.HasValue)
                 {
-                    var taskApplyList = taskApplyMgrE.GetTaskApply(task.Code);
-
-                    //附件张数
-                    var apply = taskApplyList.Where(ta => ta.Desc1 == "附件张数").FirstOrDefault();
-                    if (apply != null && apply.Qty.HasValue)
-                    {
-                        this.SetRowCell(pageIndex, rowIndex, 2, apply.Desc1);
-                        this.SetRowCell(pageIndex, rowIndex, 3, apply.Qty.Value.ToString("0.########"));
-                        taskApplyList.Remove(apply);
-                    }
-
-                    //金额
-                    apply = taskApplyList.Where(ta => ta.Apply == ISIConstants.APPLY_AMOUNT).FirstOrDefault();
-                    if (apply != null && apply.Qty.HasValue)
-                    {
-                        this.SetRowCell(pageIndex, rowIndex, 1, apply.Desc1);
-                        this.SetRowCell(pageIndex, rowIndex + 1, 1, apply.GetValue());
-                        taskApplyList.Remove(apply);
-                    }
-
-                    //公司
-                    apply = taskApplyList.Where(ta => ta.Apply == ISIConstants.APPLY_STRING).FirstOrDefault();
-                    if (apply != null && !string.IsNullOrEmpty(apply.Desc1))
-                    {
-                        this.SetRowCell(pageIndex, rowIndex, 1, apply.Desc1);
-                        taskApplyList.Remove(apply);
-                    }
-                }
-                if (task.Voucher.HasValue && task.Voucher.Value != 0)
-                {
-                    this.SetRowCell(pageIndex, rowIndex, 3, task.Voucher.Value.ToString());
+                    this.SetRowCell(pageIndex, rowIndex, 2, apply.Desc1);
+                    this.SetRowCell(pageIndex, rowIndex, 3, apply.Qty.Value.ToString("0.########"));
+                    taskApplyList.Remove(apply);
                 }
 
-                if (task.Amount.HasValue && task.Amount.Value != 0)
+                //金额
+                apply = taskApplyList.Where(ta => ta.Apply == ISIConstants.APPLY_AMOUNT).FirstOrDefault();
+                if (apply != null && apply.Qty.HasValue)
                 {
-                    this.SetRowCell(pageIndex, rowIndex + 1, 1, ISIUtil.ToMoneyString(task.Amount));
+                    this.SetRowCell(pageIndex, rowIndex, 1, apply.Desc1);
+                    this.SetRowCell(pageIndex, rowIndex + 1, 1, apply.GetValue());
+                    taskApplyList.Remove(apply);
                 }
 
                 //描述与申请项
                 StringBuilder desc = new StringBuilder();
-                if (!string.IsNullOrEmpty(task.CostCenter))
-                {
-                    if (desc.Length > 0)
-                    {
-                        desc.Append(ISIConstants.TEXT_SEPRATOR);
-                    }
-                    desc.Append("成本中心：");
-                    desc.Append(task.CostCenter);
-                }
-                if (!string.IsNullOrEmpty(task.Account1Name))
-                {
-                    if (desc.Length > 0)
-                    {
-                        desc.Append(ISIConstants.TEXT_SEPRATOR);
-                    }
-                    desc.Append("一级科目：");
-                    desc.Append(task.Account1Name);
-                }
-                if (!string.IsNullOrEmpty(task.Account2Name))
-                {
-                    if (desc.Length > 0)
-                    {
-                        desc.Append(ISIConstants.TEXT_SEPRATOR);
-                    }
-                    desc.Append("二级科目：");
-                    desc.Append(task.Account2Name);
-                }
                 if (!string.IsNullOrEmpty(task.Desc1))
                 {
-                    if (desc.Length > 0)
-                    {
-                        desc.Append(ISIConstants.TEXT_SEPRATOR);
-                    }
                     desc.Append(task.Desc1.Trim());
                 }
                 if (!string.IsNullOrEmpty(task.Desc2))

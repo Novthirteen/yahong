@@ -41,81 +41,6 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
             ViewState["Desc"] = value;
         }
     }
-    public DateTime? StartDate
-    {
-        get
-        {
-            return (DateTime?)ViewState["StartDate"];
-        }
-        set
-        {
-            ViewState["StartDate"] = value;
-        }
-    }
-    public DateTime? EndDate
-    {
-        get
-        {
-            return (DateTime?)ViewState["EndDate"];
-        }
-        set
-        {
-            ViewState["EndDate"] = value;
-        }
-    }
-    /// <summary>
-    /// 本周周一
-    /// </summary>
-    public DateTime Monday
-    {
-        get
-        {
-            return ViewState["Monday"] != null ? (DateTime)ViewState["Monday"] : ISIUtil.GetMondayDate();
-        }
-        set
-        {
-            ViewState["Monday"] = value;
-        }
-    }
-    /// <summary>
-    /// 上周周一
-    /// </summary>
-    public DateTime LastMonday
-    {
-        get
-        {
-            return ViewState["LastMonday"] != null ? (DateTime)ViewState["LastMonday"] : Monday.AddDays(-7);
-        }
-        set
-        {
-            ViewState["LastMonday"] = value;
-        }
-    }
-    /// <summary>
-    /// 上周周一
-    /// </summary>
-    public DateTime LastLastMonday
-    {
-        get
-        {
-            return ViewState["LastLastMonday"] != null ? (DateTime)ViewState["LastLastMonday"] : LastMonday.AddDays(-7);
-        }
-        set
-        {
-            ViewState["LastLastMonday"] = value;
-        }
-    }
-    public bool IsStatus
-    {
-        get
-        {
-            return ViewState["IsStatus"] == null ? false : (bool)ViewState["IsStatus"];
-        }
-        set
-        {
-            ViewState["IsStatus"] = value;
-        }
-    }
     public bool IsHighlight
     {
         get
@@ -284,100 +209,7 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
 
     protected void GV_List_DataBound(object sender, EventArgs e)
     {
-        var gridView = (System.Web.UI.WebControls.GridView)sender;
-        IList<string> taskCodeApplyList = new List<string>();
-        IList<string> taskCodeList = new List<string>();
-        foreach (GridViewRow row in gridView.Rows)
-        {
-            HiddenField hfIsApply = (HiddenField)row.FindControl("hfIsApply");
-            Label lblCode = (Label)row.FindControl("lblCode");
-            if (hfIsApply != null && bool.Parse(hfIsApply.Value))
-            {
-                taskCodeApplyList.Add(lblCode.Text);
-            }
-            taskCodeList.Add(lblCode.Text);
-        }
 
-        if (IsStatus)
-        {
-            gridView.Columns[0].HeaderStyle.Width = new Unit(4, UnitType.Percentage);
-            gridView.Columns[0].ItemStyle.Width = new Unit(4, UnitType.Percentage);
-            gridView.Columns[1].HeaderStyle.Width = new Unit(14, UnitType.Percentage);
-            gridView.Columns[1].ItemStyle.Width = new Unit(14, UnitType.Percentage);
-            gridView.Columns[5].HeaderStyle.Width = new Unit(2, UnitType.Percentage);
-            gridView.Columns[5].ItemStyle.Width = new Unit(2, UnitType.Percentage);
-            gridView.Columns[6].HeaderStyle.Width = new Unit(62, UnitType.Percentage);
-            gridView.Columns[6].ItemStyle.Width = new Unit(62, UnitType.Percentage);
-            gridView.Columns[8].HeaderStyle.Width = new Unit(18, UnitType.Percentage);
-            gridView.Columns[8].ItemStyle.Width = new Unit(18, UnitType.Percentage);
-            gridView.Columns[2].Visible = false;
-            gridView.Columns[3].Visible = false;
-            gridView.Columns[4].Visible = false;
-            gridView.Columns[7].Visible = false;
-        }
-
-        IDictionary<string, IList<object>> taskStatusDic = null;
-        IDictionary<string, IList<object>> commentDic = null;
-        IDictionary<string, IList<object>> attachmentDetailDic = null;
-        if (taskCodeList.Count > 0)
-        {
-            //进展
-            taskStatusDic = this.TheTaskStatusMgr.GetTaskStatus(taskCodeList, Monday, LastMonday, LastLastMonday);
-
-            //评论
-            commentDic = this.TheCommentDetailMgr.GetComment(taskCodeList, Monday, LastMonday, LastLastMonday);
-
-            //附件
-            attachmentDetailDic = this.TheAttachmentDetailMgr.GetAttachmentDetail(taskCodeList, Monday, LastMonday, LastLastMonday);
-        }
-
-        IList<TaskApply> taskApplyList = null;
-        if (taskCodeApplyList.Count > 0)
-        {
-            taskApplyList = this.TheTaskApplyMgr.GetTaskApply(taskCodeApplyList);
-        }
-
-        if (taskApplyList != null && taskApplyList.Count > 0 || taskStatusDic != null && taskStatusDic.Count > 0 || commentDic != null && commentDic.Count > 0 || attachmentDetailDic != null && attachmentDetailDic.Count > 0)
-        {
-            foreach (GridViewRow row in gridView.Rows)
-            {
-
-                Label lblCode = (Label)row.FindControl("lblCode");
-
-                if (attachmentDetailDic != null && attachmentDetailDic.Count > 0 && attachmentDetailDic.Keys.Contains(lblCode.Text))
-                {
-                    GetAttachmentDesc(attachmentDetailDic[lblCode.Text], row);
-                }
-
-                if (taskStatusDic != null && taskStatusDic.Count > 0 && taskStatusDic.Keys.Contains(lblCode.Text))
-                {
-                    Label lblStatusDesc = (Label)row.FindControl("lblStatusDesc");
-                    GetStatusDesc(taskStatusDic[lblCode.Text], lblStatusDesc);
-                }
-
-                if (commentDic != null && commentDic.Count > 0 && commentDic.Keys.Contains(lblCode.Text))
-                {
-                    Label lblComment = ((Label)row.FindControl("lblComment"));
-                    GetCommentDesc(commentDic[lblCode.Text], lblComment);
-                }
-
-                if (taskApplyList != null && taskApplyList.Count > 0)
-                {
-                    var thisRowTaskApplyList = taskApplyList.Where(t => t.TaskCode == lblCode.Text).ToList();
-                    if (thisRowTaskApplyList != null && thisRowTaskApplyList.Count > 0)
-                    {
-                        StringBuilder descBufer = new StringBuilder();
-                        this.TheTaskApplyMgr.OutputApply(descBufer, thisRowTaskApplyList, this.CurrentUser.UserLanguage);
-                        Label lblDesc = (Label)row.FindControl("lblDesc");
-                        if (lblDesc.Text.Length > 0)
-                        {
-                            lblDesc.Text += ISIConstants.EMAIL_SEPRATOR;
-                        }
-                        lblDesc.Text += descBufer.ToString();
-                    }
-                }
-            }
-        }
     }
 
     private void SetStartedUser(TaskStatusView task, Label lblStartedUser, TableCell cell)
@@ -540,10 +372,10 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
             {
                 //e.Row.Cells[0].ForeColor = System.Drawing.Color.Red;
                 //e.Row.Cells[0].ToolTip = task.Priority;
-                ((Label)e.Row.FindControl("lblCode")).ForeColor = System.Drawing.Color.Red;
-                ((Label)e.Row.FindControl("lblCode")).ToolTip = task.Priority;
+                ((LinkButton)e.Row.FindControl("lbtnEdit")).ForeColor = System.Drawing.Color.Red;
+                ((LinkButton)e.Row.FindControl("lbtnEdit")).ToolTip = task.Priority;
             }
-            //((Label)e.Row.FindControl("lblCode")).Text = ISIUtil.SetHighlight(task.TaskCode, this.IsHighlight, this.Desc);
+            //((LinkButton)e.Row.FindControl("lbtnEdit")).Text = ISIUtil.SetHighlight(task.TaskCode, this.IsHighlight, this.Desc);
             StringBuilder desc = new StringBuilder();
             if (!string.IsNullOrEmpty(task.Desc1))
             {
@@ -573,7 +405,34 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
                 ((Label)e.Row.FindControl("lblExpectedResults")).Text = ISIUtil.SetHighlight(task.ExpectedResults, this.IsHighlight, this.Desc);
             }
             Label lblStatusDesc = (Label)e.Row.FindControl("lblStatusDesc");
+            if (!string.IsNullOrEmpty(task.StatusDesc))
+            {
+                lblStatusDesc.Text = GetStatusDesc(task);
+                if (task.StatusCount.HasValue && task.StatusCount.Value > 1)
+                {
+                    var taskStatus = this.TheTaskStatusMgr.GetTaskStatus(task.TaskCode, 0, task.CurrentStatusCount.HasValue && task.CurrentStatusCount.Value > 4 ? task.CurrentStatusCount.Value : 4);
+                    e.Row.Cells[6].Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
+                    e.Row.Cells[6].Attributes.Add("onmouseout", "this.style.backgroundColor=e");
+                    e.Row.Cells[6].Attributes.Add("title", GetTaskStatus(taskStatus, task.CurrentStatusCount.HasValue ? task.CurrentStatusCount.Value : 0));
+                }
+            }
+            else if (task.StatusDate.HasValue)
+            {
+                lblStatusDesc.Text = "<span style='color:#0000E5;'>" + task.StatusDate.Value.ToString("yyyy-MM-dd HH:mm") + "</span>";
+            }
 
+            if (!string.IsNullOrEmpty(task.Comment) && task.CommentCreateDate.HasValue)
+            {
+                ((Label)e.Row.FindControl("lblComment")).Text = GetCommentDesc(task);
+
+                if (task.CommentCount.HasValue && task.CommentCount.Value > 1)
+                {
+                    var comments = this.TheCommentDetailMgr.GetComment(task.TaskCode, 0, task.CurrentCommentCount.HasValue && task.CurrentCommentCount.Value > 6 ? task.CurrentCommentCount.Value : 6);
+                    ((Label)e.Row.FindControl("lblComment")).Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
+                    ((Label)e.Row.FindControl("lblComment")).Attributes.Add("onmouseout", "this.style.backgroundColor=e");
+                    ((Label)e.Row.FindControl("lblComment")).Attributes.Add("title", GetComments(comments, task.CurrentCommentCount.HasValue ? task.CurrentCommentCount.Value : 0));
+                }
+            }
             if (task.SubmitDate.HasValue)
             {
                 e.Row.Cells[3].ToolTip = task.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm");
@@ -586,67 +445,34 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
             {
                 e.Row.Cells[4].ToolTip = task.AssignDate.Value.ToString("yyyy-MM-dd HH:mm");
             }
-        }
-    }
+            
 
-    private void GetAttachmentDesc(IList<object> ojbectList, GridViewRow row)
-    {
-
-        StringBuilder html = new StringBuilder();
-        if (ojbectList != null && ojbectList.Count > 0)
-        {
-            IList<IList<AttachmentDetail>> attachmentDetailListList = (IList<IList<AttachmentDetail>>)ojbectList[0];
-            int currentAttachmentDetailCount = (int)ojbectList[1];
-            int attachmentDetailCount = (int)ojbectList[2];
-            if (attachmentDetailListList != null && attachmentDetailListList.Count > 0)
+            #region 按钮
+            bool isISIAdmin = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN);
+            bool isTaskFlowAdmin = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN);
+            bool isCloser = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_CLOSE);
+            bool isAssigner = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ASSIGN);
+            if ((task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS
+                                        && this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code))
+                            || (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE
+                                        && (this.TheTaskMgr.HasPermissionByComplete(task.Status, task.Type, task.CreateUser, task.SubmitUser, task.StartedUser,
+                                                                                      task.ECUser, task.TaskSubTypeAssignUser,
+                                                                                      task.AssignUpUser, task.CloseUpUser, task.CloseUpLevel,
+                                                                                        isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code)
+                                                                || ISIUtil.Contains(task.StartedUser, this.CurrentUser.Code)
+                                                                || task.CreateUser == this.CurrentUser.Code
+                                                                || task.SubmitUser == this.CurrentUser.Code)))
             {
-                IList<AttachmentDetail> attachmentDetailList = null;
-                IList<AttachmentDetail> attachmentDetailTipList = null;
-
-                if (attachmentDetailListList.Count > 0)
-                {
-                    attachmentDetailList = attachmentDetailListList[0];
-                }
-                if (attachmentDetailListList.Count > 1)
-                {
-                    attachmentDetailTipList = attachmentDetailListList[1];
-                }
-
-                /*
-                if (!downLoadDiv.Visible)
-                {
-                    attachmentDetailList = attachmentDetailList.Where(file => file.CreateUser == this.CurrentUser.Code).ToList();
-                    if (attachmentDetailList == null || attachmentDetailList.Count == 0)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        downLoadDiv.Visible = true;
-                    }
-                }
-                */
-                for (int i = 0; i < attachmentDetailList.Count; i++)
-                {
-                    if (i == 10) break;
-                    LinkButton lbtnDownLoad = (LinkButton)row.FindControl("lbtnDownLoad" + (i + 1));
-                    lbtnDownLoad.CommandArgument = "{" + attachmentDetailList[i].FileName + "}{" + attachmentDetailList[i].ContentType + "}{" + attachmentDetailList[i].Path + "}";
-                    lbtnDownLoad.Text = GetAttachmentDesc(attachmentDetailList[i].FileName, this.Desc, i < currentAttachmentDetailCount, currentAttachmentDetailCount, attachmentDetailCount, i == 0, i == attachmentDetailList.Count - 1);
-                    lbtnDownLoad.Visible = true;
-                }
-                if (attachmentDetailTipList != null && attachmentDetailTipList.Count > 0)
-                {
-                    string title = GetAttachments(attachmentDetailTipList, currentAttachmentDetailCount);
-                    System.Web.UI.HtmlControls.HtmlContainerControl downLoadDiv = (System.Web.UI.HtmlControls.HtmlContainerControl)row.FindControl("downLoadDiv");
-                    downLoadDiv.Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
-                    downLoadDiv.Attributes.Add("onmouseout", "this.style.backgroundColor=e");
-                    downLoadDiv.Attributes.Add("title", title);
-                }
+                var statusDiv = (System.Web.UI.HtmlControls.HtmlGenericControl)(e.Row.FindControl("statusDiv"));
+                //<a onclick="javascript:ShowStatus('<%# DataBinder.Eval(Container.DataItem, "Code")%>',<%# Container.DisplayIndex %>,<%# DataBinder.Eval(Container.DataItem, "CurrentStatusCount1")%>,<%# DataBinder.Eval(Container.DataItem, "StatusCount1")%>,'<%# DataBinder.Eval(Container.DataItem, "Flag")%>','<%# DataBinder.Eval(Container.DataItem, "Color")%>');" id="lnkStatus<%# DataBinder.Eval(Container.DataItem, "Code") %>" name="lnkStatus<%# DataBinder.Eval(Container.DataItem, "Code") %>" href="#">${ISI.Status.Status}</a>
+                statusDiv.InnerHtml = "<a id='lnkStatus" + task.TaskCode + "' name='lnkStatus" + task.TaskCode + "' href='#' onclick=\"javascript:ShowStatus('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + ",'" + task.Flag + "','" + task.Color + "');\">${ISI.Status.Status}</a>";
+                statusDiv.Visible = true;
             }
+            #endregion
         }
     }
 
-    private string GetAttachmentDesc(string fileName, string desc, bool isHighlight, int currentAttachmentCount, int attachmentCount, bool isFirst, bool isLast)
+    private string GetAttachmentDesc(string fileName, string desc, bool isHighlight, Int32? currentAttachmentCount, Int32? attachmentCount, bool isFirst, bool isLast)
     {
         StringBuilder html = new StringBuilder();
         if (isFirst)
@@ -663,12 +489,12 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
         if (isLast)
         {
             html.Append("&#40;");
-            if (currentAttachmentCount > 0)
+            if (currentAttachmentCount.HasValue && currentAttachmentCount > 0)
             {
-                html.Append(currentAttachmentCount);
+                html.Append(currentAttachmentCount.Value);
                 html.Append("&#47;");
             }
-            html.Append(attachmentCount);
+            html.Append(attachmentCount.Value);
             html.Append("&#41;");
         }
         if (isHighlight)
@@ -682,223 +508,88 @@ public partial class ISI_TSK_RefTask : com.Sconit.Web.MainModuleBase
         return html.ToString();
     }
 
-    private void GetCommentDesc(IList<object> ojbectList, Label lblComment)
+    private string GetCommentDesc(TaskStatusView task)
     {
         StringBuilder html = new StringBuilder();
-        if (ojbectList != null && ojbectList.Count > 0)
+        html.Append("<span style='color:#0000E5;'>");
+        html.Append(task.CommentCreateUserNm);
+        html.Append("&#40;");
+        if (task.CurrentCommentCount.HasValue && task.CurrentCommentCount.Value > 0)
         {
-            IList<IList<Comment>> commentListList = (IList<IList<Comment>>)ojbectList[0];
-            int currentCommentCount = (int)ojbectList[1];
-            int commentCount = (int)ojbectList[2];
-            IList<Comment> allComment = (IList<Comment>)ojbectList[3];
-            if (commentListList != null && commentListList.Count > 0)
+            html.Append("<span style='color:fuchsia;'>");
+        }
+        html.Append(task.CommentCreateDate.Value.ToString("yyyy-MM-dd HH:mm"));
+        if (task.CurrentCommentCount.HasValue && task.CurrentCommentCount.Value > 0)
+        {
+            html.Append("</span>");
+        }
+        html.Append("&#41;</span>&#58;&nbsp;");
+        html.Append(ISIUtil.SetHighlight(task.Comment, this.IsHighlight, this.Desc));
+
+        if (task.CommentCount.HasValue && task.CommentCount.Value > 1)
+        {
+            html.Append("<span style='color:#0000E5;'>&#40;");
+            if (task.CurrentCommentCount.HasValue && task.CurrentCommentCount > 0)
             {
-                IList<Comment> commentList = null;
-                IList<Comment> commentTipList = null;
-
-                if (this.IsStatus)
+                if (task.CurrentCommentCount.Value == 1)
                 {
-                    if (this.StartDate.HasValue && this.EndDate.HasValue)
-                    {
-                        commentList = allComment.Where(t => t.CreateDate < this.EndDate.Value.AddDays(1) && t.CreateDate >= this.StartDate.Value).ToList();
-                    }
-                    else if (this.StartDate.HasValue)
-                    {
-                        commentList = allComment.Where(t => t.CreateDate >= this.StartDate.Value).ToList();
-
-                    }
-                    else if (this.EndDate.HasValue)
-                    {
-                        commentList = allComment.Where(t => t.CreateDate < this.EndDate.Value.AddDays(1)).ToList();
-                    }
+                    html.Append(task.CurrentCommentCount.Value.ToString());
                 }
                 else
-                {
-                    commentList = commentListList[0];
-
-                    if (commentListList.Count > 1)
-                    {
-                        commentTipList = commentListList[1];
-                    }
-                }
-                foreach (var comment in commentList)
-                {
-                    html.Append("<div>");
-                    html.Append("<span style='color:#0000E5;'>");
-                    html.Append(comment.CreateUser);
-                    html.Append("&#40;");
-
-                    html.Append("<span style='color:");
-                    if (comment.CreateDate >= this.Monday)
-                    {
-                        html.Append("fuchsia");
-                    }
-                    else
-                    {
-                        html.Append("#0000E5");
-                    }
-                    html.Append(";'>");
-                    html.Append(comment.CreateDate.ToString("yyyy-MM-dd HH:mm"));
-                    html.Append("</span>");
-
-                    html.Append("&#41;</span>&#58;&nbsp;");
-                    html.Append(ISIUtil.SetHighlight(comment.Value, this.IsHighlight, this.Desc));
-                    html.Append("</div>");
-                }
-                html.Append("<span style='color:#0000E5;'>&#40;");
-                if (currentCommentCount > 0)
                 {
                     html.Append("<span style='color:fuchsia;'><b>");
-                    html.Append(currentCommentCount);
+                    html.Append(task.CurrentCommentCount.Value);
                     html.Append("</b></span>");
                 }
-                else
-                {
-                    html.Append("<span style='color:#0000E5;;'>");
-                    html.Append(currentCommentCount);
-                    html.Append("</span>");
-                }
                 html.Append("&#47;");
-                html.Append(commentCount);
-                html.Append("&#41;</span>");
-
-                if (commentTipList != null && commentTipList.Count > 0)
-                {
-                    lblComment.Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
-                    lblComment.Attributes.Add("onmouseout", "this.style.backgroundColor=e");
-                    lblComment.Attributes.Add("title", GetComments(commentTipList));
-                }
-
-                lblComment.Text = html.ToString();
             }
+
+            html.Append(task.CommentCount.Value);
+            html.Append("&#41;</span>");
         }
+        return html.ToString();
     }
 
-    private string GetComments(IList<Comment> comments)
-    {
-        StringBuilder detail = new StringBuilder();
-        detail.Append("cssbody=[obbd] cssheader=[obhd] header=[${ISI.Status.Comment}] body=[<table width=100%>");
-        foreach (var comment in comments)
-        {
-            detail.Append("<tr><td><span style='color:#0000E5;'>");
-            detail.Append(comment.CreateUser);
-            detail.Append("&#40;");
-
-            detail.Append(comment.CreateDate.ToString("yyyy-MM-dd HH:mm"));
-
-            detail.Append("&#41;</span>&#58;&nbsp;");
-            detail.Append(ISIUtil.SetHighlight(comment.Value.Replace("[", "&#91;").Replace("]", "&#93;"), this.IsHighlight, Desc));
-            detail.Append("</td></tr>");
-        }
-        detail.Append("</table>]");
-        return detail.ToString();
-    }
-    private string GetTaskStatus(IList<TaskStatus> taskStatus)
-    {
-        StringBuilder detail = new StringBuilder();
-        detail.Append("cssbody=[obbd] cssheader=[obhd] header=[${ISI.Status.StatusDesc}] body=[<table width=100%>");
-
-        foreach (var status in taskStatus)
-        {
-            detail.Append("<tr><td><span style='color:#0000E5;'>" + status.CreateUserNm + "&#40;");
-            detail.Append(status.LastModifyDate.ToString("yyyy-MM-dd HH:mm"));
-            detail.Append("&#41;</span>&#58;&nbsp;");
-            detail.Append(ISIUtil.SetHighlight(status.Desc.Replace("[", "&#91;").Replace("]", "&#93;"), this.IsHighlight, Desc));
-            detail.Append("</td></tr>");
-        }
-        detail.Append("</table>]");
-        return detail.ToString();
-    }
-
-    private void GetStatusDesc(IList<object> ojbectList, Label lblStatusDesc)
+    private string GetStatusDesc(TaskStatusView task)
     {
         StringBuilder html = new StringBuilder();
-        if (ojbectList != null && ojbectList.Count > 0)
+        html.Append("<span style='color:#0000E5;'>");
+        html.Append(task.StatusUserNm);
+        html.Append("&#40;");
+        if (task.CurrentStatusCount.HasValue && task.CurrentStatusCount.Value > 0)
         {
-            IList<IList<TaskStatus>> taskStatusListList = (IList<IList<TaskStatus>>)ojbectList[0];
-            int currentStatusCount = (int)ojbectList[1];
-            int statusCount = (int)ojbectList[2];
-            IList<TaskStatus> allStatus = (IList<TaskStatus>)ojbectList[3];
-            if (taskStatusListList != null && taskStatusListList.Count > 0)
+            html.Append("<span style='color:fuchsia;'>");
+        }
+        html.Append(task.StatusDate.Value.ToString("yyyy-MM-dd HH:mm"));
+        if (task.CurrentStatusCount.HasValue && task.CurrentStatusCount.Value > 0)
+        {
+            html.Append("</span>");
+        }
+        html.Append("&#41;</span>&#58;&nbsp;");
+        html.Append(ISIUtil.SetHighlight(task.StatusDesc, this.IsHighlight, this.Desc));
+
+        if (task.StatusCount.HasValue && task.StatusCount.Value > 1)
+        {
+            html.Append("<span style='color:#0000E5;'>&#40;");
+            if (task.CurrentStatusCount.HasValue && task.CurrentStatusCount > 0)
             {
-                IList<TaskStatus> taskStatusList = null;
-                IList<TaskStatus> taskStatusTipList = null;
-                if (this.IsStatus)
+                if (task.CurrentStatusCount.Value == 1)
                 {
-                    if (this.StartDate.HasValue && this.EndDate.HasValue)
-                    {
-                        taskStatusList = allStatus.Where(t => t.LastModifyDate < this.EndDate.Value.AddDays(1) && t.LastModifyDate >= this.StartDate.Value).ToList();
-                    }
-                    else if (this.StartDate.HasValue)
-                    {
-                        taskStatusList = allStatus.Where(t => t.LastModifyDate >= this.StartDate.Value).ToList();
-                    }
-                    else if (this.EndDate.HasValue)
-                    {
-                        taskStatusList = allStatus.Where(t => t.LastModifyDate < this.EndDate.Value.AddDays(1)).ToList();
-                    }
+                    html.Append(task.CurrentStatusCount.Value.ToString());
                 }
                 else
-                {
-                    taskStatusList = taskStatusListList[0];
-
-                    if (taskStatusListList.Count > 1)
-                    {
-                        taskStatusTipList = taskStatusListList[1];
-                    }
-                }
-                foreach (var status in taskStatusList)
-                {
-                    html.Append("<div>");
-                    html.Append("<span style='color:#0000E5;'>");
-                    html.Append(status.LastModifyUserNm);
-                    html.Append("&#40;");
-
-                    html.Append("<span style='color:");
-                    if (status.LastModifyDate >= this.Monday)
-                    {
-                        html.Append("fuchsia");
-                    }
-                    else
-                    {
-                        html.Append("#0000E5");
-                    }
-                    html.Append(";'>");
-                    html.Append(status.LastModifyDate.ToString("yyyy-MM-dd HH:mm"));
-                    html.Append("</span>");
-
-                    html.Append("&#41;</span>&#58;&nbsp;");
-                    html.Append("<br><span style='background:#DFD3D3'>${ISI.TSK." + status.Type + "}</span>&nbsp;");
-                    html.Append(ISIUtil.SetHighlight(status.Desc, this.IsHighlight, this.Desc));
-                    html.Append("</div>");
-                }
-                html.Append("<span style='color:#0000E5;'>&#40;");
-                if (currentStatusCount > 0)
                 {
                     html.Append("<span style='color:fuchsia;'><b>");
-                    html.Append(currentStatusCount);
+                    html.Append(task.CurrentStatusCount.Value);
                     html.Append("</b></span>");
                 }
-                else
-                {
-                    html.Append("<span style='color:#0000E5;'>");
-                    html.Append(currentStatusCount);
-                    html.Append("</span>");
-                }
                 html.Append("&#47;");
-                html.Append(statusCount);
-                html.Append("&#41;</span>");
-
-                if (taskStatusTipList != null && taskStatusTipList.Count > 0)
-                {
-                    lblStatusDesc.Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
-                    lblStatusDesc.Attributes.Add("onmouseout", "this.style.backgroundColor=e");
-                    lblStatusDesc.Attributes.Add("title", GetTaskStatus(taskStatusTipList));
-                }
-
-                lblStatusDesc.Text = html.ToString();
             }
+
+            html.Append(task.StatusCount.Value);
+            html.Append("&#41;</span>");
         }
+        return html.ToString();
     }
 
     #region 处理Tip

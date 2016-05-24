@@ -25,9 +25,6 @@ using NHibernate;
 using System.Net.Mail;
 using com.Sconit.Entity;
 using System.IO;
-using com.Sconit.ISI.Entity.ISI;
-using com.Sconit.Service;
-using com.Sconit.Service.Ext.Cost;
 
 //TODO: Add other using statements here.
 
@@ -40,9 +37,6 @@ namespace com.Sconit.ISI.Service.Impl
 
         public static IList<UserSub> cachedAllUser;
         public DateTime lastModifyDate;
-        public IGenericMgr genericMgr { get; set; }
-
-        public ICostMgrE costMgrE { get; set; }
         public ICodeMasterMgrE codeMasterMgrE { get; set; }
         public ISmtpMgrE smtpMgrE { get; set; }
         public ILanguageMgrE languageMgrE { get; set; }
@@ -341,20 +335,17 @@ namespace com.Sconit.ISI.Service.Impl
         public IList<UserSub> GenerateUserSub(string taskType, string taskSubTypeCode, string taskCode, string userCodes, bool isUserSub, User user)
         {
             string[] userCodeArray = null;
-
-            IList<UserSub> userSubList = new List<UserSub>();
             if (!string.IsNullOrEmpty(userCodes))
             {
                 userCodeArray = userCodes.Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray();
-                if (userCodeArray == null || userCodeArray.Count() == 0) return userSubList;
                 userCodeArray = userCodeArray.Where(u => !string.IsNullOrEmpty(u)).ToArray<string>();
-                if (userCodeArray == null || userCodeArray.Count() == 0) return userSubList;
             }
 
             if (string.IsNullOrEmpty(userCodes) || userCodeArray == null || userCodeArray.Length == 0)
             {
-                return userSubList;
+                return new List<UserSub>();
             }
+            IList<UserSub> userSubList = new List<UserSub>();
             if (!isUserSub)
             {
                 string users = string.Join("','", userCodeArray);
@@ -401,11 +392,6 @@ namespace com.Sconit.ISI.Service.Impl
         }
 
         [Transaction(TransactionMode.Unspecified)]
-        public void GenerateUserSub(IList<UserSub> userSubList, string users)
-        {
-            this.GenerateUserSub(string.Empty, string.Empty, string.Empty, this.userMgrE.GetMonitorUser(), userSubList, users);
-        }
-        [Transaction(TransactionMode.Unspecified)]
         public void GenerateUserSub(string taskType, string taskSubTypeCode, string taskCode, User user, IList<UserSub> userSubList, string users)
         {
             IList<SqlParameter> sqlParam = new List<SqlParameter>();
@@ -427,46 +413,6 @@ namespace com.Sconit.ISI.Service.Impl
                 userSubList.Add(userSub);
             }
         }
-
-        [Transaction(TransactionMode.Requires)]
-        public void Remind(string subject, StringBuilder body, string mailTo)
-        {
-            try
-            {
-                this.Remind(subject, body, mailTo, null);
-            }
-            catch (Exception e)
-            {
-                log.Error(subject + "   " + e.Message, e);
-            }
-        }
-
-
-        [Transaction(TransactionMode.Requires)]
-        public void Remind(string subject, StringBuilder body, string mailTo, IList<string> files)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(mailTo)) return;
-                string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
-                ISIUtil.AppendTestText(smtpMgrE.IsTestSystem(), body, ISIConstants.EMAIL_SEPRATOR);
-
-                string webAddress = entityPreferenceMgrE.LoadEntityPreference(ISIConstants.ENTITY_PREFERENCE_WEBADDRESS).Value;
-                body.Append(ISIConstants.EMAIL_SEPRATOR);
-                body.Append(ISIConstants.EMAIL_SEPRATOR);
-                body.Append(ISIConstants.EMAIL_SEPRATOR);
-                body.Append("<span style='font-size:15px;'>" + companyName + "</span><br/>");
-                body.Append("<span style='font-size:15px;'><a href='http://" + webAddress + "'>http://" + webAddress + "</a></span>");
-                MailPriority mailPriority = MailPriority.Normal;
-                string replyTo = string.Empty;
-                smtpMgrE.AsyncSend2(subject, body.ToString(), mailTo, replyTo, mailPriority, files);
-            }
-            catch (Exception e)
-            {
-                log.Error(subject + "   " + e.Message, e);
-            }
-        }
-
         public void Remind(TaskMstr task, IList<UserSub> userSubList, User operationUser)
         {
             Remind(task, ISIConstants.ISI_LEVEL_BASE, 0, userSubList, false, operationUser);
@@ -578,7 +524,7 @@ namespace com.Sconit.ISI.Service.Impl
 
             if (!string.IsNullOrEmpty(emailBody) && !string.IsNullOrEmpty(toEmail.ToString()))
             {
-                if (isApprove && task.Level.HasValue && (level == ISIConstants.ISI_LEVEL_APPROVE || level == ISIConstants.ISI_LEVEL_APPROVE2) && task.TaskSubType.IsAttachment)
+                if (isApprove && task.Level.HasValue && level == ISIConstants.ISI_LEVEL_APPROVE && task.TaskSubType.IsAttachment)
                 {
                     IList<string[]> files = new List<string[]>();
                     var attachmentDetailList = this.attachmentDetailMgrE.GetTaskAttachment(task.Code);
@@ -621,8 +567,8 @@ namespace com.Sconit.ISI.Service.Impl
             try
             {
                 content.Append("ISI  ");
-                //string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
-                ISIUtil.AppendTestText(smtpMgrE.IsTestSystem(), content, separator);
+                string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
+                ISIUtil.AppendTestText(companyName, content, separator);
                 if (!string.IsNullOrEmpty(task.HelpContent))
                 {
                     content.Append("请协助求助处理");
@@ -645,8 +591,11 @@ namespace com.Sconit.ISI.Service.Impl
                 content.Append(separator);
                 content.Append("类型: " + (task.TaskSubType != null ? task.TaskSubType.Description : task.TaskSubTypeDesc) + "|" + this.codeMasterMgrE.LoadCodeMaster(ISIConstants.CODE_MASTER_ISI_STATUS, task.Status).Description);
 
+                DateTime date = DateTime.Now;
+
                 if (level == ISIConstants.ISI_LEVEL_BASE)//提醒
                 {
+
                     content.Append("|提醒");
                 }
                 else if (level == ISIConstants.ISI_LEVEL_HELP)
@@ -688,6 +637,7 @@ namespace com.Sconit.ISI.Service.Impl
                             content.Append(separator);
                             content.Append("分派超时:" + diff);
                         }
+                        date = task.SubmitDate.Value;
                     }
                     //开始提醒
                     if ((task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN && task.AssignDate.HasValue))
@@ -698,6 +648,7 @@ namespace com.Sconit.ISI.Service.Impl
                             content.Append(separator);
                             content.Append("确认超时:" + diff);
                         }
+                        date = task.AssignDate.Value;
                     }
                     //关闭提醒
                     else if ((task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS
@@ -709,6 +660,14 @@ namespace com.Sconit.ISI.Service.Impl
                             content.Append(separator);
                             content.Append("关闭超时:" + diff);
                         }
+                        if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS)
+                        {
+                            date = task.StartDate.Value;
+                        }
+                        else if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE)
+                        {
+                            date = task.CompleteDate.Value;
+                        }
                     }
                 }
                 if (!string.IsNullOrEmpty(task.BackYards))
@@ -717,17 +676,13 @@ namespace com.Sconit.ISI.Service.Impl
                     content.Append("追溯码:" + task.BackYards);
                 }
                 content.Append(separator);
-                DateTime date = task.SubmitDate.HasValue ? task.SubmitDate.Value : task.CreateDate;
                 content.Append("时间:" + date.ToString("yyyy-MM-dd HH:mm") + separator);
                 //content.Append("类型:" + task.TaskSubType.Description + separator);
                 if (task.FailureMode != null)
                 {
-                    content.Append("类型:" + task.FailureMode.Code + separator);
+                    content.Append("失效模式:" + task.FailureMode.Code + separator);
                 }
-                if (!string.IsNullOrEmpty(task.TaskAddress))
-                {
-                    content.Append("地点:" + task.TaskAddress + separator);
-                }
+                content.Append("地点:" + task.TaskAddress + separator);
                 if (task.PlanStartDate.HasValue)
                 {
                     content.Append("预计开始时间:" + task.PlanStartDate.Value.ToString("yyyy-MM-dd HH:mm") + separator);
@@ -790,7 +745,7 @@ namespace com.Sconit.ISI.Service.Impl
             }
             catch (Exception e)
             {
-                log.Error(task.Code + e.Message, e);
+                log.Error(e.Message, e);
             }
             return content.ToString();
         }
@@ -804,7 +759,7 @@ namespace com.Sconit.ISI.Service.Impl
             return GetEmailBody(task, level, minutes, false, null, operationUser);
         }
 
-        [Transaction(TransactionMode.Requires)]
+        [Transaction(TransactionMode.Unspecified)]
         protected string GetEmailBody(TaskMstr task, string level, double minutes, bool isApprove, IList<UserSub> userSubList, User operationUser)
         {
             StringBuilder content = new StringBuilder();
@@ -813,23 +768,10 @@ namespace com.Sconit.ISI.Service.Impl
                 content.Append("<p style='font-size:15px;'>");
                 string separator = ISIConstants.EMAIL_SEPRATOR;
                 DateTime now = DateTime.Now;
+                string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
+                ISIUtil.AppendTestText(companyName, content, separator);
 
-                ISIUtil.AppendTestText(smtpMgrE.IsTestSystem(), content, separator);
-                if (level == ISIConstants.ISI_LEVEL_APPROVE2)
-                {
-                    content.Append(separator);
-                    content.Append("每日提醒：您遗漏一项审批，请及时批示！");
-                    content.Append(separator);
-                    content.Append(separator);
-                }
-                else if (level == ISIConstants.ISI_LEVEL_APPROVEUP)
-                {
-                    content.Append(separator);
-                    content.Append(task.HelpContent);
-                    content.Append(separator);
-                    content.Append(separator);
-                }
-                else if (level == ISIConstants.ISI_LEVEL_HELP)
+                if (level == ISIConstants.ISI_LEVEL_HELP)
                 {
                     content.Append(separator);
                     content.Append("<U>求助</U>：" + task.HelpContent);
@@ -842,7 +784,7 @@ namespace com.Sconit.ISI.Service.Impl
                     content.Append(separator);
                 }
                 string webAddress = "localhost:2013";
-                if (!this.smtpMgrE.IsTestSystem())
+                if (!companyName.ToUpper().Contains("TEST"))
                 {
                     webAddress = entityPreferenceMgrE.LoadEntityPreference(ISIConstants.ENTITY_PREFERENCE_WEBADDRESS).Value;
                 }
@@ -965,16 +907,6 @@ namespace com.Sconit.ISI.Service.Impl
                 {
                     content.Append(separator);
                     content.Append("<U>发送类型</U>: 审批");
-                }
-                else if (level == ISIConstants.ISI_LEVEL_APPROVE2)
-                {
-                    content.Append(separator);
-                    content.Append("<U>发送类型</U>: 提醒审批");
-                }
-                else if (level == ISIConstants.ISI_LEVEL_APPROVEUP)
-                {
-                    content.Append(separator);
-                    content.Append("<U>发送类型</U>: 审批超时");
                 }
                 else if (level == ISIConstants.ISI_LEVEL_COMMENT)
                 {
@@ -1111,118 +1043,6 @@ namespace com.Sconit.ISI.Service.Impl
                     task.TaskApplyList = taskApplyList;
                     taskApplyMgrE.OutputEmailApply(content, taskApplyList, task.TaskSubType.IsRemoveForm);
                 }
-                if (!string.IsNullOrEmpty(task.Dept))
-                {
-                    content.Append("<U>部门</U>: " + task.Dept + separator);
-                }
-                if (task.Amount.HasValue)
-                {
-                    content.Append("<U>金额</U>: " + task.Amount.Value.ToString("C") + " " + StringHelper.MoneyCn(task.Amount) + separator);
-                }
-                if (task.Taxes.HasValue)
-                {
-                    content.Append("<U>税金</U>: " + task.Taxes.Value.ToString("C") + " " + StringHelper.MoneyCn(task.Taxes) + separator);
-                }
-                if (task.TotalAmount.HasValue && task.Taxes.HasValue && task.Taxes.Value != 0)
-                {
-                    content.Append("<U>含税金额</U>: " + task.TotalAmount.Value.ToString("C") + " " + StringHelper.MoneyCn(task.TotalAmount) + separator);
-                }
-                if (task.Voucher.HasValue)
-                {
-                    content.Append("<U>附件张数</U>: " + task.Voucher.Value + separator);
-                }
-                if (!string.IsNullOrEmpty(task.PayeeCode))
-                {
-                    content.Append("<U>领取人</U>: " + task.Payee + separator);
-                }
-                if (task.Qty.HasValue)
-                {
-                    if (task.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2 || task.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3)
-                    {
-                        content.Append("<U>小时数</U>: " + task.Qty.Value.ToString("0.########") + separator);
-                    }
-                    else
-                    {
-                        content.Append("<U>数量</U>: " + task.Qty.Value.ToString("0.########") + separator);
-                    }
-                }
-
-                if (task.TaskSubType != null && task.TaskSubType.IsCostCenter && isApprove && task.Level.HasValue)
-                {
-                    IList<SqlParameter> sqlParam1 = new List<SqlParameter>();
-                    sqlParam1.Add(new SqlParameter("@TaskCode", task.Code));
-                    sqlParam1.Add(new SqlParameter("@CostCenter", null));
-                    sqlParam1.Add(new SqlParameter("@Account1", null));
-                    sqlParam1.Add(new SqlParameter("@Account2", null));
-                    sqlParam1.Add(new SqlParameter("@StartDate", null));
-                    sqlParam1.Add(new SqlParameter("@EndDate", null));
-                    sqlParam1.Add(new SqlParameter("@CreateUser", null));
-                    sqlParam1.Add(new SqlParameter("@User", null));
-                    DataSet costDetUpDS = this.sqlHelperMgrE.GetDatasetByStoredProcedure("USP_Req_BudgetDet", sqlParam1.ToArray<SqlParameter>());
-                    var costDetList = IListHelper.DataTableToList<CostDet>(costDetUpDS.Tables[0]);
-
-                    if (costDetList != null && costDetList.Count > 0)
-                    {
-                        StringBuilder costDetSB = new StringBuilder();
-                        costDetSB.Append("预算明细" + separator);
-
-                        costDetSB.Append("<table border='1' bordercolor='black' >");
-                        costDetSB.Append("<tr>");
-                        AddTh(costDetSB, "成本中心");
-                        AddTh(costDetSB, "一级科目");
-                        AddTh(costDetSB, "二级科目");
-                        AddTh(costDetSB, "金额");
-                        AddTh(costDetSB, "税金");
-                        AddTh(costDetSB, "含税金额");
-                        AddTh(costDetSB, "预算编号");
-                        AddTh(costDetSB, "预算金额");
-                        AddTh(costDetSB, "累计预算");
-                        AddTh(costDetSB, "已批准金额");
-                        AddTh(costDetSB, "剩余预算");
-                        AddTh(costDetSB, "超预算");
-                        AddTh(costDetSB, "审批中");
-                        AddTh(costDetSB, "月预算");
-                        AddTh(costDetSB, "月已批准");
-                        AddTh(costDetSB, "月剩余预算");
-                        AddTh(costDetSB, "超月预算");
-                        AddTh(costDetSB, "月审批中");
-                        costDetSB.Append("</tr>");
-                        foreach (var costDet in costDetList)
-                        {
-                            costDetSB.Append("<tr>");
-                            AddTd(costDetSB, costDet.CostCenter);
-                            AddTd(costDetSB, costDet.Account1Name);
-                            AddTd(costDetSB, costDet.Account2Name);
-                            AddTd(costDetSB, costDet.Amount);
-                            AddTd(costDetSB, costDet.Taxes);
-                            AddTd(costDetSB, costDet.TotalAmount);
-                            AddTd(costDetSB, costDet.BudgetCode);
-                            AddTd(costDetSB, costDet.BudgetAmount);
-                            AddTd(costDetSB, costDet.BudgetAmount2);
-                            AddTd(costDetSB, costDet.AmountY1);
-                            AddTd(costDetSB, costDet.AmountY3);
-                            if (!costDet.AmountY4.HasValue || costDet.AmountY4.Value < 0)
-                            {
-                                costDetSB.Append("<td style='background-color:yellow'>" + (costDet.AmountY4.HasValue ? costDet.AmountY4.Value.ToString("C") : "&nbsp;") + "</td>");
-                            }
-                            else
-                            {
-                                AddTd(costDetSB, string.Empty);
-                            }
-                            AddTd(costDetSB, costDet.AmountY2);
-                            AddTd(costDetSB, costDet.BudgetAmountMonth);
-                            AddTd(costDetSB, costDet.AmountM1);
-                            AddTd(costDetSB, costDet.AmountM3);
-                            AddTd(costDetSB, costDet.AmountM4);
-                            AddTd(costDetSB, costDet.AmountM2);
-                            costDetSB.Append("</tr>");
-                        }
-                        costDetSB.Append("</table>");
-                        content.Append(separator + costDetSB.ToString() + separator);
-                    }
-                }
-
-               
 
                 if (!string.IsNullOrEmpty(task.WorkHoursUserNm))
                 {
@@ -1231,37 +1051,26 @@ namespace com.Sconit.ISI.Service.Impl
 
                 if (isApprove && task.Level.HasValue)
                 {
-                    //快速审批列表
-                    FastTrack fastTrack = new FastTrack();
-                    fastTrack.GUID = Guid.NewGuid().ToString();
-                    fastTrack.PK = task.Code;
-                    fastTrack.UserCode = userSubList[0].Code;
-                    fastTrack.UserNm = userSubList[0].Name;
-                    fastTrack.CreateDate = now;
-                    fastTrack.CreateUser = operationUser.Code;
-                    fastTrack.CreateUserNm = operationUser.Name;
-                    this.genericMgr.Create(fastTrack);
-
                     content.Append(separator + separator);
-                    AppendApprove(task, userSubList[0], content, separator, webAddress, "1", fastTrack.GUID);
+                    AppendApprove(task, userSubList[0], content, separator, webAddress, "1");
                     //最终审批
                     if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
                     {
-                        AppendApprove(task, userSubList[0], content, separator, webAddress, "4", fastTrack.GUID);
+                        AppendApprove(task, userSubList[0], content, separator, webAddress, "4");
                     }
                     else
                     {
-                        AppendApprove(task, userSubList[0], content, separator, webAddress, "3", fastTrack.GUID);
+                        AppendApprove(task, userSubList[0], content, separator, webAddress, "3");
                     }
-                    AppendApprove(task, userSubList[0], content, separator, webAddress, "2", fastTrack.GUID);
+                    AppendApprove(task, userSubList[0], content, separator, webAddress, "2");
                 }
 
                 content.Append(separator + separator);
 
                 //显示所有批示
-                if ((level == ISIConstants.ISI_LEVEL_BASE && task.Type == ISIConstants.ISI_TASK_TYPE_WORKFLOW) || level == ISIConstants.ISI_LEVEL_APPROVE || level == ISIConstants.ISI_LEVEL_APPROVE2 || level == ISIConstants.ISI_LEVEL_APPROVEUP)
+                if (level == ISIConstants.ISI_LEVEL_APPROVE)
                 {
-                    PutTraceView(task.Code, ISIConstants.ISI_LEVEL_APPROVE, content, separator, operationUser);
+                    PutTraceView(task.Code, level, content, separator, operationUser);
                 }
 
                 if (task.UserName != null && task.UserName.Trim() != string.Empty)
@@ -1271,8 +1080,8 @@ namespace com.Sconit.ISI.Service.Impl
                 if (task.Email != null && task.Email.Trim() != string.Empty && ISIUtil.IsValidEmail(task.Email))
                     content.Append("Email: " + task.Email + separator);
 
+
                 content.Append(separator);
-                string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
                 content.Append(companyName + separator);
                 content.Append("<a href='http://" + webAddress + "'>http://" + webAddress + "</a>");
                 content.Append(separator);
@@ -1280,59 +1089,12 @@ namespace com.Sconit.ISI.Service.Impl
             }
             catch (Exception e)
             {
-                log.Error(task.Code + e.Message, e);
+                log.Error(e.Message, e);
             }
             return content.ToString();
         }
-        private void AddTd(StringBuilder str, string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                str.Append("<td>" + value + "</td>");
-            }
-            else
-            {
-                str.Append("<td>&nbsp;</td>");
-            }
-        }
-        private void AddTh(StringBuilder str, string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                str.Append("<th>" + value + "");
-            }
-            else
-            {
-                str.Append("<th>&nbsp;");
-            }
-        }
-        private void AddTd(StringBuilder str, DateTime? value)
-        {
-            AddTd(str, value, "yyyy-MM-dd HH:mm");
-        }
-        private void AddTd(StringBuilder str, DateTime? value, string format)
-        {
-            if (value.HasValue)
-            {
-                str.Append("<td>" + value.Value.ToString(format) + "</td>");
-            }
-            else
-            {
-                str.Append("<td>&nbsp;</td>");
-            }
-        }
-        private void AddTd(StringBuilder str, decimal? value)
-        {
-            if (value.HasValue)
-            {
-                str.Append("<td>" + value.Value.ToString("0.########") + "</td>");
-            }
-            else
-            {
-                str.Append("<td>&nbsp;</td>");
-            }
-        }
-        private static void AppendApprove(TaskMstr task, UserSub userSub, StringBuilder content, string separator, string webAddress, string type, string GUID)
+
+        private static void AppendApprove(TaskMstr task, UserSub userSub, StringBuilder content, string separator, string webAddress, string type)
         {
             string desc = string.Empty;
             content.Append(separator);
@@ -1357,26 +1119,13 @@ namespace com.Sconit.ISI.Service.Impl
                 content.Append("或");
             }
             content.Append("您可点击 ");
-            content.Append("<a href='http://" + webAddress + "/ISI/TSK/ApproveHandler.ashx?GUID=" + GUID + "&Type=" + type + "' >");
+            content.Append("<a href='http://" + webAddress + "/ISI/TSK/ApproveHandler.ashx?TaskCode=" + task.Code + "&UserCode=" + userSub.Code + "&UserPwd=" + userSub.Password + "&Type=" + type + "' >");
             content.Append("快速" + desc);
             content.Append("<a/>");
             content.Append("、");
-            content.Append("<a href='http://" + webAddress + "/ISI/TSK/Approve.aspx?GUID=" + GUID + "&Type=" + type + "' >");
+            content.Append("<a href='http://" + webAddress + "/ISI/TSK/Approve.aspx?TaskCode=" + task.Code + "&UserCode=" + userSub.Code + "&UserPwd=" + userSub.Password + "&Type=" + type + "' >");
             content.Append(desc + "并编写批示");
             content.Append("<a/>");
-
-            if (type == "2")
-            {
-                content.Append(separator);
-                content.Append(separator);
-                content.Append(separator);
-                content.Append("或");
-                content.Append("您可点击 ");
-                content.Append("<a href='http://" + webAddress + "/ISI/TSK/ApproveHandler.ashx?GUID=" + GUID + "&Type=5' >");
-                content.Append("请补充附件");
-                content.Append("<a/>");
-            }
-
             content.Append(separator);
             content.Append(separator);
         }
@@ -1407,10 +1156,10 @@ namespace com.Sconit.ISI.Service.Impl
         private void PutTraceView(string taskCode, string level, StringBuilder content, string separator, User user)
         {
             StringBuilder hql = new StringBuilder("from TraceView where TaskCode ='" + taskCode + "' ");
-            if (level != ISIConstants.ISI_LEVEL_APPROVE && level != ISIConstants.ISI_LEVEL_APPROVE2 && level != ISIConstants.ISI_LEVEL_APPROVEUP)
+            if (level != ISIConstants.ISI_LEVEL_APPROVE)
             {
                 //进展或者评论显示最近两周的
-                hql.Append(" and LastModifyDate > '" + DateTime.Now.AddDays(-14) + "' and Type != '" + ISIConstants.CODE_MASTER_ISI_MSG_TYPE_APPROVE + "' ");
+                hql.Append(" and LastModifyDate > '" + DateTime.Now.AddDays(-14) + "' ");
             }
             hql.Append("order by LastModifyDate desc ");
             IList<TraceView> traceViewList = hqlMgrE.FindAll<TraceView>(hql.ToString());
@@ -1577,10 +1326,7 @@ namespace com.Sconit.ISI.Service.Impl
         public string GetSubject(User user, string code, string type, string priority, string value, string level, string status)
         {
             StringBuilder subject = new StringBuilder();
-            if (user != null && level != ISIConstants.ISI_LEVEL_APPROVE2 && level != ISIConstants.ISI_LEVEL_STARTPERCENT && level != ISIConstants.ISI_LEVEL_APPROVEUP)
-            {
-                subject.Append(user.Name + "-");
-            }
+            subject.Append(user.Name + " ");
             if (priority == ISIConstants.CODE_MASTER_ISI_PRIORITY_URGENT)
             {
                 subject.Append(codeMasterMgrE.GetCachedCodeMaster(ISIConstants.CODE_MASTER_ISI_PRIORITY, priority).Description + " ");
@@ -1622,14 +1368,6 @@ namespace com.Sconit.ISI.Service.Impl
                         subject.Append(languageMgrE.TranslateMessage("ISI.Remind.Approve", user));
                     }
                 }
-                else if (level == ISIConstants.ISI_LEVEL_APPROVE2)
-                {
-                    subject.Append(languageMgrE.TranslateMessage("ISI.Remind.RemindApprove", user));
-                }
-                else if (level == ISIConstants.ISI_LEVEL_APPROVEUP)
-                {
-                    subject.Append(languageMgrE.TranslateMessage("ISI.Remind.ApproveUp", user));
-                }
                 else if (level == ISIConstants.ISI_LEVEL_STARTPERCENT)
                 {
                     subject.Append(languageMgrE.TranslateMessage("ISI.Remind.Schedule", user));
@@ -1647,7 +1385,7 @@ namespace com.Sconit.ISI.Service.Impl
                     subject.Append(languageMgrE.TranslateMessage("ISI.Remind.Up", user, new string[] { level }));
                 }
             }
-            subject.Append("-" + this.GetDesc(type, user) + ": ");
+            subject.Append(" " + this.GetDesc(type, user) + ": ");
             if (string.IsNullOrEmpty(value))
             {
                 subject.Append(code);
@@ -1709,66 +1447,6 @@ namespace com.Sconit.ISI.Service.Impl
             return languageMgrE.TranslateMessage("ISI.TSK.Task", user);
         }
 
-
-        [Transaction(TransactionMode.Unspecified)]
-        public string FindEmailByPermission(string[] permissionCodes)
-        {
-            if (permissionCodes == null || permissionCodes.Length == 0) return string.Empty;
-            IDictionary<string, object> param = new Dictionary<string, object>();
-            param.Add("PermissionCodes", permissionCodes);
-
-            StringBuilder userSql = new StringBuilder();
-            userSql.Append(@"select u.Email ");
-            userSql.Append(@"from User u ");
-            userSql.Append(@"where ");
-            userSql.Append(@"      u.Email != '' and u.Email is not null and u.IsActive = 1 ");
-            userSql.Append(@"and ");
-            userSql.Append(@"      (");
-            userSql.Append(@"          exists (select up.Permission.Code from UserPermission up where up.User.Code = u.Code and up.Permission.Code in (:PermissionCodes)) ");
-            userSql.Append(@"      or ");
-            userSql.Append(@"          exists (select rp.Permission.Code from RolePermission rp join rp.Role r,UserRole ur where r.Code = ur.Role.Code and ur.User.Code = u.Code and rp.Permission.Code in (:PermissionCodes))  ");
-            userSql.Append(@"      )");
-
-            userSql.Append(@"order by u.Code ");
-            IList<object> emails = this.hqlMgrE.FindAll<object>(userSql.ToString(), param);
-
-            if (emails == null || emails.Count == 0) return string.Empty;
-
-            string mailList = string.Join(";", emails.Select(u => (string)u).ToArray<string>());
-            return mailList;
-        }
-
-
-
-        public string FindEmail(string[] userCodes)
-        {
-            StringBuilder hql = new StringBuilder();
-            hql.Append("select u.Email from User u where u.IsActive = 1 and u.Email is not null and u.Email != :Empty ");
-            IDictionary<string, object> param = new Dictionary<string, object>();
-            param.Add("Empty", string.Empty);
-            if (userCodes != null && userCodes.Length > 0)
-            {
-                hql.Append(" and u.Code in (:UserCodeArray)");
-                param.Add("UserCodeArray", userCodes);
-            }
-            IList<object> emails = hqlMgrE.FindAll<object>(hql.ToString(), param);
-
-            if (emails == null || emails.Count == 0) return string.Empty;
-            StringBuilder toEmail = new StringBuilder();
-            foreach (object emailObj in emails)
-            {
-                string email = (string)emailObj;
-                if (ISIUtil.IsValidEmail(email))
-                {
-                    if (toEmail.Length != 0)
-                    {
-                        toEmail.Append(";");
-                    }
-                    toEmail.Append(email);
-                }
-            }
-            return toEmail.ToString();
-        }
         #endregion Customized Methods
     }
 }

@@ -74,13 +74,10 @@ public partial class ISI_TaskSubTypeStatistics_Main : com.Sconit.Web.MainModuleB
         sql.Append("        Count(distinct(ts.Id)) StatusCount, ");
         sql.Append("        Max(ts.LastModifyDate) StatusDate, ");
         sql.Append("        Count(distinct(c.Id)) CommentCount, ");
-        sql.Append("        Max(c.LastModifyDate) CommentDate, ");
-        sql.Append("        pt.Project, ");
-        sql.Append("        et.Enc, ");
-        sql.Append("        pt.Project2 ");
+        sql.Append("        Max(c.LastModifyDate) CommentDate ");
         sql.Append("from ISI_TaskSubType tst ");
         sql.Append("left join ISI_TaskMstr t1 on t1.Status!='" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL + "' and  tst.Code = t1.TaskSubType and t1.CreateDate <= @EndDate ");
-
+        
         if (!string.IsNullOrEmpty(this.ddlType.SelectedValue))
         {
             sql.Append("  and  t1.Type = '" + this.ddlType.SelectedValue + "' ");
@@ -89,13 +86,12 @@ public partial class ISI_TaskSubTypeStatistics_Main : com.Sconit.Web.MainModuleB
 
         sql.Append("left join ISI_TaskMstr t on t.Status!='" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL + "' and  tst.Code = t.TaskSubType and t.CreateDate >= @StartDate  and t.CreateDate <= @EndDate ");
 
+       
         if (!string.IsNullOrEmpty(this.ddlType.SelectedValue))
         {
             sql.Append("  and  t.Type = '" + this.ddlType.SelectedValue + "' ");
         }
         sql.Append("  and  t.Type != '" + ISIConstants.ISI_TASK_TYPE_PRIVACY + "' ");
-
-
         string dept = this.ddlDept.SelectedValue;
         IList<SqlParameter> sqlParam = new List<SqlParameter>();
         sqlParam.Add(new SqlParameter("@IsActive", ckIsActive.Checked));
@@ -109,17 +105,9 @@ public partial class ISI_TaskSubTypeStatistics_Main : com.Sconit.Web.MainModuleB
         sql.Append("     left join ISI_TaskStatus ts on t.Code = ts.TaskCode and ts.LastModifyDate >= @StartDate  and ts.LastModifyDate <= @EndDate ");
         sql.Append("     left join ISI_CommentDet c on t.Code = c.TaskCode  and c.LastModifyDate >= @StartDate  and c.LastModifyDate <= @EndDate  ");
 
-
-        sql.Append("    left join (select pt.TaskSubType,max(Phase) Project,min(Phase) Project2 from ISI_TaskMstr pt where pt.type='Project' and pt.Phase is not null and pt.Status in ('Submit','In-Proect','Complete','Assign') group by pt.TaskSubType) pt on pt.TaskSubType=tst.Code ");
-        sql.Append("    left join (select et.TaskSubType,max(et.Code) Enc from ISI_TaskMstr et where et.type='Enc' and et.Status!='Cancel' group by et.TaskSubType ) et on et.TaskSubType=tst.Code ");
-
         System.Text.StringBuilder where = new System.Text.StringBuilder();
         where.Append("where tst.IsActive = @IsActive ");
         where.Append("  and  tst.Type != '" + ISIConstants.ISI_TASK_TYPE_PRIVACY + "' ");
-        if (!string.IsNullOrEmpty(this.ddlType.SelectedValue))
-        {
-            where.Append("  and  tst.Type = '" + this.ddlType.SelectedValue + "' ");
-        }
         if (!string.IsNullOrEmpty(this.tbTaskSubType.Text.Trim()))
         {
             where.Append("  and  tst.Code = '" + this.tbTaskSubType.Text.Trim() + "' ");
@@ -131,7 +119,7 @@ public partial class ISI_TaskSubTypeStatistics_Main : com.Sconit.Web.MainModuleB
 
         sql.Append(where.ToString());
 
-        sql.Append("group by tst.Code,tst.Desc_,pt.Project,pt.Project2,et.Enc ");
+        sql.Append("group by tst.Code,tst.Desc_ ");
 
         if (!string.IsNullOrEmpty(sortdirection) && !string.IsNullOrEmpty(this.GridViewSortExpression))
         {
@@ -153,18 +141,7 @@ public partial class ISI_TaskSubTypeStatistics_Main : com.Sconit.Web.MainModuleB
         {
             var statistics = ((System.Data.DataRowView)(e.Row.DataItem)).Row.ItemArray;
             var lastWeekCount = int.Parse(statistics[3].ToString()) - int.Parse(statistics[2].ToString());
-            e.Row.Cells[5].Text = lastWeekCount == 0 ? string.Empty : lastWeekCount.ToString();
-            if (statistics[16] != null && !string.IsNullOrEmpty(statistics[16].ToString()))
-            {
-                if (statistics[18] != null && !string.IsNullOrEmpty(statistics[18].ToString()) && statistics[16].ToString() != statistics[18].ToString())
-                {
-                    e.Row.Cells[3].Text = statistics[18].ToString() + "-" + statistics[16].ToString();
-                }
-            }
-            if (statistics[17] != null && !string.IsNullOrEmpty(statistics[17].ToString()))
-            {
-                e.Row.Cells[4].Text = "${ISI.TaskSubTypeStatistics.Executed}";
-            }
+            e.Row.Cells[3].Text = lastWeekCount == 0 ? string.Empty : lastWeekCount.ToString();
         }
     }
 

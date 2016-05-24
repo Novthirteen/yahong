@@ -20,7 +20,6 @@ namespace com.Sconit.ISI.Service.Impl
     [Transactional]
     public class CheckupMgr : CheckupBaseMgr, ICheckupMgr
     {
-        public IUserSubscriptionMgrE userSubscriptionMgrE { get; set; }
         public ISummaryDao summaryDao { get; set; }
         public IEntityPreferenceMgrE entityPreferenceMgrE { get; set; }
         public ITaskMgrE taskMgrE { get; set; }
@@ -196,7 +195,7 @@ namespace com.Sconit.ISI.Service.Impl
                 else
                 {
                     //邮件通知
-                    string mailTo = userSubscriptionMgrE.FindEmail(new string[] { summary.UserCode });
+                    string mailTo = taskMgrE.FindEmail(new string[] { summary.UserCode });
                     StringBuilder body = new StringBuilder();
                     body.Append("<span style='font-size:15px;'>您好!</span>");
                     body.Append(ISIConstants.EMAIL_SEPRATOR);
@@ -211,7 +210,7 @@ namespace com.Sconit.ISI.Service.Impl
                         body.Append(ISIConstants.EMAIL_SEPRATOR);
                         body.Append("<span style='font-size:15px;'>审批时间：" + summary.ApproveDate.Value.ToString("yyyy-MM-dd HH:mm") + "</span>");
                     }
-                    this.userSubscriptionMgrE.Remind("月度自评已审批", body, mailTo);
+                    this.taskMgrE.Remind("月度自评已审批", body, mailTo);
                 }
             }
             catch (Exception e)
@@ -250,7 +249,7 @@ namespace com.Sconit.ISI.Service.Impl
             if (users.Length > 0)
             {
                 string[] userCodeArray = users.ToString().Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
-                string mailTo = userSubscriptionMgrE.FindEmail(userCodeArray);
+                string mailTo = taskMgrE.FindEmail(userCodeArray);
 
                 string subject = string.Empty;
 
@@ -299,7 +298,7 @@ namespace com.Sconit.ISI.Service.Impl
                 {
                     body.Append("<span style='font-size:15px;'>备注: 这条考核还未批准，审批状态参见ISI系统。</span>");
                 }
-                this.userSubscriptionMgrE.Remind(subject, body, mailTo);
+                this.taskMgrE.Remind(subject, body, mailTo);
             }
         }
         [Transaction(TransactionMode.Requires)]
@@ -470,7 +469,7 @@ namespace com.Sconit.ISI.Service.Impl
             {
                 //string users = entityPreferenceMgrE.LoadEntityPreference(ISIConstants.ENTITY_PREFERENCE_CODE_ISI_CHECKUPREMIND).Value;
 
-                string mailTo = userSubscriptionMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_RECEIVEPUBLISHCHECKUP });
+                string mailTo = taskMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_RECEIVEPUBLISHCHECKUP });
 
                 if (string.IsNullOrEmpty(mailTo)) return;
                 string subject = "月度考核已经发布";
@@ -481,7 +480,7 @@ namespace com.Sconit.ISI.Service.Impl
                 body.Append("&nbsp;&nbsp;<span style='font-size:15px;'>");
                 body.Append(user.Name + " 已经审批完毕。</span>");
 
-                userSubscriptionMgrE.Remind(subject, body, mailTo);
+                taskMgrE.Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {
@@ -495,7 +494,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             try
             {
-                string mailTo = userSubscriptionMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_RECEIVECLOSEREMINDCHECKUP });
+                string mailTo = taskMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_RECEIVECLOSEREMINDCHECKUP });
 
                 if (string.IsNullOrEmpty(mailTo)) return;
                 string subject = "月度绩效考核结束提醒";
@@ -507,7 +506,7 @@ namespace com.Sconit.ISI.Service.Impl
                 body.Append("&nbsp;&nbsp;<span style='font-size:15px;'>");
                 body.Append("月度绩效考核已经结束，可以进入ISI系统查询考核结束。</span>");
 
-                userSubscriptionMgrE.Remind(subject, body, mailTo);
+                taskMgrE.Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {
@@ -520,7 +519,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             try
             {
-                string mailTo = userSubscriptionMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_APPROVEREMINDCHECKUP });
+                string mailTo = taskMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_APPROVEREMINDCHECKUP });
 
                 if (string.IsNullOrEmpty(mailTo)) return;
                 string subject = "月度考核审批提醒";
@@ -532,7 +531,7 @@ namespace com.Sconit.ISI.Service.Impl
                 body.Append("&nbsp;&nbsp;<span style='font-size:15px;'>");
                 body.Append("ISI系统提醒您处理考核审批。</span>");
 
-                userSubscriptionMgrE.Remind(subject, body, mailTo);
+                taskMgrE.Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {
@@ -545,7 +544,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             try
             {
-                string mailTo = this.userSubscriptionMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_REMINDCHECKUP });
+                string mailTo = taskMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_REMINDCHECKUP });
 
                 if (string.IsNullOrEmpty(mailTo)) return;
                 string subject = "月度考核开始提醒";
@@ -557,7 +556,7 @@ namespace com.Sconit.ISI.Service.Impl
                 body.Append("&nbsp;&nbsp;<span style='font-size:15px;'>");
                 body.Append("请尽快提交考核信息,次月5号结束。</span>");
 
-                userSubscriptionMgrE.Remind(subject, body, mailTo);
+                taskMgrE.Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {

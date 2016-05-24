@@ -58,7 +58,7 @@ public partial class ISI_TSK_Search : SearchModuleBase
         }
         else
         {
-            //this.btnNew.FunctionId = "Create" + this.ModuleType;
+            this.btnNew.FunctionId = "Create" + this.ModuleType;
             this.btnBatch.FunctionId = "CreateBatch" + this.ModuleType;
         }
         if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT || this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)

@@ -70,10 +70,6 @@ namespace com.Sconit.ISI.Service.Impl
                             throw new BusinessErrorException("ISI.TaskSubType.Apply.Group.IsNotEmpty");
                         }
                     }
-                    if (checkRadioList.Count != checkRadioList.Select(c => c.Apply).Distinct().Count())
-                    {
-                        throw new BusinessErrorException("ISI.TaskSubType.Apply.CannotBeRepeated");
-                    }
                     if (groupDescList != null && groupDescList.Count > 0)
                     {
                         //bool isRow = processApplyList.Where(p => p.Type == group.Key.Type && p.Seq == group.Key.Seq && p.IsRow.HasValue && p.IsRow.Value).Count() > 1;

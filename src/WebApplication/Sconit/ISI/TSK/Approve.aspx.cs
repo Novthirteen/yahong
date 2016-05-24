@@ -10,8 +10,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using com.Sconit.Entity.MasterData;
-using com.Sconit.Service;
-using com.Sconit.ISI.Entity;
 public partial class ISI_TSK_Approve : System.Web.UI.Page
 {
     private ITaskMgrE TheTaskMgr
@@ -26,10 +24,6 @@ public partial class ISI_TSK_Approve : System.Web.UI.Page
     private IUserMgrE TheUserMgr
     {
         get { return ServiceLocator.GetService<IUserMgrE>("UserMgr.service"); }
-    }
-    private IGenericMgr TheGenericMgr
-    {
-        get { return ServiceLocator.GetService<IGenericMgr>("GenericMgr.service"); }
     }
     public string Type
     {
@@ -53,6 +47,17 @@ public partial class ISI_TSK_Approve : System.Web.UI.Page
             ViewState["TaskCode"] = value;
         }
     }
+    public string UserPwd
+    {
+        get
+        {
+            return (string)ViewState["UserPwd"];
+        }
+        set
+        {
+            ViewState["UserPwd"] = value;
+        }
+    }
     public string UserCode
     {
         get
@@ -62,17 +67,6 @@ public partial class ISI_TSK_Approve : System.Web.UI.Page
         set
         {
             ViewState["UserCode"] = value;
-        }
-    }
-    public string GUID
-    {
-        get
-        {
-            return (string)ViewState["GUID"];
-        }
-        set
-        {
-            ViewState["GUID"] = value;
         }
     }
     public User ApproveUser
@@ -90,30 +84,19 @@ public partial class ISI_TSK_Approve : System.Web.UI.Page
     {
         try
         {
-             GUID = Request.Params["GUID"];
-             if (string.IsNullOrEmpty(GUID))
-            {
-                Response.Write(TheLanguageMgr.TranslateMessage("ISI.Warning.IllegalOperation", "su"));
-                return;
-            }
-             var fastTrack = this.TheGenericMgr.FindById<FastTrack>(GUID);
-             if (fastTrack == null)
-             {
-                 Response.Write(TheLanguageMgr.TranslateMessage("ISI.Warning.IllegalOperation", "su"));
-                 return;
-             }
-             Type = Request.Params["Type"];
-             TaskCode = fastTrack.PK;
-             UserCode = fastTrack.UserCode;
-
+            TaskCode = Request.Params["TaskCode"];
+            UserCode = Request.Params["UserCode"];
+            UserPwd = Request.Params["UserPwd"];
+            Type = Request.Params["Type"];
             ApproveUser = null;
             btnApprove.Visible = false;
             if (!string.IsNullOrEmpty(TaskCode)
                        && !string.IsNullOrEmpty(UserCode)
+                       && !string.IsNullOrEmpty(UserPwd)
                        && !string.IsNullOrEmpty(Type))
             {
                 ApproveUser = TheUserMgr.CheckAndLoadUser(UserCode);
-                if (ApproveUser != null)
+                if (ApproveUser != null && ApproveUser.Password == UserPwd)
                 {
                     btnApprove.Visible = true;
                     if (Type == "1")
@@ -156,45 +139,27 @@ public partial class ISI_TSK_Approve : System.Web.UI.Page
         {
             try
             {
-                string msg = tbApprove.Text.Trim();
-               
                 //批准
                 if (Type == "1")
                 {
-                    if (string.IsNullOrEmpty(msg))
-                    {
-                        msg = "邮件快速批准";
-                    }
                     TheTaskMgr.ProcessByEmail(TaskCode, ISIConstants.ISI_LEVEL_APPROVE, tbApprove.Text.Trim(), ApproveUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN), ApproveUser);
                     Response.Write(TheLanguageMgr.TranslateMessage("ISI.TSK.Approve.Successfully", ApproveUser, new string[] { TaskCode }));
                 }
                 //退回
                 else if (Type == "2")
                 {
-                    if (string.IsNullOrEmpty(msg))
-                    {
-                        msg = "邮件快速退回";
-                    }
                     TheTaskMgr.ProcessByEmail(TaskCode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN, tbApprove.Text.Trim(), ApproveUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN), ApproveUser);
                     Response.Write(TheLanguageMgr.TranslateMessage("ISI.TSK.Return.Successfully", ApproveUser, new string[] { TaskCode }));
 
                 }//争议
                 else if (Type == "3")
                 {
-                    if (string.IsNullOrEmpty(msg))
-                    {
-                        msg = "邮件快速批准（争议）";
-                    }
                     TheTaskMgr.ProcessByEmail(TaskCode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE, tbApprove.Text.Trim(), ApproveUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN), ApproveUser);
                     Response.Write(TheLanguageMgr.TranslateMessage("ISI.TSK.Dispute.Successfully", ApproveUser, new string[] { TaskCode }));
 
                 }//不批准
                 else if (Type == "4")
                 {
-                    if (string.IsNullOrEmpty(msg))
-                    {
-                        msg = "邮件快速不批准";
-                    }
                     TheTaskMgr.ProcessByEmail(TaskCode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE, tbApprove.Text.Trim(), ApproveUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN), ApproveUser);
                     Response.Write(TheLanguageMgr.TranslateMessage("ISI.TSK.Refuse.Successfully", ApproveUser, new string[] { TaskCode }));
                 }

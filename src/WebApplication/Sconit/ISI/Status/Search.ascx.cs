@@ -42,17 +42,6 @@ public partial class ISI_Status_Search : SearchModuleBase
             ViewState["TaskCode"] = value;
         }
     }
-    public bool IsToDoList
-    {
-        get
-        {
-            return ViewState["IsToDoList"] != null ? (bool)ViewState["IsToDoList"] : false;
-        }
-        set
-        {
-            ViewState["IsToDoList"] = value;
-        }
-    }
 
     public event EventHandler SearchEvent;
 
@@ -68,10 +57,6 @@ public partial class ISI_Status_Search : SearchModuleBase
             tbTaskSubType.ServiceMethod = "GetWFSTaskSubType";
             tbTaskSubType.ServiceParameter = "string:#ddlType,string:" + this.CurrentUser.Code;
             ckIsWF.Visible = false;
-
-            cbExcludeAssignUser.Text = "${ISI.Status.CurrentApprovalUser}";
-            cbExcludeAssignUser.ToolTip = string.Empty;
-            ckApprove.Visible = false;
         }
         else
         {
@@ -80,29 +65,6 @@ public partial class ISI_Status_Search : SearchModuleBase
         tbTaskSubType.DataBind();
         if (!IsPostBack)
         {
-            lblType.Visible = this.CurrentUser.Code != "tiansu";
-            cbExcludeType.Visible = this.CurrentUser.Code == "tiansu";
-
-            lblTaskSubType.Visible = this.CurrentUser.Code != "tiansu";
-            cbExclude.Visible = this.CurrentUser.Code == "tiansu";
-
-            lblPhase.Visible = this.CurrentUser.Code != "tiansu";
-            cbPhase.Visible = this.CurrentUser.Code == "tiansu";
-
-            lblStatus.Visible = this.CurrentUser.Code != "tiansu";
-            cbStatus.Visible = this.CurrentUser.Code == "tiansu";
-
-
-            lblStartDate.Visible = this.CurrentUser.Code != "tiansu";
-            cbIsStatus.Visible = this.CurrentUser.Code == "tiansu";
-
-
-            lblCreateUser.Visible = this.CurrentUser.Code != "tiansu";
-            cbExcludeSubmitUser.Visible = this.CurrentUser.Code == "tiansu";
-
-            lblAssignUser.Visible = this.ModuleType != ISIConstants.ISI_TASK_TYPE_WORKFLOW && this.CurrentUser.Code != "tiansu";
-            cbExcludeAssignUser.Visible = this.ModuleType == ISIConstants.ISI_TASK_TYPE_WORKFLOW || this.CurrentUser.Code == "tiansu";
-
             this.btnNew.FunctionId = "Create" + this.ModuleType;
             this.ddlType.Items.RemoveAt(1);
 
@@ -111,12 +73,10 @@ public partial class ISI_Status_Search : SearchModuleBase
             if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT)
             {
                 this.cbPhase.Text = "${ISI.TSK.Phase}|${ISI.TSK.Seq}:";
-                this.lblPhase.Text = "${ISI.TSK.Phase}|${ISI.TSK.Seq}:";
                 //this.isProject.Visible = true;
                 this.tbSeq.Visible = true;
                 this.ddlPhase.Visible = true;
                 this.cbExclude.Text = "${ISI.TSK.Project}:";
-                this.lblTaskSubType.Text = "${ISI.TSK.Project}:";
                 this.rabOrderBy.Visible = true;
                 this.lblOrderBy.Visible = true;
                 //this.ltlType.Visible = false;
@@ -140,18 +100,8 @@ public partial class ISI_Status_Search : SearchModuleBase
                 {
                     this.ddlType.Items.RemoveAt(this.ddlType.Items.Count - 1);
                 }
-                else
-                {
-                    cbExcludeAssignUser.Checked = true;
-                }
                 this.cbPhase.Text = "${ISI.Status.Org}:";
-                this.lblPhase.Text = "${ISI.Status.Org}:";
                 this.astvMyTreeOrg.Visible = true;
-            }
-
-            if (this.IsToDoList)
-            {
-                DoSearch();
             }
         }
     }
@@ -171,6 +121,7 @@ public partial class ISI_Status_Search : SearchModuleBase
 
     protected override void DoSearch()
     {
+
         if (SearchEvent != null)
         {
             object[] param = CollectParam();
@@ -193,7 +144,26 @@ public partial class ISI_Status_Search : SearchModuleBase
             TheReportMgr.WriteToClient("Task.xls", objList, "Task.xls");
         }
     }
-
+    /// <summary> 
+    /// 计算本周的周一日期 
+    /// </summary> 
+    /// <returns></returns> 
+    public static DateTime GetMondayDate()
+    {
+        return DateTime.Parse(GetMondayDate(DateTime.Now).ToString("yyyy-MM-dd 00:00:00"));
+    }
+    /// <summary> 
+    /// 计算某日起始日期（礼拜一的日期） 
+    /// </summary> 
+    /// <param name="someDate">该周中任意一天</param> 
+    /// <returns>返回礼拜一日期，后面的具体时、分、秒和传入值相等</returns> 
+    public static DateTime GetMondayDate(DateTime someDate)
+    {
+        int i = someDate.DayOfWeek - DayOfWeek.Monday;
+        if (i == -1) i = 6;// i值 > = 0 ，因为枚举原因，Sunday排在最前，此时Sunday-Monday=-1，必须+7=6。 
+        TimeSpan ts = new TimeSpan(i, 0, 0, 0);
+        return someDate.Subtract(ts);
+    }
     private object[] CollectParam()
     {
         //string taskAddress = this.tbTaskAddress.Text.Trim();
@@ -221,26 +191,14 @@ public partial class ISI_Status_Search : SearchModuleBase
         string startDate = this.tbStartDate.Text != string.Empty ? this.tbStartDate.Text.Trim() : string.Empty;
         string endDate = this.tbEndDate.Text != string.Empty ? this.tbEndDate.Text.Trim() : string.Empty;
         DateTime now = DateTime.Now;
-        DateTime monday = ISIUtil.GetMondayDate();
+        DateTime monday = GetMondayDate();
 
         #region status
         IList<string> statusList = new List<string>();
-        if (IsToDoList)
+        List<ASTreeViewNode> nodes = this.astvMyTree.GetCheckedNodes();
+        foreach (ASTreeViewNode node in nodes)
         {
-            statusList.Add(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT);
-            statusList.Add(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE);
-            statusList.Add(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN);
-            statusList.Add(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE);
-            statusList.Add(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN);
-            statusList.Add(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS);
-        }
-        else
-        {
-            List<ASTreeViewNode> nodes = this.astvMyTree.GetCheckedNodes();
-            foreach (ASTreeViewNode node in nodes)
-            {
-                statusList.Add(node.NodeValue);
-            }
+            statusList.Add(node.NodeValue);
         }
         #endregion
 
@@ -305,8 +263,8 @@ public partial class ISI_Status_Search : SearchModuleBase
         }
         if (!string.IsNullOrEmpty(desc))
         {
-            selectCriteria.Add(Expression.Or(Expression.Like("TaskCode", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("BackYards", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc1", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc2", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Subject", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("SupplierCode", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("SupplierName", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("ExpectedResults", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("FailureMode", desc, MatchMode.Anywhere), Expression.Like("FailureModeDesc", desc, MatchMode.Anywhere)))))))))));
-            selectCountCriteria.Add(Expression.Or(Expression.Like("TaskCode", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("BackYards", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc1", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc2", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Subject", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("SupplierCode", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("SupplierName", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("ExpectedResults", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("FailureMode", desc, MatchMode.Anywhere), Expression.Like("FailureModeDesc", desc, MatchMode.Anywhere)))))))))));
+            selectCriteria.Add(Expression.Or(Expression.Like("StatusDesc", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("TaskCode", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("BackYards", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc1", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc2", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Comment", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Subject", desc, MatchMode.Anywhere), Expression.Like("ExpectedResults", desc, MatchMode.Anywhere)))))))));
+            selectCountCriteria.Add(Expression.Or(Expression.Like("StatusDesc", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("TaskCode", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("BackYards", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc1", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Desc2", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Comment", desc, MatchMode.Anywhere), Expression.Or(Expression.Like("Subject", desc, MatchMode.Anywhere), Expression.Like("ExpectedResults", desc, MatchMode.Anywhere)))))))));
         }
         if (!string.IsNullOrEmpty(flag))
         {
@@ -333,9 +291,10 @@ public partial class ISI_Status_Search : SearchModuleBase
             commentSubCriteria.Add(Expression.Eq("CreateUser", commentUser));
             commentSubCriteria.Add(Expression.Ge("CreateDate", monday));
             commentSubCriteria.SetProjection(Projections.ProjectionList().Add(Projections.GroupProperty("TaskCode")));
-            selectCriteria.Add(Subqueries.PropertyIn("TaskCode", commentSubCriteria));
-            selectCountCriteria.Add(Subqueries.PropertyIn("TaskCode", commentSubCriteria));
+            selectCriteria.Add(Expression.Or(Subqueries.PropertyIn("TaskCode", commentSubCriteria), Expression.Like("CommentCreateUser", commentUser, MatchMode.Anywhere)));
+            selectCountCriteria.Add(Expression.Or(Subqueries.PropertyIn("TaskCode", commentSubCriteria), Expression.Like("CommentCreateUser", commentUser, MatchMode.Anywhere)));
         }
+
 
         if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT)
         {
@@ -361,7 +320,7 @@ public partial class ISI_Status_Search : SearchModuleBase
                 selectCountCriteria.Add(Expression.Eq("Seq", seq));
             }
         }
-        else if (!this.IsToDoList)
+        else
         {
             #region org
             IList<string> orgList = new List<string>();
@@ -439,63 +398,15 @@ public partial class ISI_Status_Search : SearchModuleBase
         }
         if (!string.IsNullOrEmpty(assignUser))
         {
-
-            if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_WORKFLOW)
+            if (cbExcludeAssignUser.Checked)
             {
-                if (cbExcludeAssignUser.Checked)
-                {
-                    //当前审批人
-                    selectCriteria.Add(Expression.Or(Expression.Eq("CurrentApprovalUser", assignUser),
-                                                                                         Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                        Expression.Or(Expression.Eq("CurrentApprovalUser", assignUser),
-                                                                                                                      Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                    Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                  Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere)))))));
-
-                    selectCountCriteria.Add(Expression.Or(Expression.Eq("CurrentApprovalUser", assignUser),
-                                                                                         Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                        Expression.Or(Expression.Eq("CurrentApprovalUser", assignUser),
-                                                                                                                      Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                    Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                  Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere)))))));
-
-
-                }
-                else
-                {
-                    //审批列表
-                    selectCriteria.Add(
-                            Expression.And(Expression.Eq("IsWF", true),
-                                           Expression.Or(Expression.Eq("ApprovalUser", assignUser),
-                                                         Expression.Or(Expression.Like("ApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                        Expression.Or(Expression.Eq("ApprovalUser", assignUser),
-                                                                                      Expression.Or(Expression.Like("ApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                    Expression.Or(Expression.Like("ApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                  Expression.Like("ApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))));
-                    selectCountCriteria.Add(
-                                Expression.And(Expression.Eq("IsWF", true),
-                                               Expression.Or(Expression.Eq("ApprovalUser", assignUser),
-                                                             Expression.Or(Expression.Like("ApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                            Expression.Or(Expression.Eq("ApprovalUser", assignUser),
-                                                                                          Expression.Or(Expression.Like("ApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                        Expression.Or(Expression.Like("ApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                      Expression.Like("ApprovalUser", ISIConstants.ISI_USER_SEPRATOR + assignUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))));
-
-
-                }
+                selectCriteria.Add(Expression.Not(Expression.Eq("AssignUser", assignUser)));
+                selectCountCriteria.Add(Expression.Not(Expression.Eq("AssignUser", assignUser)));
             }
             else
             {
-                if (cbExcludeAssignUser.Checked)
-                {
-                    selectCriteria.Add(Expression.Not(Expression.Eq("AssignUser", assignUser)));
-                    selectCountCriteria.Add(Expression.Not(Expression.Eq("AssignUser", assignUser)));
-                }
-                else
-                {
-                    selectCriteria.Add(Expression.Eq("AssignUser", assignUser));
-                    selectCountCriteria.Add(Expression.Eq("AssignUser", assignUser));
-                }
+                selectCriteria.Add(Expression.Eq("AssignUser", assignUser));
+                selectCountCriteria.Add(Expression.Eq("AssignUser", assignUser));
             }
         }
         if (!isStatus)
@@ -509,20 +420,6 @@ public partial class ISI_Status_Search : SearchModuleBase
             {
                 selectCriteria.Add(Expression.Lt("SubmitDate", DateTime.Parse(endDate).AddDays(1).AddMilliseconds(-1)));
                 selectCountCriteria.Add(Expression.Lt("SubmitDate", DateTime.Parse(endDate).AddDays(1).AddMilliseconds(-1)));
-            }
-        }else
-        {
-            if (!string.IsNullOrEmpty(startDate))
-            {
-                selectCriteria.Add(Expression.Le("SubmitDate", DateTime.Parse(startDate)));
-                selectCountCriteria.Add(Expression.Le("SubmitDate", DateTime.Parse(startDate)));
-                selectCriteria.Add(Expression.Ge("StatusDate", DateTime.Parse(startDate)));
-                selectCountCriteria.Add(Expression.Ge("StatusDate", DateTime.Parse(startDate)));                
-            }
-            if (!string.IsNullOrEmpty(endDate))
-            {
-                selectCriteria.Add(Expression.Le("SubmitDate", DateTime.Parse(endDate).AddDays(1).AddMilliseconds(-1)));
-                selectCountCriteria.Add(Expression.Le("SubmitDate", DateTime.Parse(endDate).AddDays(1).AddMilliseconds(-1)));
             }
         }
         if (!string.IsNullOrEmpty(startUser))
@@ -604,8 +501,34 @@ public partial class ISI_Status_Search : SearchModuleBase
             else
             {
                 #region 只查找第一责任人
-                selectCriteria.Add(Expression.Eq("FirstUser", startUser));
-                selectCountCriteria.Add(Expression.Eq("FirstUser", startUser));
+                selectCriteria.Add(
+                        Expression.Or(
+                            Expression.And(Expression.Or(Expression.IsNull("SchedulingStartUser"), Expression.Eq("SchedulingStartUser", string.Empty)),
+                                           Expression.Or(Expression.Eq("AssignStartUser", startUser),
+                                                         Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
+                                                                        Expression.Or(Expression.Eq("AssignStartUser", startUser),
+                                                                                      Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere)
+                                                                                                    )))),
+                            Expression.And(Expression.And(Expression.IsNotNull("SchedulingStartUser"), Expression.Not(Expression.Eq("SchedulingStartUser", string.Empty))),
+                                           Expression.Or(Expression.Eq("SchedulingStartUser", startUser),
+                                                         Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
+                                                                        Expression.Or(Expression.Eq("SchedulingStartUser", startUser),
+                                                                                      Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere)
+                                                                                                    ))))));
+                selectCountCriteria.Add(
+                        Expression.Or(
+                            Expression.And(Expression.Or(Expression.IsNull("SchedulingStartUser"), Expression.Eq("SchedulingStartUser", string.Empty)),
+                                           Expression.Or(Expression.Eq("AssignStartUser", startUser),
+                                                         Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
+                                                                        Expression.Or(Expression.Eq("AssignStartUser", startUser),
+                                                                                      Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere)
+                                                                                                    )))),
+                            Expression.And(Expression.And(Expression.IsNotNull("SchedulingStartUser"), Expression.Not(Expression.Eq("SchedulingStartUser", string.Empty))),
+                                           Expression.Or(Expression.Eq("SchedulingStartUser", startUser),
+                                                         Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
+                                                                        Expression.Or(Expression.Eq("SchedulingStartUser", startUser),
+                                                                                      Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + startUser + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere)
+                                                                                                    ))))));
                 #endregion
             }
         }
@@ -637,80 +560,8 @@ public partial class ISI_Status_Search : SearchModuleBase
         }
 
         #region 权限的过滤
-        if (this.IsToDoList)
-        {
-            selectCriteria.Add(Expression.Or(
-                                Expression.And(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN),
-                                                Expression.Or(Expression.Eq("SubmitUser", this.CurrentUser.Code), Expression.Eq("CreateUser", this.CurrentUser.Code))),
-                //当前审批人
-                                    Expression.Or(Expression.And(Expression.Or(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT), Expression.Or(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE), Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE))),
-
-                                                                            Expression.Or(Expression.Eq("CurrentApprovalUser", this.CurrentUser.Code),
-                                                                                         Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                        Expression.Or(Expression.Eq("CurrentApprovalUser", this.CurrentUser.Code),
-                                                                                                                      Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                    Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                  Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))),
-
-
-                                                        //执行人(未控制第一执行人)
-                                                        Expression.And(Expression.Or(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN), Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS))
-                                                        ,
-                                                        Expression.Or(
-                                                            Expression.And(Expression.Or(Expression.IsNull("SchedulingStartUser"), Expression.Eq("SchedulingStartUser", string.Empty)),
-                                                                           Expression.Or(Expression.Eq("AssignStartUser", this.CurrentUser.Code),
-                                                                                         Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                        Expression.Or(Expression.Eq("AssignStartUser", this.CurrentUser.Code),
-                                                                                                                      Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                    Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                  Expression.Like("AssignStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))),
-                                                            Expression.And(Expression.And(Expression.IsNotNull("SchedulingStartUser"), Expression.Not(Expression.Eq("SchedulingStartUser", string.Empty))),
-                                                                           Expression.Or(Expression.Eq("SchedulingStartUser", this.CurrentUser.Code),
-                                                                                         Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                        Expression.Or(Expression.Eq("SchedulingStartUser", this.CurrentUser.Code),
-                                                                                                                      Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                    Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                  Expression.Like("SchedulingStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))))))));
-
-
-            selectCountCriteria.Add(Expression.Or(
-                                    Expression.And(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN),
-                                                    Expression.Or(Expression.Eq("SubmitUser", this.CurrentUser.Code), Expression.Eq("CreateUser", this.CurrentUser.Code))),
-                //当前审批人
-                                        Expression.Or(Expression.And(Expression.Or(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT), Expression.Or(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE), Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE))),
-
-                                                                                Expression.Or(Expression.Eq("CurrentApprovalUser", this.CurrentUser.Code),
-                                                                                             Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                            Expression.Or(Expression.Eq("CurrentApprovalUser", this.CurrentUser.Code),
-                                                                                                                          Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                        Expression.Or(Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                      Expression.Like("CurrentApprovalUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))),
-
-
-                                                            //执行人(未控制第一执行人)
-                                                            Expression.And(Expression.Or(Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN), Expression.Eq("Status", ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS))
-                                                            ,
-                                                            Expression.Or(
-                                                                Expression.And(Expression.Or(Expression.IsNull("SchedulingStartUser"), Expression.Eq("SchedulingStartUser", string.Empty)),
-                                                                               Expression.Or(Expression.Eq("AssignStartUser", this.CurrentUser.Code),
-                                                                                             Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                            Expression.Or(Expression.Eq("AssignStartUser", this.CurrentUser.Code),
-                                                                                                                          Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                        Expression.Or(Expression.Like("AssignStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                      Expression.Like("AssignStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))),
-                                                                Expression.And(Expression.And(Expression.IsNotNull("SchedulingStartUser"), Expression.Not(Expression.Eq("SchedulingStartUser", string.Empty))),
-                                                                               Expression.Or(Expression.Eq("SchedulingStartUser", this.CurrentUser.Code),
-                                                                                             Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                            Expression.Or(Expression.Eq("SchedulingStartUser", this.CurrentUser.Code),
-                                                                                                                          Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_LEVEL_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                        Expression.Or(Expression.Like("SchedulingStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_LEVEL_SEPRATOR, MatchMode.Anywhere),
-                                                                                                                                                      Expression.Like("SchedulingStartUser", ISIConstants.ISI_USER_SEPRATOR + this.CurrentUser.Code + ISIConstants.ISI_USER_SEPRATOR, MatchMode.Anywhere))))))))))));
-
-
-
-        }
-        else if (isMine || (!this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN)
-           && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN)))
+        if (isMine || (!this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN)
+                && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN)))
         {
             if (isMine || !(CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_VIEW)
                     || CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_CLOSE)
@@ -791,13 +642,13 @@ public partial class ISI_Status_Search : SearchModuleBase
         this.astvMyTree.RootNode.ChildNodes[4].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[5].CheckedState = ASTreeViewCheckboxState.Checked;
 
-        //this.astvMyTree.RootNode.ChildNodes[7].CheckedState = ASTreeViewCheckboxState.Checked;
+        this.astvMyTree.RootNode.ChildNodes[7].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[8].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[9].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[10].CheckedState = ASTreeViewCheckboxState.Checked;
 
-        this.astvMyTree.InitialDropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
-        this.astvMyTree.DropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
+        this.astvMyTree.InitialDropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[7].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
+        this.astvMyTree.DropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[7].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
 
         IList<CodeMaster> orgList = this.TheCodeMasterMgr.GetCachedCodeMasterAsc(ISIConstants.CODE_MASTER_ISI_ORG);
         foreach (CodeMaster org in orgList)

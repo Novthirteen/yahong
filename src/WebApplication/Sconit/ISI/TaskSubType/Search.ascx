@@ -60,24 +60,13 @@
         <tr>
             <td class="td01"></td>
             <td class="td02" colspan="3">
-                <asp:CheckBox runat="server" ID="cbIsActive" Text="${Common.IsActive}" Checked="true" />
-                <asp:CheckBox runat="server" ID="cbIsCost" Text="${ISI.TaskSubType.IsCost}" />
-                <asp:CheckBox runat="server" ID="cbIsCostCenter" Text="${ISI.TaskSubType.IsCostCenter}" />                
-                <asp:CheckBox runat="server" ID="cbIsBudget" Text="${ISI.TaskSubType.IsBudget}" />
                 <asp:CheckBox runat="server" ID="cbIsWF" Text="${ISI.TaskSubType.IsWF}" />
-                <asp:CheckBox runat="server" ID="cbIsTrace" Text="${ISI.TaskSubType.IsTrace}" />
                 <asp:CheckBox runat="server" ID="cbIsApply" Text="${ISI.TaskSubType.IsApply}" />
-                <asp:CheckBox runat="server" ID="cbIsAmount" Text="${ISI.TaskSubType.IsAmount}" />
-                <asp:CheckBox runat="server" ID="cbIsAmountDetail" Text="${ISI.TaskSubType.IsAmountDetail}" />
-            </td>
-        </tr>
-        <tr>
-            <td class="td01"></td>
-            <td class="td02" colspan="3">
                 <asp:CheckBox runat="server" ID="cbIsPrint" Text="${ISI.TaskSubType.IsPrint}" />
                 <asp:CheckBox runat="server" ID="cbIsAssignUser" Text="${ISI.TaskSubType.IsAssignUser}" />
                 <asp:CheckBox runat="server" ID="cbIsCtrl" Text="${ISI.TaskSubType.IsCtrl}" />
                 <asp:CheckBox runat="server" ID="cbIsRemoveForm" Text="${ISI.TaskSubType.IsRemoveForm}" />
+                <asp:CheckBox runat="server" ID="cbIsCostCenter" Text="${ISI.TaskSubType.IsCostCenter}" />
                 <asp:CheckBox runat="server" ID="cbIsAttachment" Text="${ISI.TaskSubType.IsAttachment}" />
             </td>
         </tr>
@@ -87,7 +76,7 @@
                 <div class="buttons">
                     <asp:Button ID="btnSearch" runat="server" Text="${Common.Button.Search}" OnClick="btnSearch_Click"
                         CssClass="query" />
-                    <cc1:Button ID="btnNew" runat="server" Text="${Common.Button.New}" OnClick="btnNew_Click"
+                    <asp:Button ID="btnNew" runat="server" Text="${Common.Button.New}" OnClick="btnNew_Click"
                         CssClass="add" />
                 </div>
             </td>

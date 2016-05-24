@@ -88,7 +88,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
     {
         get
         {
-            return ViewState["IsApply"] == null ? false : (bool)ViewState["IsApply"];
+            return (bool)ViewState["IsApply"];
         }
         set
         {
@@ -99,22 +99,11 @@ public partial class ISI_TSK_Edit : EditModuleBase
     {
         get
         {
-            return ViewState["IsWF"] == null ? false : (bool)ViewState["IsWF"];
+            return (bool)ViewState["IsWF"];
         }
         set
         {
             ViewState["IsWF"] = value;
-        }
-    }
-    public bool IsAccountCtrl
-    {
-        get
-        {
-            return ViewState["IsAccountCtrl"] == null ? false : (bool)ViewState["IsAccountCtrl"];
-        }
-        set
-        {
-            ViewState["IsAccountCtrl"] = value;
         }
     }
     public int? CurrentLevel
@@ -160,30 +149,14 @@ public partial class ISI_TSK_Edit : EditModuleBase
     private void PageCleanup()
     {
         this.TaskCode = null;
-        this.CurrentTaskSubType = null;
-        this.IsApply = false;
-        this.IsWF = false;
-        this.FileExtensions = null;
-        this.ContentLength = 0;
+        CurrentTaskSubType = null;
+        IsApply = false;
+        IsWF = false;
+        FileExtensions = null;
+        ContentLength = 0;
         this.TaskApplyList = null;
-        var ucCostList = (ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList");
-        ucCostList.PageCleanup();
-        ucCostList.Visible = false;
     }
-    protected void tbCostCenter_TextChanged(Object sender, EventArgs e)
-    {
-        try
-        {
-            var ucCostList = (ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList");
-            Controls_TextBox tbCostCenter = (Controls_TextBox)this.FV_ISI.FindControl("tbCostCenter");
-            ucCostList.CostCenter = tbCostCenter.Text;
-            ucCostList.InitPageParameter(ucCostList.TheCostList);
-        }
-        catch (BusinessErrorException ex)
-        {
-            this.ShowErrorMessage(ex);
-        }
-    }
+
     protected void tbTaskSubType_TextChanged(Object sender, EventArgs e)
     {
         try
@@ -192,25 +165,11 @@ public partial class ISI_TSK_Edit : EditModuleBase
             if (!string.IsNullOrEmpty(tbTaskSubType.Text.Trim()) && (string.IsNullOrEmpty(this.CurrentTaskSubType) || this.CurrentTaskSubType != tbTaskSubType.Text))
             {
                 this.CurrentTaskSubType = tbTaskSubType.Text.Trim();
-                var taskSubType = TheTaskSubTypeMgr.LoadTaskSubType(CurrentTaskSubType);
-                if (taskSubType != null)
+                //var taskSubType = TheTaskSubTypeMgr.LoadTaskSubType(CurrentTaskSubType);
+
+                if (this.IsApply && !string.IsNullOrEmpty(CurrentTaskSubType))
                 {
-                    if (!string.IsNullOrEmpty(taskSubType.CostCenter))
-                    {
-                        ((Controls_TextBox)this.FV_ISI.FindControl("tbCostCenter")).Text = taskSubType.CostCenter;
-                    }
-                    if (!string.IsNullOrEmpty(taskSubType.Account1))
-                    {
-                        ((Controls_TextBox)this.FV_ISI.FindControl("tbAccount1")).Text = taskSubType.Account1;
-                    }
-                    if (!string.IsNullOrEmpty(taskSubType.Account2))
-                    {
-                        ((Controls_TextBox)this.FV_ISI.FindControl("tbAccount2")).Text = taskSubType.Account2;
-                    }
-                    if (this.IsApply && !string.IsNullOrEmpty(CurrentTaskSubType))
-                    {
-                        UpdateTaskApply(this.IsApply, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE, null, CurrentTaskSubType, true);
-                    }
+                    UpdateTaskApply(this.IsApply, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE, null, CurrentTaskSubType, true);
                 }
             }
         }
@@ -231,7 +190,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
     protected void GenerateGynamic(bool enabled)
     {
-        if (IsApply && TaskApplyList != null && TaskApplyList.Count > 0)
+        if (TaskApplyList != null && TaskApplyList.Count > 0)
         {
             HtmlTable taskTable = (HtmlTable)this.FV_ISI.FindControl("taskTable");
             HtmlTableRow tr = null;
@@ -471,25 +430,13 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
         if (taskApply.Type == ISIConstants.CODE_MASTER_WFS_TYPE_DATE)
         {
-            if (enabled)
-            {
-                tb.Attributes.Add("onclick", "WdatePicker({dateFmt:'yyyy-MM-dd'})");
-            }
-            else
-            {
-                tb.Attributes.Remove("onclick");
-            }
+            tb.Attributes.Add("onclick", "WdatePicker({dateFmt:'yyyy-MM-dd'})");
+
         }
         else if (taskApply.Type == ISIConstants.CODE_MASTER_WFS_TYPE_DATETIME)
         {
-            if (enabled)
-            {
-                tb.Attributes.Add("onclick", "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})");
-            }
-            else
-            {
-                tb.Attributes.Remove("onclick");
-            }
+            tb.Attributes.Add("onclick", "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})");
+
         }
 
         tc2.Controls.Add(tb);
@@ -562,12 +509,6 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        var ucCostList = ((ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList"));
-        if (ucCostList != null)
-        {
-            ucCostList.EditEvent += new System.EventHandler(this.Edit_Render);
-        }
-
         if (!IsPostBack)
         {
             FileExtensions = this.TheEntityPreferenceMgr.LoadEntityPreference(ISIConstants.ISI_FILEEXTENSION).Value;
@@ -599,60 +540,10 @@ public partial class ISI_TSK_Edit : EditModuleBase
             UpdateView(task);
         }
     }
-    private void UpdateAccount(bool isCostCenter)
-    {
-        UpdateAccount(null, isCostCenter, false);
-    }
-    private void UpdateAccount(TaskMstr task, bool isCostCenter, bool enable)
-    {
-        this.FV_ISI.FindControl("trAccount").Visible = isCostCenter;
-        if (isCostCenter)
-        {
-            var tbAccount1 = (Controls_TextBox)this.FV_ISI.FindControl("tbAccount1");
-            var tbAccount2 = (Controls_TextBox)this.FV_ISI.FindControl("tbAccount2");
-            var rfvAccount1 = (RequiredFieldValidator)this.FV_ISI.FindControl("rfvAccount1");
-            var rfvAccount2 = (RequiredFieldValidator)this.FV_ISI.FindControl("rfvAccount2");
-            var rtbAccount1 = this.FV_ISI.FindControl("rtbAccount1");
-            var rtbAccount2 = this.FV_ISI.FindControl("rtbAccount2");
-            if (enable)
-            {
-                tbAccount1.Visible = true;
-                tbAccount2.Visible = true;
-                tbAccount1.CssClass = "inputRequired";
-                tbAccount2.CssClass = "inputRequired";
-                rfvAccount1.Enabled = true;
-                rfvAccount2.Enabled = true;
-                rtbAccount1.Visible = false;
-                rtbAccount2.Visible = false;
-
-                if (!string.IsNullOrEmpty(task.Account1))
-                {
-                    tbAccount1.Text = task.Account1;
-                }
-
-                if (!string.IsNullOrEmpty(task.Account2))
-                {
-                    tbAccount2.Text = task.Account2;
-                }
-            }
-            else
-            {
-                tbAccount1.Visible = false;
-                tbAccount2.Visible = false;
-                tbAccount1.CssClass = string.Empty;
-                tbAccount2.CssClass = string.Empty;
-                rfvAccount1.Enabled = false;
-                rfvAccount2.Enabled = false;
-                rtbAccount1.Visible = true;
-                rtbAccount2.Visible = true;
-            }
-        }
-    }
 
     private void UpdateView(TaskMstr task)
     {
         TaskSubType taskSubType = task.TaskSubType;
-        this.IsAccountCtrl = false;
         string isiStatus = task.Status;
         bool isISIAdmin = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN);
         bool isWFAdmin = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_WF_TASK_VALUE_WFADMIN);
@@ -667,12 +558,6 @@ public partial class ISI_TSK_Edit : EditModuleBase
         }
 
         UpdateTaskApply(task.IsApply, task.Status, task.Level, task.TaskSubType.Code, isWFAdmin || isISIAdmin || task.CreateUser == this.CurrentUser.Code || task.SubmitUser == this.CurrentUser.Code);
-        var ucCostList = (ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList");
-        ucCostList.PageAction = BusinessConstants.PAGE_LIST_ACTION;
-        //成本中心
-        this.FV_ISI.FindControl("tbCostCenter").Visible = taskSubType.IsCostCenter && isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE;
-        this.FV_ISI.FindControl("rfvCostCenter").Visible = taskSubType.IsCostCenter && isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE;
-        this.FV_ISI.FindControl("rtbCostCenter").Visible = !(taskSubType.IsCostCenter && isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE);
 
         #region 创建、退回 状态
         if (isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE || isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
@@ -691,7 +576,6 @@ public partial class ISI_TSK_Edit : EditModuleBase
             this.FV_ISI.FindControl("btnRefuse").Visible = false;
             this.FV_ISI.FindControl("btnReturn").Visible = false;
             this.FV_ISI.FindControl("btnPrint").Visible = false;
-
             //禁用所有组件
             SetEnableBase(false);
             SetEnableFlow(false);
@@ -701,27 +585,20 @@ public partial class ISI_TSK_Edit : EditModuleBase
             Page.ClientScript.RegisterStartupScript(GetType(), @"method", " <script language='javascript' type='text/javascript'>HideComment();</script>");
 
             //超级管理员与创建人
-            if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, isCloser, this.CurrentUser.Code))
+            if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code))
             {
-                ucCostList.PageAction = BusinessConstants.PAGE_NEW_ACTION;
                 this.FV_ISI.FindControl("btnSave").Visible = true;
                 this.FV_ISI.FindControl("btnSubmit").Visible = true;
                 this.FV_ISI.FindControl("btnDelete").Visible = isiStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN;
                 this.FV_ISI.FindControl("btnCancel").Visible = isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN;
                 SetEnableBase(true);
                 SetEnableFlow(true);
-                //UpdateAccount(task, taskSubType.IsCostCenter && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION);
-                UpdateAccount(task, taskSubType.IsCostCenter, true);
-            }
-            else
-            {
-                UpdateAccount(taskSubType.IsCostCenter);
             }
         }
         #endregion
 
         bool isAssign = false;
-        #region  提交、批准 状态
+        #region  提交状态
         if (isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT || isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE)
         {
             this.FV_ISI.FindControl("btnReturn").Visible = false;
@@ -737,7 +614,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
             this.FV_ISI.FindControl("btnCancel").Visible = false;
             this.FV_ISI.FindControl("btnDispute").Visible = false;
             this.FV_ISI.FindControl("fsApprove").Visible = false;
-            this.FV_ISI.FindControl("btnPrint").Visible = isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE && taskSubType.IsPrint;
+            this.FV_ISI.FindControl("btnPrint").Visible = taskSubType.IsPrint;
 
             //禁用所有组件
             SetEnableBase(false);
@@ -746,14 +623,14 @@ public partial class ISI_TSK_Edit : EditModuleBase
             {
                 //审批人
                 string costCenter = task.TaskSubType.Code;
-                if (!string.IsNullOrEmpty(task.CostCenterCode))
+                if (task.CostCenter != null)
                 {
-                    costCenter = task.CostCenterCode;
+                    costCenter = task.CostCenter.Code;
                 }
                 string assignUser = this.TheHqlMgr.FindAll<string>("select tst.AssignUser from TaskSubType tst where tst.Code='" + costCenter + "'").FirstOrDefault();
                 isAssign = taskSubType.IsAssignUser && (isWFAdmin || ISIUtil.Contains(assignUser, this.CurrentUser.Code));
             }
-            else //if (!task.IsWF || task.IsWF && task.IsTrace)
+            else
             {
                 isAssign = this.TheTaskMgr.HasAssignPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, this.CurrentUser.Code);
             }
@@ -770,10 +647,9 @@ public partial class ISI_TSK_Edit : EditModuleBase
                 this.FV_ISI.FindControl("btnReturn").Visible = true;
                 this.FV_ISI.FindControl("fsApprove").Visible = true;
                 this.FV_ISI.FindControl("btnSave").Visible = true;
-                //ucCostList.PageAction = BusinessConstants.PAGE_EDIT_ACTION;
                 SetEnableFlow(true);
             }
-            else if (isAssign && task.IsTrace)
+            else if (isAssign)
             {
                 this.FV_ISI.FindControl("btnAssign").Visible = true;
                 this.FV_ISI.FindControl("btnSave").Visible = true;
@@ -785,27 +661,20 @@ public partial class ISI_TSK_Edit : EditModuleBase
                 ((TextBox)this.FV_ISI.FindControl("tbPlanCompleteDate")).CssClass = string.Empty;
             }
 
-            if ((isISIAdmin
+            if (isISIAdmin
                      || isTaskFlowAdmin
                      || isWFAdmin
-                     || task.CreateUser == this.CurrentUser.Code
-                                    || task.SubmitUser == this.CurrentUser.Code) && task.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE)
+                     || ((task.CreateUser == this.CurrentUser.Code
+                                    || task.SubmitUser == this.CurrentUser.Code) && task.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE))
             {
-                ucCostList.PageAction = BusinessConstants.PAGE_EDIT_ACTION;
                 SetEnableBase(true);
                 SetEnableFlow(true);
                 this.FV_ISI.FindControl("btnSave").Visible = true;
                 this.FV_ISI.FindControl("tbWorkHoursUser").Visible = isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT;
                 this.FV_ISI.FindControl("rtbWorkHoursUser").Visible = isiStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT;
-                UpdateAccount(task, taskSubType.IsCostCenter, ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION);
             }
             else
             {
-                if (wfPermission.IsAccountCtrl)
-                {
-                    ucCostList.PageAction = BusinessConstants.PAGE_EDIT_ACTION;
-                }
-                UpdateAccount(task, taskSubType.IsCostCenter, wfPermission.IsAccountCtrl && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION);
                 this.FV_ISI.FindControl("tbWorkHoursUser").Visible = false;
                 this.FV_ISI.FindControl("rtbWorkHoursUser").Visible = true;
                 /*
@@ -819,6 +688,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
             if (task.Level == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
             {
                 ((TextBox)this.FV_ISI.FindControl("tbPlanStartDate")).Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+
             }
 
             if (!isISIAdmin && !isTaskFlowAdmin)
@@ -836,28 +706,19 @@ public partial class ISI_TSK_Edit : EditModuleBase
             //禁用所有组件
             SetEnableBase(false);
             SetEnableFlow(false);
-            this.FV_ISI.FindControl("btnSave").Visible = false;
+
             //审批人
             WFPermission wfPermission = this.TheTaskMgr.ProcessPermission(isiStatus, task.Code, task.Level, isWFAdmin, this.CurrentUser.Code);
             //上一步审批人
             WFPermission wfPrePermission = this.TheTaskMgr.PreProcessPermission(isiStatus, task.Code, task.PreLevel, task.Level, isWFAdmin, this.CurrentUser.Code);
 
-            //控制科目
-            this.IsAccountCtrl = wfPermission.IsAccountCtrl;
-            if (wfPermission.IsAccountCtrl)
-            {
-                ucCostList.PageAction = BusinessConstants.PAGE_EDIT_ACTION;
-            }
-            UpdateAccount(task, taskSubType.IsCostCenter, wfPermission.IsAccountCtrl && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION);
-
             if (wfPermission.IsApprove || wfPrePermission.IsApprove)
             {
                 this.FV_ISI.FindControl("btnApprove").Visible = wfPermission.IsApprove || (wfPrePermission.IsApprove && (wfPrePermission.IsCtrl || isiStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE));
-                this.FV_ISI.FindControl("btnDispute").Visible = wfPermission.IsApprove && task.Level != ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE || (!wfPermission.IsApprove && wfPrePermission.IsApprove && (wfPrePermission.IsCtrl || isiStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE));
+                this.FV_ISI.FindControl("btnDispute").Visible = wfPermission.IsApprove && task.Level != ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE || (wfPrePermission.IsApprove && (wfPrePermission.IsCtrl || isiStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE));
                 this.FV_ISI.FindControl("btnRefuse").Visible = wfPermission.IsApprove && task.Level == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE;
                 this.FV_ISI.FindControl("btnReturn").Visible = true;
                 this.FV_ISI.FindControl("fsApprove").Visible = true;
-                this.FV_ISI.FindControl("btnSave").Visible = taskSubType.IsCostCenter;
                 if (wfPermission.IsCtrl || wfPrePermission.IsCtrl)
                 {
                     this.FV_ISI.FindControl("ctrlTR").Visible = wfPermission.IsCtrl || wfPrePermission.IsCtrl;
@@ -884,8 +745,8 @@ public partial class ISI_TSK_Edit : EditModuleBase
             this.FV_ISI.FindControl("btnClose").Visible = false;
             this.FV_ISI.FindControl("btnComplete").Visible = false;
             this.FV_ISI.FindControl("btnStart").Visible = false;
-            //this.FV_ISI.FindControl("btnPrint").Visible = taskSubType.IsPrint;
-            this.FV_ISI.FindControl("btnPrint").Visible = false;
+            this.FV_ISI.FindControl("btnSave").Visible = false;
+            this.FV_ISI.FindControl("btnPrint").Visible = taskSubType.IsPrint;
             this.FV_ISI.FindControl("tbWorkHoursUser").Visible = false;
             this.FV_ISI.FindControl("rtbWorkHoursUser").Visible = true;
         }
@@ -908,8 +769,8 @@ public partial class ISI_TSK_Edit : EditModuleBase
             this.FV_ISI.FindControl("btnPrint").Visible = taskSubType.IsPrint;
             SetEnableBase(false);
             SetEnableFlow(false);
-            UpdateAccount(taskSubType.IsCostCenter);
-            if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, isCloser, this.CurrentUser.Code))
+
+            if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code))
             {
                 this.FV_ISI.FindControl("btnStart").Visible = true;
             }
@@ -927,8 +788,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
             if (isISIAdmin || isTaskFlowAdmin
                     || task.CreateUser == this.CurrentUser.Code
-                    || task.SubmitUser == this.CurrentUser.Code
-                    || (task.Type == ISIConstants.ISI_TASK_TYPE_IMPROVE && task.CreateUser != this.CurrentUser.Code && (ISIUtil.Contains(taskSubType.AssignUser, this.CurrentUser.Code) || ISIUtil.Contains(taskSubType.AssignUpUser, this.CurrentUser.Code))))
+                    || task.SubmitUser == this.CurrentUser.Code)
             {
                 this.FV_ISI.FindControl("btnSave").Visible = true;
                 this.FV_ISI.FindControl("btnCancel").Visible = true;
@@ -967,8 +827,8 @@ public partial class ISI_TSK_Edit : EditModuleBase
             this.FV_ISI.FindControl("btnPrint").Visible = taskSubType.IsPrint;
             SetEnableBase(false);
             SetEnableFlow(false);
-            UpdateAccount(taskSubType.IsCostCenter);
-            if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, isCloser, this.CurrentUser.Code))
+
+            if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code))
             {
                 this.FV_ISI.FindControl("btnComplete").Visible = true;
             }
@@ -1033,9 +893,9 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
             SetEnableBase(false);
             SetEnableFlow(false);
-            UpdateAccount(taskSubType.IsCostCenter);
+
             if (isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE
-                    && this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, isCloser, this.CurrentUser.Code))
+                    && this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code))
             {
                 this.FV_ISI.FindControl("btnReject").Visible = true;
                 this.FV_ISI.FindControl("btnClose").Visible = true;
@@ -1048,7 +908,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
             if ((isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL
                     || isiStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CLOSE)
-                   && this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, isCloser, this.CurrentUser.Code))
+                   && this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code))
             {
                 this.FV_ISI.FindControl("btnOpen").Visible = true;
             }
@@ -1058,7 +918,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
         }
         #endregion
 
-        UpdatePage(task, isISIAdmin, isTaskFlowAdmin, isWFAdmin);
+        UpdatePage(task, isISIAdmin, isTaskFlowAdmin);
     }
 
     private void SetEnableBase(bool isEnable)
@@ -1080,16 +940,16 @@ public partial class ISI_TSK_Edit : EditModuleBase
             ((CodeMstrDropDownList)this.FV_ISI.FindControl("ddlPhase")).Enabled = isEnable;
             ((TextBox)this.FV_ISI.FindControl("tbSeq")).Enabled = isEnable;
         }
+        else
+        {
+            //失效模式
+            this.FV_ISI.FindControl("tbFailureMode").Visible = isEnable;
+            this.FV_ISI.FindControl("rtbFailureMode").Visible = !isEnable;
+        }
 
-        //失效模式
-        this.FV_ISI.FindControl("tbFailureMode").Visible = isEnable;
-        this.FV_ISI.FindControl("rtbFailureMode").Visible = !isEnable;
-
-        //供应商
-        this.FV_ISI.FindControl("tbSupplier").Visible = isEnable;
-        this.FV_ISI.FindControl("rtbSupplier").Visible = !isEnable;
-        //金额
-        //((TextBox)this.FV_ISI.FindControl("tbAmount")).ReadOnly = !isEnable;
+        //成本
+        this.FV_ISI.FindControl("tbCostCenter").Visible = isEnable;
+        this.FV_ISI.FindControl("rtbCostCenter").Visible = !isEnable;
 
         ((TextBox)this.FV_ISI.FindControl("tbExtNo")).ReadOnly = !isEnable;
 
@@ -1135,9 +995,9 @@ public partial class ISI_TSK_Edit : EditModuleBase
         else
         {
             //tbPlanStartDate.Attributes.Remove("onfocus");
-            tbPlanStartDate.Attributes.Add("onclick", "var " + tbPlanCompleteDate.ClientID + "=$dp.$('" + tbPlanCompleteDate.ClientID + "');WdatePicker({startDate:'%y-%M-%d 08:00:00',qsEnabled:true,quickSel:['%y-01-01 08:00:00','%y-02-01 08:00:00','%y-%M-01 08:00:00','%y-%M-15 08:00:00'],dateFmt:'yyyy-MM-dd HH:mm',onpicked:function(){" + tbPlanCompleteDate.ClientID + ".click();},maxDate:'#F{$dp.$D(\\'" + tbPlanCompleteDate.ClientID + "\\')}' })");
+            tbPlanStartDate.Attributes.Add("onclick", "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})");
             //tbPlanCompleteDate.Attributes.Remove("onfocus");
-            tbPlanCompleteDate.Attributes.Add("onclick", "WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',qsEnabled:true,quickSel:['%y-%M-15 16:30:00','%y-%M-%ld 16:30:00','%y-{%M+1}-%ld 16:30:00','%y-12-%ld 16:30:00','{%y+1}-01-%ld 16:30:00'],dateFmt:'yyyy-MM-dd HH:mm',minDate:'#F{$dp.$D(\\'" + tbPlanStartDate.ClientID + "\\')}'})");
+            tbPlanCompleteDate.Attributes.Add("onclick", "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})");
         }
         //执行人
         ((TextBox)this.FV_ISI.FindControl("tbAssignStartUser")).Visible = isEnable;
@@ -1147,69 +1007,9 @@ public partial class ISI_TSK_Edit : EditModuleBase
         //补充描述
         ((TextBox)this.FV_ISI.FindControl("tbDesc2")).ReadOnly = !isEnable;
     }
-    void Edit_Render(object sender, EventArgs e)
-    {
-        ISI_TSK_CostDet ucCostDet = (ISI_TSK_CostDet)this.FV_ISI.FindControl("ucCostDet");
-        if (ucCostDet.Visible)
-        {
-            ucCostDet.ModuleType = this.ModuleType;
-            ucCostDet.InitPageParameter(this.TaskCode);
-        }
-        this.UpdateAmount(((object[])sender)[0].ToString());
-        this.UpdateTaxes(((object[])sender)[1].ToString());
-        this.UpdateTotalAmount(((object[])sender)[2].ToString());
-        this.UpdateQty(((object[])sender)[3].ToString());
-    }
-    public void UpdateAmount(string amount)
-    {
-        ((TextBox)(this.FV_ISI.FindControl("tbAmount"))).Text = amount;
-    }
-    public void UpdateTotalAmount(string totalAmount)
-    {
-        ((TextBox)(this.FV_ISI.FindControl("tbTotalAmount"))).Text = totalAmount;
-    }
-    public void UpdateQty(string qty)
-    {
-        ((TextBox)(this.FV_ISI.FindControl("tbQty"))).Text = qty;
-    }
-    public void UpdateTaxes(string taxes)
-    {
-        ((TextBox)(this.FV_ISI.FindControl("tbTaxes"))).Text = taxes;
-    }
 
-    private void UpdatePage(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isWFAdmin)//bool isDisable
+    private void UpdatePage(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin)//bool isDisable
     {
-        ISI_TSK_CostDet ucCostDet = (ISI_TSK_CostDet)this.FV_ISI.FindControl("ucCostDet");
-
-        if (task.TaskSubType.IsCostCenter && task.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL)
-        {
-            if (isWFAdmin)
-            {
-                ucCostDet.Visible = true;
-                //ucCostDet.TaskCode = task.Code;
-                ucCostDet.ModuleType = task.Type;
-                ucCostDet.InitPageParameter(task.Code);
-            }
-            else
-            {
-                var processInstanceList = this.TheHqlMgr.FindAll<ProcessInstance>("from ProcessInstance where UserCode !='' and UserCode is not null and TaskCode='" + task.Code + "' and UserCode='" + this.CurrentUser.Code + "' and Level >=" + ISIConstants.CODE_MASTER_WFS_LEVEL3 + " order by Level asc ");
-                if (processInstanceList != null && processInstanceList.Count > 0)
-                {
-                    ucCostDet.Visible = true;
-                    //ucCostDet.TaskCode = task.Code;
-                    ucCostDet.ModuleType = task.Type;
-                    ucCostDet.InitPageParameter(task.Code);
-                }
-                else
-                {
-                    ucCostDet.Visible = false;
-                }
-            }
-        }
-        else
-        {
-            ucCostDet.Visible = false;
-        }
         this.cbIsRemindCreateUser.Checked = false;
         this.cbIsRemindAssignUser.Checked = false;
         this.cbIsRemindStartUser.Checked = false;
@@ -1218,113 +1018,11 @@ public partial class ISI_TSK_Edit : EditModuleBase
         this.tbHelpUser.Text = string.Empty;
         var taskSubType = task.TaskSubType;
         //this.FV_ISI.FindControl("lblCostCenter").Visible = true;
-
+        this.FV_ISI.FindControl("rtbCostCenter").Visible = !taskSubType.IsCostCenter;
+        this.FV_ISI.FindControl("tbCostCenter").Visible = taskSubType.IsCostCenter;
         this.FV_ISI.FindControl("trWF").Visible = task.IsWF;
-        //this.FV_ISI.FindControl("trAccount").Visible = task.IsWF;
 
-        //((Literal)this.FV_ISI.FindControl("lblFailureMode")).Text = task.IsWF ? "${ISI.TSK.CostCenter}:" : (task.Type == ISIConstants.ISI_TASK_TYPE_IMPROVE ? "${ISI.TSK.Mode}:" : "${ISI.TSK.FailureMode}:");
-        var ucCostList = (ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList");
-
-        Controls_TextBox tbCostCenter = (Controls_TextBox)this.FV_ISI.FindControl("tbCostCenter");
-        /*
-        tbCostCenter.Visible = taskSubType.IsCostCenter && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION;
-        this.FV_ISI.FindControl("rtbCostCenter").Visible = !taskSubType.IsCostCenter || ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        */
-        /*
-        Controls_TextBox tbAccount1 = (Controls_TextBox)this.FV_ISI.FindControl("tbAccount1");
-        tbAccount1.Visible = taskSubType.IsCostCenter && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION;
-        this.FV_ISI.FindControl("rfvAccount1").Visible = tbAccount1.Visible;
-        this.FV_ISI.FindControl("rtbAccount1").Visible = !taskSubType.IsCostCenter || ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        Controls_TextBox tbAccount2 = (Controls_TextBox)this.FV_ISI.FindControl("tbAccount2");
-        tbAccount2.Visible = taskSubType.IsCostCenter && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION;
-        this.FV_ISI.FindControl("rfvAccount2").Visible = tbAccount1.Visible;
-        this.FV_ISI.FindControl("rtbAccount2").Visible = !taskSubType.IsCostCenter || ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        */
-        ((TextBox)this.FV_ISI.FindControl("tbAmount")).ReadOnly = ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        ((TextBox)this.FV_ISI.FindControl("tbVoucher")).ReadOnly = ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        ((TextBox)this.FV_ISI.FindControl("tbTotalAmount")).ReadOnly = true;// ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        ((TextBox)this.FV_ISI.FindControl("tbTaxes")).ReadOnly = ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        ((TextBox)this.FV_ISI.FindControl("tbQty")).ReadOnly = ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-        ((CodeMstrDropDownList)this.FV_ISI.FindControl("ddlTravelType")).Enabled = ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION;
-        Controls_TextBox tbPayeeCode = (Controls_TextBox)this.FV_ISI.FindControl("tbPayeeCode");
-        tbPayeeCode.Visible = taskSubType.IsCostCenter && ucCostList.PageAction != BusinessConstants.PAGE_LIST_ACTION;
-        this.FV_ISI.FindControl("rtbPayeeCode").Visible = !taskSubType.IsCostCenter || ucCostList.PageAction == BusinessConstants.PAGE_LIST_ACTION;
-
-        ucCostList.Visible = !string.IsNullOrEmpty(taskSubType.FormType);
-
-        //税金和不含税金额
-        this.FV_ISI.FindControl("trAmount").Visible = taskSubType.IsCostCenter || taskSubType.IsAmount || taskSubType.IsAmountDetail;// && !string.IsNullOrEmpty(taskSubType.FormType);
-
-        //成本明细2和成本明细3 显示数量
-        this.FV_ISI.FindControl("trQty").Visible = taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2 || taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3;
-
-        if (taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2 || taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3)
-        {
-            ((Literal)this.FV_ISI.FindControl("lblQty")).Text = "${ISI.TSK.Hours}:";
-        }
-        else
-        {
-            ((Literal)this.FV_ISI.FindControl("lblQty")).Text = "${ISI.TSK.Qty}:";
-        }
-
-        //持续改进和启用成本控制，显示金额和附件张数
-        this.FV_ISI.FindControl("isImp").Visible = this.ModuleType == ISIConstants.ISI_TASK_TYPE_IMPROVE || taskSubType.IsCostCenter;
-
-        if (this.FV_ISI.FindControl("isImp").Visible && taskSubType.IsAmount)
-        {
-            TextBox tbAmount = (TextBox)this.FV_ISI.FindControl("tbAmount");
-            tbAmount.CssClass = "inputRequired";
-            this.FV_ISI.FindControl("rfvAmount").Visible = true;
-        }
-        else
-        {
-            TextBox tbAmount = (TextBox)this.FV_ISI.FindControl("tbAmount");
-            tbAmount.CssClass = string.Empty;
-            this.FV_ISI.FindControl("rfvAmount").Visible = false;
-        }
-
-        if (this.FV_ISI.FindControl("isImp").Visible && taskSubType.IsAmountDetail)
-        {
-            TextBox tbAmount = (TextBox)this.FV_ISI.FindControl("tbAmount");
-            TextBox tbTaxes = (TextBox)this.FV_ISI.FindControl("tbTaxes");
-            tbAmount.ReadOnly = true;
-            tbTaxes.ReadOnly = true;
-        }
-
-        //出差类型和领款人
-        this.FV_ISI.FindControl("trFormType2").Visible = taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2;
-
-        //标准成本明细    显示供应商
-        this.FV_ISI.FindControl("isIss").Visible = this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE
-                                                        || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ISSUE
-                                                        || taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_1;
-
-        if (!string.IsNullOrEmpty(taskSubType.FormType))
-        {
-            ucCostList.CostCenter = tbCostCenter.Text;
-            ucCostList.FormType = taskSubType.FormType;
-            ucCostList.IsAmountDetail = taskSubType.IsAmountDetail;
-            ucCostList.TaskCode = task.Code;
-            ucCostList.IsCostCenter = taskSubType.IsCostCenter;
-            var costDetList = this.TheCostMgr.GetCost(task.Code);
-            if ((costDetList == null || costDetList.Count == 0)
-                            && (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL
-                                || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE
-                                || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE
-                                || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN
-                                || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS
-                                || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE
-                                || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CLOSE))
-            {
-                ucCostList.Visible = false;
-            }
-            else
-            {
-                //VerifyAccount(costDetList);
-                ucCostList.InitPageParameter(costDetList);
-            }
-        }
-
+        ((Literal)this.FV_ISI.FindControl("lblFailureMode")).Text = task.IsWF ? "${ISI.TSK.FailureMode}:" : "${ISI.TSK.CostCenter}:";
         this.FV_ISI.FindControl("fsFlow").Visible = !task.IsWF || task.IsWF && task.IsTrace && task.Level == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
 
         ((Literal)(this.FV_ISI.FindControl("lblStatus"))).Text = "${ISI.Status." + task.Status + "}";
@@ -1335,7 +1033,9 @@ public partial class ISI_TSK_Edit : EditModuleBase
         }
         if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT || this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
         {
-            this.FV_ISI.FindControl("isPrj").Visible = true;
+            ((Literal)(this.FV_ISI.FindControl("lblFailureMode"))).Text = "${ISI.TSK.Phase}|${ISI.TSK.Seq}:";
+            this.FV_ISI.FindControl("ddlPhase").Visible = true;
+            this.FV_ISI.FindControl("tbSeq").Visible = true;
 
             if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE)
             {
@@ -1343,21 +1043,9 @@ public partial class ISI_TSK_Edit : EditModuleBase
                 ((Literal)(this.FV_ISI.FindControl("lblSubject"))).Text = "${ISI.TSK.PrjIss.Subject}:";
                 ((Literal)(this.FV_ISI.FindControl("lblDesc1"))).Text = "${ISI.TSK.PrjIss.Desc1}:";
                 ((Literal)(this.FV_ISI.FindControl("lblExpectedResults"))).Text = "${ISI.TSK.PrjIss.ExpectedResults}:";
-                this.FV_ISI.FindControl("isIss").Visible = true;
             }
+            this.FV_ISI.FindControl("tbFailureMode").Visible = false;
             ((Literal)(this.FV_ISI.FindControl("ltlTaskSubType"))).Text = "${ISI.TSK.Project}:";
-        }
-        else
-        {
-            this.FV_ISI.FindControl("isPrj").Visible = false;
-            if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_IMPROVE)
-            {
-                this.FV_ISI.FindControl("isImp").Visible = true;
-            }
-            else if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_ISSUE)
-            {
-                this.FV_ISI.FindControl("isIss").Visible = true;
-            }
         }
 
         if (task.Color == ISIConstants.CODE_MASTER_ISI_FLAG_RED)
@@ -1465,26 +1153,19 @@ public partial class ISI_TSK_Edit : EditModuleBase
             }
             //((TextBox)this.FV_ISI.FindControl("tbSeq")).Text = task.Seq;
         }
-
-        if (task.FailureMode != null)
+        else
         {
             Controls_TextBox tbFailureMode = (Controls_TextBox)this.FV_ISI.FindControl("tbFailureMode");
-            tbFailureMode.Text = task.FailureMode.Code;
+            if (task.FailureMode != null)
+            {
+                tbFailureMode.Text = task.FailureMode.Code;
+            }
         }
-
-        if (task.SupplierCode != null)
+        Controls_TextBox tbCostCenter = (Controls_TextBox)this.FV_ISI.FindControl("tbCostCenter");
+        if (task.CostCenter != null && task.CostCenter.Code.Trim() != string.Empty)
         {
-            Controls_TextBox tbSupplier = (Controls_TextBox)this.FV_ISI.FindControl("tbSupplier");
-            tbSupplier.Text = task.SupplierCode;
+            tbCostCenter.Text = task.CostCenter.Code;
         }
-
-        //tbCostCenter = (Controls_TextBox)this.FV_ISI.FindControl("tbCostCenter");
-        if (!string.IsNullOrEmpty(task.CostCenterCode))
-        {
-            tbCostCenter.Text = task.CostCenterCode;
-        }
-
-
 
         Controls_TextBox tbTaskAddress = (Controls_TextBox)this.FV_ISI.FindControl("tbTaskAddress");
         if (task.TaskSubType != null && task.TaskSubType.Code.Trim() != string.Empty)
@@ -1507,72 +1188,12 @@ public partial class ISI_TSK_Edit : EditModuleBase
             this.UpdateAttachmentTitleEvent(new string[] { task.Code, task.ExtNo, task.ProjectTask.ToString(), task.TaskSubType.Code }, null);
         }
     }
-    /// <summary>
-    /// 验证科目
-    /// </summary>
-    /// <returns></returns>
-    private bool VerifyAccount()
-    {
-        var ucCostList = (ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList");
-        return this.VerifyAccount(ucCostList.TheCostList);
-    }
-    /// <summary>
-    /// 验证科目
-    /// </summary>
-    /// <returns></returns>
-    private bool VerifyAccount(IList<Cost> costDetList)
-    {
-        if (this.IsAccountCtrl)
-        {
-            Controls_TextBox tbAccount1 = ((Controls_TextBox)this.FV_ISI.FindControl("tbAccount1"));
-            Controls_TextBox tbAccount2 = ((Controls_TextBox)this.FV_ISI.FindControl("tbAccount2"));
-            bool isAccount1 = !string.IsNullOrEmpty(tbAccount1.Text.Trim());
-            bool isAccount2 = !string.IsNullOrEmpty(tbAccount2.Text.Trim());
-
-            if (!isAccount1 || !isAccount2)
-            {
-                if (costDetList == null || costDetList.Count == 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    bool isError = false;
-                    foreach (var costDet in costDetList)
-                    {
-                        costDet.IsAccount1 = !isAccount1 && String.IsNullOrEmpty(costDet.Account1);
-                        costDet.IsAccount2 = !isAccount1 && String.IsNullOrEmpty(costDet.Account2);
-
-                        if (costDet.IsAccount1 || costDet.IsAccount2)
-                        {
-                            isError = true;
-                        }
-                    }
-
-                    if (isError)
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
     protected void btnApprove_Click(object sender, EventArgs e)
     {
         try
         {
             if (IsWF)
             {
-                //验证科目
-                /*
-                if (!VerifyAccount())
-                {
-                    this.ShowErrorMessage("WFS.Cost.Account.Error");
-                    this.FV_ISI.DataBind();
-                    return;
-                }
-                */
                 IList<object> conuntersignList = new List<object>();
                 if (this.FV_ISI.FindControl("tbCountersignUser").Visible)
                 {
@@ -1608,16 +1229,8 @@ public partial class ISI_TSK_Edit : EditModuleBase
                 RequiredFieldValidator rfvApprove = (RequiredFieldValidator)this.FV_ISI.FindControl("rfvApprove");
                 if (rfvApprove.IsValid)
                 {
-                    /*
-                    string level = ((HiddenField)this.FV_ISI.FindControl("hfLevel")).Value;
-                    //验证
-                    if (level == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
-                    {
-
-                    }*/
                     string approveDesc = ((TextBox)this.FV_ISI.FindControl("tbApprove")).Text.Trim();
                     string color = ((CodeMstrDropDownList)this.FV_ISI.FindControl("ddlColor")).SelectedValue;
-
                     CurrentLevel = this.TheTaskMgr.ProcessNew(this.TaskCode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, approveDesc, color, conuntersignList, this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_WF_TASK_VALUE_WFADMIN), this.CurrentUser).Level;
                     this.FV_ISI.DataBind();
                     ShowSuccessMessage("ISI.TSK.Approve.Successfully", this.TaskCode);
@@ -1774,15 +1387,6 @@ public partial class ISI_TSK_Edit : EditModuleBase
         {
             if (IsWF && CurrentLevel.HasValue && CurrentLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
             {
-                //验证科目
-                /*
-                if (!VerifyAccount())
-                {
-                    ShowWarningMessage("WFS.Cost.Account.Error");
-                    this.FV_ISI.DataBind();
-                    return;
-                }
-                */
                 IList<object> conuntersignList = new List<object>();
                 if (this.FV_ISI.FindControl("tbCountersignUser").Visible)
                 {
@@ -1915,7 +1519,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
 
             if (this.BackEvent != null)
             {
-                this.BackEvent(string.Empty, e);
+                this.BackEvent(this, e);
             }
 
             ShowSuccessMessage("ISI.TSK.Delete" + this.ModuleType + ".Successfully", this.TaskCode);
@@ -2054,32 +1658,7 @@ public partial class ISI_TSK_Edit : EditModuleBase
                 TextBox tbEmail = (TextBox)this.FV_ISI.FindControl("tbEmail");
                 TextBox tbMobilePhone = (TextBox)this.FV_ISI.FindControl("tbMobilePhone");
 
-                TextBox tbAmount = (TextBox)this.FV_ISI.FindControl("tbAmount");
-                TextBox tbTotalAmount = (TextBox)this.FV_ISI.FindControl("tbTotalAmount");
-                TextBox tbTaxes = (TextBox)this.FV_ISI.FindControl("tbTaxes");
-                TextBox tbQty = (TextBox)this.FV_ISI.FindControl("tbQty");
-                TextBox tbVoucher = (TextBox)this.FV_ISI.FindControl("tbVoucher");
-                Controls_TextBox tbPayeeCode = (Controls_TextBox)this.FV_ISI.FindControl("tbPayeeCode");
-                Controls_TextBox tbSupplier = (Controls_TextBox)this.FV_ISI.FindControl("tbSupplier");
-
                 TaskMstr task = new TaskMstr();//TheTaskMstrMgr.CheckAndLoadTaskMstr(this.TaskCode);
-                task.TaskSubType = TheTaskSubTypeMgr.LoadTaskSubType(tbTaskSubType.Text.Trim());
-                if (task.TaskSubType == null)
-                {
-                    ShowWarningMessage("ISI.Error.TaskCodeNotExist");
-                    return;
-                }
-
-                if (task.TaskSubType.IsCostCenter)
-                {
-                    RequiredFieldValidator rfvAccount1 = (RequiredFieldValidator)this.FV_ISI.FindControl("rfvAccount1");
-                    RequiredFieldValidator rfvAccount2 = (RequiredFieldValidator)this.FV_ISI.FindControl("rfvAccount2");
-                    if (!rfvAccount1.IsValid || !rfvAccount2.IsValid)
-                    {
-                        return;
-                    }
-                }
-
                 if (ddlPriority.SelectedIndex != -1)
                 {
                     task.Priority = ddlPriority.SelectedValue;
@@ -2093,131 +1672,34 @@ public partial class ISI_TSK_Edit : EditModuleBase
                 //task.Desc2 = tbDesc2.Text.Trim();
                 //TaskSubType taskSubType = new TaskSubType();
                 //taskSubType.Code = tbTaskSubType.Text.Trim();
-
-                task.FormType = task.TaskSubType.FormType;
+                task.TaskSubType = TheTaskSubTypeMgr.LoadTaskSubType(tbTaskSubType.Text.Trim());
                 if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT || this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
                 {
                     TextBox tbSeq = (TextBox)this.FV_ISI.FindControl("tbSeq");
                     task.Seq = tbSeq.Text.Trim();
                     task.Phase = ((CodeMstrDropDownList)this.FV_ISI.FindControl("ddlPhase")).SelectedValue;
                 }
-
-                if (!string.IsNullOrEmpty(tbSupplier.Text.Trim()))
+                else
                 {
-                    var supplier = this.TheSupplierMgr.LoadSupplier(tbSupplier.Text.Trim());
-                    if (supplier != null)
+                    Controls_TextBox tbFailureMode = (Controls_TextBox)this.FV_ISI.FindControl("tbFailureMode");
+                    if (!string.IsNullOrEmpty(tbFailureMode.Text.Trim()))
                     {
-                        task.SupplierCode = supplier.Code;
-                        task.SupplierName = supplier.Name;
+                        //FailureMode failureMode = new FailureMode();
+                        //failureMode.Code = tbFailureMode.Text.Trim();
+                        task.FailureMode = TheFailureModeMgr.LoadFailureMode(tbFailureMode.Text.Trim());
                     }
                 }
-                if (!string.IsNullOrEmpty(tbPayeeCode.Text.Trim()))
-                {
-                    var user = this.TheUserMgr.LoadUser(tbPayeeCode.Text.Trim());
-                    task.PayeeCode = user.Code;
-                    task.PayeeName = user.Name;
-                }
-                else
-                {
-                    task.PayeeCode = string.Empty;
-                    task.PayeeName = string.Empty;
-                }
-                if (!string.IsNullOrEmpty(tbVoucher.Text.Trim()))
-                {
-                    task.Voucher = int.Parse(tbVoucher.Text.Trim());
-                }
-                else
-                {
-                    task.Voucher = null;
-                }
-                if (!string.IsNullOrEmpty(tbQty.Text.Trim()))
-                {
-                    task.Qty = decimal.Parse(tbQty.Text.Trim());
-                }
-                else
-                {
-                    task.Qty = null;
-                }
-                if (!string.IsNullOrEmpty(tbAmount.Text.Trim()))
-                {
-                    task.Amount = decimal.Parse(tbAmount.Text.Trim());
-                }
-                else
-                {
-                    task.Amount = null;
-                }
-                if (!string.IsNullOrEmpty(tbTaxes.Text.Trim()))
-                {
-                    task.Taxes = decimal.Parse(tbTaxes.Text.Trim());
-                }
-                if (task.Amount.HasValue || task.Taxes.HasValue)
-                {
-                    task.TotalAmount = (task.Amount.HasValue ? task.Amount.Value : 0) + (task.Taxes.HasValue ? task.Taxes.Value : 0);
-                }
-                else if (!string.IsNullOrEmpty(tbTotalAmount.Text.Trim()))
-                {
-                    task.TotalAmount = decimal.Parse(tbTotalAmount.Text.Trim());
-                }
-                else
-                {
-                    task.TotalAmount = null;
-                }
-
-                Controls_TextBox tbFailureMode = (Controls_TextBox)this.FV_ISI.FindControl("tbFailureMode");
-                if (!string.IsNullOrEmpty(tbFailureMode.Text.Trim()))
-                {
-                    //FailureMode failureMode = new FailureMode();
-                    //failureMode.Code = tbFailureMode.Text.Trim();
-                    task.FailureMode = TheFailureModeMgr.LoadFailureMode(tbFailureMode.Text.Trim());
-                }
-
                 TaskSubType costCenter = null;
                 Controls_TextBox tbCostCenter = (Controls_TextBox)this.FV_ISI.FindControl("tbCostCenter");
                 if (!string.IsNullOrEmpty(tbCostCenter.Text.Trim()))
                 {
                     costCenter = TheTaskSubTypeMgr.LoadTaskSubType(tbCostCenter.Text.Trim());
-                    task.CostCenterCode = costCenter.Code;
-                    task.CostCenterDesc = costCenter.Desc;
                 }
                 else if (!string.IsNullOrEmpty(this.CurrentUser.CostCenter))
                 {
                     costCenter = TheTaskSubTypeMgr.LoadTaskSubType(this.CurrentUser.CostCenter);
-                    task.CostCenterCode = costCenter.Code;
-                    task.CostCenterDesc = costCenter.Desc;
                 }
-                else
-                {
-                    task.CostCenterCode = string.Empty;
-                    task.CostCenterDesc = string.Empty;
-                }
-
-                string account1Code = ((Controls_TextBox)FV_ISI.FindControl("tbAccount1")).Text.Trim();
-                if (!string.IsNullOrEmpty(account1Code))
-                {
-                    var account = this.TheAccountMgr.LoadAccount(account1Code);
-                    task.Account1 = account.Code;
-                    task.Account1Desc = account.Desc1;
-                }
-                else
-                {
-                    task.Account1 = null;
-                    task.Account1Desc = null;
-                }
-
-                string account2Code = ((Controls_TextBox)FV_ISI.FindControl("tbAccount2")).Text.Trim();
-                if (!string.IsNullOrEmpty(account2Code))
-                {
-                    var account = this.TheAccountMgr.LoadAccount(account2Code);
-                    task.Account2 = account.Code;
-                    task.Account2Desc = account.Desc1;
-                }
-                else
-                {
-                    task.Account2 = null;
-                    task.Account2Desc = null;
-                }
-
-                task.Dept = this.CurrentUser.CostCenter;
+               // task.CostCenter = costCenter;
                 task.UserName = tbUserName.Text.Trim();
                 task.Email = tbEmail.Text.Trim();
                 task.MobilePhone = tbMobilePhone.Text.Trim();
@@ -2272,6 +1754,16 @@ public partial class ISI_TSK_Edit : EditModuleBase
                             task.AssignStartUserNm = userCodeName[1];
                         }
                     }
+                    else
+                    {
+                        task.AssignStartUser = null;
+                        task.AssignStartUserNm = null;
+                    }
+                }
+                else
+                {
+                    task.AssignStartUser = null;
+                    task.AssignStartUserNm = null;
                 }
 
                 string workHoursUser = ((TextBox)this.FV_ISI.FindControl("tbWorkHoursUser")).Text.Trim();
@@ -2468,16 +1960,6 @@ public partial class ISI_TSK_Edit : EditModuleBase
     {
         try
         {
-            var ucCostList = (ISI_TSK_CostList)this.FV_ISI.FindControl("ucCostList");
-            if (ucCostList.Visible)
-            {
-                if (ucCostList.TheCostList == null || ucCostList.TheCostList.Count == 0)
-                {
-                    this.ShowErrorMessage("WFS.Cost.Warn.DetailEmpty");
-                    return;
-                }
-            }
-
             this.TheTaskMgr.SubmitTask(this.TaskCode, this.CurrentUser);
             this.FV_ISI.DataBind();
             ShowSuccessMessage("ISI.TSK.Submit" + this.ModuleType + ".Successfully", this.TaskCode);

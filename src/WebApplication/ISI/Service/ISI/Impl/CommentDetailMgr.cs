@@ -10,7 +10,6 @@ using NHibernate;
 using com.Sconit.Service.Ext.Criteria;
 using com.Sconit.ISI.Service.Ext;
 using System.Linq;
-using com.Sconit.ISI.Entity.Util;
 
 //TODO: Add other using statements here.
 
@@ -111,24 +110,18 @@ namespace com.Sconit.ISI.Service.Impl
                         */
                         if (commentListList.Count < 2 && surplus > 0)
                         {
-                            int num = 3;
-                            if (code.StartsWith(ISIConstants.CODE_PREFIX_RESMATRIX))
-                            {
-                                num = 2;
-                            }
-
                             int count1 = 0;
                             int count2 = 0;
-                            if (surplus >= num)
+                            if (surplus >= 5)
                             {
-                                count1 = num;
-                                if (surplus >= num * 2)
+                                count1 = 5;
+                                if (surplus >= 10)
                                 {
-                                    count2 = num;
+                                    count2 = 5;
                                 }
                                 else
                                 {
-                                    count2 = surplus - num;
+                                    count2 = surplus - 5;
                                 }
                             }
                             else
@@ -185,7 +178,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             if (count.HasValue && count.Value > 1)
             {
-                IList<Comment> commentList = GetComment(taskCode, 0, currentCount.HasValue && currentCount.Value > 0 ? currentCount.Value + 3 : 6);
+                IList<Comment> commentList = GetComment(taskCode, 0, currentCount.HasValue && currentCount.Value > 0 ? currentCount.Value + 5 : 10);
 
                 IList<Comment>[] commentListArray = new List<Comment>[2];
 
@@ -203,7 +196,7 @@ namespace com.Sconit.ISI.Service.Impl
                     }
                     else
                     {
-                        commentListArray[1] = commentList.Where(s => s.CreateDate < LastMonday).Take(3).ToList();
+                        commentListArray[1] = commentList.Where(s => s.CreateDate < LastMonday).Take(5).ToList();
                     }
 
                     if (commentListArray[0] == null || commentListArray[0].Count == 0)
@@ -214,12 +207,12 @@ namespace com.Sconit.ISI.Service.Impl
                             commentList.RemoveAt(0);
                             commentList.RemoveAt(0);
                             commentList.RemoveAt(0);
-                            commentListArray[1] = commentList.Take(3).ToList();
+                            commentListArray[1] = commentList.Take(5).ToList();
                         }
                     }
                     else if (commentListArray[1] == null || commentListArray[1].Count == 0)
                     {
-                        commentListArray[1] = commentList.Where(s => s.CreateDate < LastLastMonday).Take(3).ToList();
+                        commentListArray[1] = commentList.Where(s => s.CreateDate < LastLastMonday).Take(5).ToList();
                     }
                 }
 

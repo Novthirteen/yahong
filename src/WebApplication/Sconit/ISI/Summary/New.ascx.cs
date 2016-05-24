@@ -66,7 +66,7 @@ public partial class ISI_Summary_New : NewModuleBase
         {
             this.tbStandardQty.Text = Summary.StandardQty.ToString();
             this.cbIsCheckup.Checked = Summary.IsCheckup;
-            this.tbUserCode.Text = this.CurrentUser.LongCodeName;
+           // this.tbUserCode.Text = this.CurrentUser.LongCodeName;
 
             if (SummaryDetList == null)
             {
@@ -122,7 +122,6 @@ public partial class ISI_Summary_New : NewModuleBase
                 {
                     TextBox tbConment = (TextBox)row.FindControl("tbConment");
                     TextBox tbSubject = (TextBox)row.FindControl("tbSubject");
-                    TextBox tbSeq = (TextBox)row.FindControl("tbSeq");
 
                     if (tbSubject.Text.Trim() != string.Empty || tbConment.Text.Trim() != string.Empty)
                     {
@@ -133,7 +132,7 @@ public partial class ISI_Summary_New : NewModuleBase
                         summaryDet.Subject = tbSubject.Text.Trim();
                         summaryDet.Conment = tbConment.Text.Trim();
                         summaryDet.TaskCode = tbTaskCode.Text.Trim();
-                        summaryDet.Seq = int.Parse(tbSeq.Text.Trim());
+
                         summaryDetList.Add(summaryDet);
                     }
                 }
@@ -174,8 +173,7 @@ public partial class ISI_Summary_New : NewModuleBase
                     else
                     {
                         this.tbRefCode.Text = string.Empty;
-                        int rows = this.CurrentUser.Code == "liudan" ? 80 : 30;
-                        for (int i = 0; i < rows; i++)
+                        for (int i = 0; i < 30; i++)
                         {
                             SummaryDetList.Add(summaryDet);
                         }
@@ -241,7 +239,7 @@ public partial class ISI_Summary_New : NewModuleBase
         tbStandardQty.Text = string.Empty;
         cbIsCheckup.Checked = true;
         SummaryDetList = new List<SummaryDet>();
-        cbIsAutoRelease.Checked = false;
+        cbIsAutoRelease.Checked = true;
     }
 
     protected void checkSummaryDate(object source, ServerValidateEventArgs args)

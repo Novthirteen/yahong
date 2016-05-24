@@ -131,22 +131,14 @@ public partial class ISI_Reports_TaskSubType_Main : com.Sconit.Web.MainModuleBas
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             e.Row.Cells[2].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
-            e.Row.Cells[3].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
-            e.Row.Cells[9].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
-            e.Row.Cells[11].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
+            e.Row.Cells[8].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
+            e.Row.Cells[10].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
 
             var statistics = ((System.Data.DataRowView)(e.Row.DataItem)).Row.ItemArray;
-
             if (statistics[2] != null && statistics[2].ToString() != string.Empty)
             {
                 e.Row.Cells[0].Attributes["style"] = "background-color:" + statistics[2].ToString();
             }
-
-            if (!string.IsNullOrEmpty(e.Row.Cells[3].Text) && e.Row.Cells[3].Text != "&nbsp;")
-            {
-                e.Row.Cells[3].Text = this.TheUserSubscriptionMgr.GetUserName(e.Row.Cells[3].Text.Replace('|', ','));
-            }
-
             if (NoAssignTaskList != null && NoAssignTaskList.Count > 0)
             {
                 StringBuilder text = new StringBuilder();
@@ -163,7 +155,8 @@ public partial class ISI_Reports_TaskSubType_Main : com.Sconit.Web.MainModuleBas
                         text.Append(task.Code + " " + task.SubmitUserNm);
                     }
                 }
-                e.Row.Cells[9].Text = "<font color='red'><b>" + e.Row.Cells[9].Text + "</b></font><br><br>" + text.ToString();
+                e.Row.Cells[8].Text = "<font color='red'><b>" + e.Row.Cells[8].Text + "</b></font><br><br>" + text.ToString();
+
             }
 
             if (OverStartTaskCodeList != null && OverStartTaskCodeList.Count > 0)
@@ -194,7 +187,7 @@ public partial class ISI_Reports_TaskSubType_Main : com.Sconit.Web.MainModuleBas
                         }
                     }
                 }
-                e.Row.Cells[11].Text = "<font color='red'><b>" + e.Row.Cells[11].Text + "</b></font><br><br>" + text.ToString();
+                e.Row.Cells[10].Text = "<font color='red'><b>" + e.Row.Cells[10].Text + "</b></font><br><br>" + text.ToString();
 
             }
 
@@ -202,11 +195,11 @@ public partial class ISI_Reports_TaskSubType_Main : com.Sconit.Web.MainModuleBas
         }
         else if (e.Row.RowType == DataControlRowType.Header)
         {
-            e.Row.Cells[4].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.ProcessCount.Desc", this.CurrentUser);
-            e.Row.Cells[8].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.AssignCount.Desc", this.CurrentUser);
-            e.Row.Cells[9].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.NoAssignCount.Desc", this.CurrentUser);
-            e.Row.Cells[10].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.InProcessCount.Desc", this.CurrentUser);
-            e.Row.Cells[11].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.OverStartCount.Desc", this.CurrentUser);
+            e.Row.Cells[3].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.ProcessCount.Desc", this.CurrentUser);
+            e.Row.Cells[7].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.AssignCount.Desc", this.CurrentUser);
+            e.Row.Cells[8].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.NoAssignCount.Desc", this.CurrentUser);
+            e.Row.Cells[9].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.InProcessCount.Desc", this.CurrentUser);
+            e.Row.Cells[10].ToolTip = this.TheLanguageMgr.TranslateMessage("ISI.Reports.TaskSubType.OverStartCount.Desc", this.CurrentUser);
         }
     }
 

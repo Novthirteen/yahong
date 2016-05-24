@@ -104,22 +104,11 @@ public partial class ISI_TaskSubType_Process : com.Sconit.Web.MainModuleBase
             taskSubType.IsWF = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsWF")).Checked;
             taskSubType.IsAssignUser = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsAssignUser")).Checked;
             taskSubType.IsCtrl = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsCtrl")).Checked;
-
-            taskSubType.IsRemind = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsRemind")).Checked;
             taskSubType.IsPrint = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsPrint")).Checked;
-            taskSubType.Template = ((com.Sconit.Control.CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlTemplate"))).SelectedValue;
-
             taskSubType.IsAttachment = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsAttachment")).Checked;
             taskSubType.IsTrace = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsTrace")).Checked;
             taskSubType.IsCostCenter = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsCostCenter")).Checked;
             taskSubType.ProcessNo = ((Controls_TextBox)this.FV_TaskSubType.FindControl("tbProcessNo")).Text;
-            taskSubType.CostCenter = ((Controls_TextBox)this.FV_TaskSubType.FindControl("tbCostCenter")).Text;
-            taskSubType.Account1 = ((Controls_TextBox)this.FV_TaskSubType.FindControl("tbAccount1")).Text;
-            taskSubType.Account2 = ((Controls_TextBox)this.FV_TaskSubType.FindControl("tbAccount2")).Text;
-            taskSubType.FormType = ((CodeMstrDropDownList)this.FV_TaskSubType.FindControl("ddlFormType")).SelectedValue;
-            taskSubType.IsBudget = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsBudget")).Checked;
-            taskSubType.IsAmount = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsAmount")).Checked;
-            taskSubType.IsAmountDetail = ((CheckBox)this.FV_TaskSubType.FindControl("cbIsAmountDetail")).Checked;
             taskSubType.LastModifyDate = DateTime.Now;
             taskSubType.LastModifyUser = this.CurrentUser.Code;
         }
@@ -127,33 +116,10 @@ public partial class ISI_TaskSubType_Process : com.Sconit.Web.MainModuleBase
 
     private void UpdateView(TaskSubType taskSubType)
     {
-        CodeMstrDropDownList ddlFormType = ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlFormType")));
-        ddlFormType.SelectedValue = taskSubType.FormType;
-
         Controls_TextBox tbProcessNo = (Controls_TextBox)this.FV_TaskSubType.FindControl("tbProcessNo");
         tbProcessNo.ServiceParameter = "string:,string:" + this.CurrentUser.Code + ",string:" + taskSubType.Code;
         tbProcessNo.Text = taskSubType.ProcessNo;
         tbProcessNo.DataBind();
-
-        Controls_TextBox tbCostCenter = (Controls_TextBox)this.FV_TaskSubType.FindControl("tbCostCenter");
-        tbCostCenter.Text = taskSubType.CostCenter;
-        tbCostCenter.DataBind();
-
-        Controls_TextBox tbAccount1 = (Controls_TextBox)this.FV_TaskSubType.FindControl("tbAccount1");
-        tbAccount1.ServiceParameter = "string:" + this.TaskSubTypeCode + ",string:#tbCostCenter";
-        tbAccount1.Text = taskSubType.Account1;
-        tbAccount1.DataBind();
-
-        Controls_TextBox tbAccount2 = (Controls_TextBox)this.FV_TaskSubType.FindControl("tbAccount2");
-        tbAccount2.ServiceParameter = "string:" + this.TaskSubTypeCode + ",string:#tbCostCenter,string:#tbAccount1";
-        tbAccount2.Text = taskSubType.Account2;
-        tbAccount2.DataBind();
-
-        if (!string.IsNullOrEmpty(taskSubType.Template))
-        {
-            CodeMstrDropDownList ddlTemplate = ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlTemplate")));
-            ddlTemplate.SelectedValue = taskSubType.Template;
-        }
 
         var processDefinitionList = this.TheProcessDefinitionMgr.GetProcessDefinition(taskSubType.Code, taskSubType.ProcessNo);
         if (string.IsNullOrEmpty(taskSubType.ProcessNo))
@@ -199,8 +165,8 @@ public partial class ISI_TaskSubType_Process : com.Sconit.Web.MainModuleBase
             if (processDefinition.IsBlankDetail)
             {
                 //e.Row.Cells[4].Text = string.Empty;
+                e.Row.Cells[8].Text = string.Empty;
                 e.Row.Cells[10].Text = string.Empty;
-                e.Row.Cells[12].Text = string.Empty;
             }
             else
             {
@@ -359,6 +325,7 @@ public partial class ISI_TaskSubType_Process : com.Sconit.Web.MainModuleBase
             int currentRow = ((GridViewRow)(((DataControlFieldCell)(((System.Web.UI.WebControls.LinkButton)(sender)).Parent)).Parent)).RowIndex;
             GridViewRow row = this.GV_List_ProcessDefinition.Rows[currentRow];
 
+
             //新增
             ProcessDefinition processDefinition = new ProcessDefinition();
             DateTime now = DateTime.Now;
@@ -403,8 +370,6 @@ public partial class ISI_TaskSubType_Process : com.Sconit.Web.MainModuleBase
         processDefinition.Seq = int.Parse(((CodeMstrDropDownList)row.FindControl("ddlLevel")).SelectedValue);
         processDefinition.ATicket = ((CheckBox)row.FindControl("cbATicket")).Checked;
         processDefinition.IsCtrl = ((CheckBox)row.FindControl("cbIsCtrl")).Checked;
-        processDefinition.IsAccountCtrl = ((CheckBox)row.FindControl("cbIsAccountCtrl")).Checked;
-        processDefinition.IsRemind = ((CheckBox)row.FindControl("cbIsRemind")).Checked;
         processDefinition.Desc1 = desc1;
         string userCode = ((Controls_TextBox)row.FindControl("tbUserCode")).Text;
         if (!string.IsNullOrEmpty(userCode))

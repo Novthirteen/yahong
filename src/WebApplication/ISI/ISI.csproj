@@ -112,7 +112,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Batch\RepJob.cs" />
     <Compile Include="Entity\Base\ISI\AccountBase.cs" />
     <Compile Include="Entity\Base\ISI\ApplyBase.cs" />
     <Compile Include="Entity\Base\ISI\AttachmentDetailBase.cs" />
@@ -394,7 +393,6 @@
     <Compile Include="Persistence\ISI\NH\NHUserSubscriptionDao.cs" />
     <Compile Include="Persistence\ISI\NH\NHWFDetailDao.cs" />
     <Compile Include="Persistence\ISI\NH\NHWorkDetDao.cs" />
-    <Compile Include="Service\Base\ISI\IAccountBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IApplyBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IAttachmentDetailBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IBudgetBaseMgr.cs" />
@@ -409,7 +407,6 @@
     <Compile Include="Service\Base\ISI\IFailureModeBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IFilterBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IHelpLotDetailBaseMgr.cs" />
-    <Compile Include="Service\Base\ISI\Impl\AccountBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\Impl\ApplyBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\Impl\AttachmentDetailBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\Impl\BudgetBaseMgr.cs" />
@@ -482,7 +479,6 @@
     <Compile Include="Service\Base\ISI\IUserSubscriptionBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IWFDetailBaseMgr.cs" />
     <Compile Include="Service\Base\ISI\IWorkDetBaseMgr.cs" />
-    <Compile Include="Service\ISI\IAccountMgr.cs" />
     <Compile Include="Service\ISI\IApplyMgr.cs" />
     <Compile Include="Service\ISI\IAttachmentDetailMgr.cs" />
     <Compile Include="Service\ISI\IBudgetDetMgr.cs" />
@@ -497,9 +493,6 @@
     <Compile Include="Service\ISI\IFailureModeMgr.cs" />
     <Compile Include="Service\ISI\IFilterMgr.cs" />
     <Compile Include="Service\ISI\IHelpLotDetailMgr.cs" />
-    <Compile Include="Service\ISI\IMouldDetailMgr.cs" />
-    <Compile Include="Service\ISI\IMouldMgr.cs" />
-    <Compile Include="Service\ISI\Impl\AccountMgr.cs" />
     <Compile Include="Service\ISI\Impl\ApplyMgr.cs" />
     <Compile Include="Service\ISI\Impl\AttachmentDetailMgr.cs" />
     <Compile Include="Service\ISI\Impl\BudgetDetMgr.cs" />
@@ -514,21 +507,12 @@
     <Compile Include="Service\ISI\Impl\FailureModeMgr.cs" />
     <Compile Include="Service\ISI\Impl\FilterMgr.cs" />
     <Compile Include="Service\ISI\Impl\HelpLotDetailMgr.cs" />
-    <Compile Include="Service\ISI\Impl\MouldDetailMgr.cs" />
-    <Compile Include="Service\ISI\Impl\MouldMgr.cs" />
     <Compile Include="Service\ISI\Impl\NothingMgr.cs" />
     <Compile Include="Service\ISI\Impl\PositionMgr.cs" />
     <Compile Include="Service\ISI\Impl\ProcessApplyMgr.cs" />
     <Compile Include="Service\ISI\Impl\ProcessDefinitionMgr.cs" />
     <Compile Include="Service\ISI\Impl\ProcessInstanceMgr.cs" />
     <Compile Include="Service\ISI\Impl\ProjectTaskMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResMatrixLogMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResMatrixMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResPatrolMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResRoleMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResSopMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResUserMgr.cs" />
-    <Compile Include="Service\ISI\Impl\ResWokShopMgr.cs" />
     <Compile Include="Service\ISI\Impl\SchedulingMgr.cs" />
     <Compile Include="Service\ISI\Impl\SmtpMgr.cs" />
     <Compile Include="Service\ISI\Impl\SummaryDetMgr.cs" />
@@ -554,13 +538,6 @@
     <Compile Include="Service\ISI\IProcessDefinitionMgr.cs" />
     <Compile Include="Service\ISI\IProcessInstanceMgr.cs" />
     <Compile Include="Service\ISI\IProjectTaskMgr.cs" />
-    <Compile Include="Service\ISI\IResMatrixLogMgr.cs" />
-    <Compile Include="Service\ISI\IResMatrixMgr.cs" />
-    <Compile Include="Service\ISI\IResPatrolMgr.cs" />
-    <Compile Include="Service\ISI\IResRoleMgr.cs" />
-    <Compile Include="Service\ISI\IResSopMgr.cs" />
-    <Compile Include="Service\ISI\IResUserMgr.cs" />
-    <Compile Include="Service\ISI\IResWokShopMgr.cs" />
     <Compile Include="Service\ISI\ISchedulingMgr.cs" />
     <Compile Include="Service\ISI\ISmtpMgr.cs" />
     <Compile Include="Service\ISI\ISummaryDetMgr.cs" />
@@ -581,24 +558,6 @@
     <Compile Include="Service\ISI\IWFDetailMgr.cs" />
     <Compile Include="Service\ISI\IWorkDetMgr.cs" />
     <Compile Include="Service\ISI\IWorkFlowMgr.cs" />
-    <Compile Include="Service\Job\CheckupApproveRemindJob.cs" />
-    <Compile Include="Service\Job\CheckupRemindJob.cs" />
-    <Compile Include="Service\Job\CompleteRemindJob.cs" />
-    <Compile Include="Service\Job\FiveSRemindJob.cs" />
-    <Compile Include="Service\Job\OpenRemindJob.cs" />
-    <Compile Include="Service\Job\PlanRemindJob.cs" />
-    <Compile Include="Service\Job\ProductionInOutJob.cs" />
-    <Compile Include="Service\Job\ProjectReportJob.cs" />
-    <Compile Include="Service\Job\PSIBillJob.cs" />
-    <Compile Include="Service\Job\SchedulingJob.cs" />
-    <Compile Include="Service\Job\StartPercentRemindJob.cs" />
-    <Compile Include="Service\Job\StatisticsRepJob.cs" />
-    <Compile Include="Service\Job\SummaryJob.cs" />
-    <Compile Include="Service\Job\TaskJob.cs" />
-    <Compile Include="Service\Job\TaskReportCheckJob.cs" />
-    <Compile Include="Service\Job\TaskReportJob.cs" />
-    <Compile Include="Service\Job\UserSubJob.cs" />
-    <Compile Include="Service\Job\WFSRemindJob.cs" />
     <Compile Include="Service\Rep\RepLXFYMgr.cs" />
     <Compile Include="Service\Rep\RepPlanMgr.cs" />
     <Compile Include="Service\Rep\RepSCBTMgr.cs" />
@@ -661,6 +620,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Batch\Rep\" />
+    <Folder Include="Service\Job\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

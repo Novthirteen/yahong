@@ -4,8 +4,8 @@
 		<id name="Code" column="Code" type="String" unsaved-value="null" >
       		<generator class="assigned" />
         </id>
-		<property name="Desc" column="Desc_" type="String" length="100" />
-    <property name="TaskSubType" column="TaskSubType" type="String" length="50" />
+		<property name="Desc" column="Desc_" type="String" length="100" />    
+    <many-to-one name="TaskSubType" column="TaskSubType" class="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" cascade="none" />
     <property name="IsActive" column="IsActive" type="Boolean"  />
     <property name="Seq" column="Seq" type="Int32"  />
 		<property name="CreateDate" column="CreateDate" type="DateTime"  />	

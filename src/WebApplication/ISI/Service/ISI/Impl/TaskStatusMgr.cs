@@ -12,7 +12,6 @@ using System.Linq;
 using NHibernate.Expression;
 using com.Sconit.Entity.MasterData;
 using NHibernate;
-using com.Sconit.ISI.Entity.Util;
 
 //TODO: Add other using statements here.
 
@@ -51,7 +50,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             DetachedCriteria criteria = DetachedCriteria.For(typeof(TaskStatus));
             criteria.Add(Expression.In("TaskCode", taskCodeList.ToArray()));
-            //criteria.Add(Expression.Or(Expression.Like("TaskCode", ISIConstants.CODE_PREFIX_RESMATRIX, MatchMode.Start), Expression.Ge("LastModifyDate", lastMonday)));
+            //criteria.Add(Expression.Ge("LastModifyDate", lastLastMonday));
             criteria.AddOrder(Order.Desc("LastModifyDate"));
             IList<TaskStatus> taskStatusList = this.criteriaMgrE.FindAll<TaskStatus>(criteria);
             IDictionary<string, IList<object>> taskStatusDic = new Dictionary<string, IList<object>>();
@@ -65,97 +64,66 @@ namespace com.Sconit.ISI.Service.Impl
                         int count = thisTaskStatusList.Count;
                         int surplus = count;
                         var thisMondayTaskStatusList = thisTaskStatusList.Where(t => t.LastModifyDate >= monday).ToList();
+                        var thisLastMondayTaskStatusList = thisTaskStatusList.Where(t => t.LastModifyDate < monday && t.LastModifyDate >= lastMonday).ToList();
                         IList<IList<TaskStatus>> taskStatusListList = new List<IList<TaskStatus>>();
-                        if ((thisMondayTaskStatusList == null || thisMondayTaskStatusList.Count == 0) && code.StartsWith(ISIConstants.CODE_PREFIX_RESMATRIX))
+                        if (thisMondayTaskStatusList != null && thisMondayTaskStatusList.Count > 0)
                         {
-                            //如果是责任方针是显示上周的一条
-                            taskStatusListList.Add(thisTaskStatusList.Take(1).ToList());
-                            if (thisTaskStatusList.Count > 1)
+                            taskStatusListList.Add(thisMondayTaskStatusList);
+                            surplus -= thisMondayTaskStatusList.Count;
+                        }
+                        if (thisLastMondayTaskStatusList != null && thisLastMondayTaskStatusList.Count > 0)
+                        {
+                            taskStatusListList.Add(thisLastMondayTaskStatusList);
+                            surplus -= thisLastMondayTaskStatusList.Count;
+                        }
+                        /*
+                        if (taskStatusListList.Count != 2)
+                        {
+                            var thisLastLastMondayTaskStatusList = thisTaskStatusList.Where(t => t.LastModifyDate < lastMonday && t.LastModifyDate >= lastLastMonday).ToList();
+                            if (thisLastLastMondayTaskStatusList != null && thisLastLastMondayTaskStatusList.Count > 0)
                             {
-                                var t = new List<TaskStatus>();
-                                t.Add(thisTaskStatusList[1]);
-                                taskStatusListList.Add(t);
+                                taskStatusListList.Add(thisLastLastMondayTaskStatusList);
+                                surplus -= thisLastLastMondayTaskStatusList.Count;
                             }
                         }
-                        else
+                        */
+                        if (taskStatusListList.Count < 2 && surplus > 0)
                         {
-                            var thisLastMondayTaskStatusList = thisTaskStatusList.Where(t => t.LastModifyDate < monday && t.LastModifyDate >= lastMonday).ToList();
-
-                            if (thisMondayTaskStatusList != null && thisMondayTaskStatusList.Count > 0)
+                            int count1 = 0;
+                            int count2 = 0;
+                            if (surplus >= 3)
                             {
-                                taskStatusListList.Add(thisMondayTaskStatusList);
-                                surplus -= thisMondayTaskStatusList.Count;
-                            }
-                            if (thisLastMondayTaskStatusList != null && thisLastMondayTaskStatusList.Count > 0)
-                            {
-                                //如果是责任方针是显示上周的一条
-                                if (code.StartsWith(ISIConstants.CODE_PREFIX_RESMATRIX))
+                                count1 = 3;
+                                if (surplus >= 6)
                                 {
-                                    taskStatusListList.Add(thisLastMondayTaskStatusList.Take(1).ToList());
-                                    surplus--;
+                                    count2 = 3;
                                 }
                                 else
                                 {
-                                    taskStatusListList.Add(thisLastMondayTaskStatusList);
-                                    surplus -= thisLastMondayTaskStatusList.Count;
+                                    count2 = surplus - 3;
                                 }
                             }
-                            /*
-                            if (taskStatusListList.Count != 2)
+                            else
                             {
-                                var thisLastLastMondayTaskStatusList = thisTaskStatusList.Where(t => t.LastModifyDate < lastMonday && t.LastModifyDate >= lastLastMonday).ToList();
-                                if (thisLastLastMondayTaskStatusList != null && thisLastLastMondayTaskStatusList.Count > 0)
-                                {
-                                    taskStatusListList.Add(thisLastLastMondayTaskStatusList);
-                                    surplus -= thisLastLastMondayTaskStatusList.Count;
-                                }
+                                count1 = surplus;
                             }
-                            */
 
-                            if (taskStatusListList.Count < 2 && surplus > 0)
+                            var surplusTaskStatusList = thisTaskStatusList.Skip(count - surplus);
+                            if (count1 > 0)
                             {
-                                int num = 3;
-                                if (code.StartsWith(ISIConstants.CODE_PREFIX_RESMATRIX))
+                                if (taskStatusListList.Count == 0)
                                 {
-                                    num = 1;
-                                }
-
-                                int count1 = 0;
-                                int count2 = 0;
-                                if (surplus >= num)
-                                {
-                                    count1 = 3;
-                                    if (surplus >= num * 2)
+                                    taskStatusListList.Add(surplusTaskStatusList.Take(count1).ToList());
+                                    if (count2 > 0)
                                     {
-                                        count2 = num;
-                                    }
-                                    else
-                                    {
-                                        count2 = surplus - num;
+                                        taskStatusListList.Add(surplusTaskStatusList.Skip(count1).Take(count2).ToList());
                                     }
                                 }
-                                else
+                                else if (taskStatusListList.Count == 1)
                                 {
-                                    count1 = surplus;
+                                    taskStatusListList.Add(surplusTaskStatusList.Take(count1).ToList());
                                 }
-
-                                var surplusTaskStatusList = thisTaskStatusList.Skip(count - surplus);
-                                if (count1 > 0)
-                                {
-                                    if (taskStatusListList.Count == 0)
-                                    {
-                                        taskStatusListList.Add(surplusTaskStatusList.Take(count1).ToList());
-                                        if (count2 > 0)
-                                        {
-                                            taskStatusListList.Add(surplusTaskStatusList.Skip(count1).Take(count2).ToList());
-                                        }
-                                    }
-                                    else if (taskStatusListList.Count == 1)
-                                    {
-                                        taskStatusListList.Add(surplusTaskStatusList.Take(count1).ToList());
-                                    }
-                                }
-                            }
+                            }                            
                         }
 
                         IList<object> objectList = new List<object>();

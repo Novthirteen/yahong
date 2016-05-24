@@ -369,14 +369,9 @@ namespace com.Sconit.Web
 
 
 
-        protected IResMatrixMgrE TheResMatrixMgr { get { return GetService<IResMatrixMgrE>("ResMatrixMgr.service"); } }
-        protected IResWokShopMgrE TheResWokShopMgr { get { return GetService<IResWokShopMgrE>("ResWokShopMgr.service"); } }
-        protected IResPatrolMgrE TheResPatrolMgr { get { return GetService<IResPatrolMgrE>("ResPatrolMgr.service"); } }
-        protected IResRoleMgrE TheResRoleMgr { get { return GetService<IResRoleMgrE>("ResRoleMgr.service"); } }
-        protected IResSopMgrE TheResSopMgr { get { return GetService<IResSopMgrE>("ResSopMgr.service"); } }
-        protected IResMatrixLogMgrE TheResMatrixLogMgr { get { return GetService<IResMatrixLogMgrE>("ResMatrixLogMgr.service"); } }
+     
         protected IPositionMgrE ThePositionMgr { get { return GetService<IPositionMgrE>("PositionMgr.service"); } }
-        protected IResUserMgrE TheResUserMgr { get { return GetService<IResUserMgrE>("ResUserMgr.service"); } }
+       
         #endregion
 
         #region 设施管理

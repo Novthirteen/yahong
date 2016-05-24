@@ -88,52 +88,12 @@ namespace com.Sconit.ISI.Service.Impl
         [Transaction(TransactionMode.Requires)]
         public void UpdateTaskStatus(TaskStatus taskStatus, TaskMstr task)
         {
-            if (!task.IsWF)
-            {
-                task.Flag = taskStatus.Flag;
-                task.Color = taskStatus.Color;
-            }
+            task.Flag = taskStatus.Flag;
+            task.Color = taskStatus.Color;
             task.LastModifyDate = taskStatus.LastModifyDate;
             task.LastModifyUser = taskStatus.LastModifyUser;
             task.LastModifyUserNm = taskStatus.LastModifyUserNm;
             this.UpdateTaskMstr(task);
-        }
-
-        [Transaction(TransactionMode.Requires)]
-        public override void UpdateTaskMstr(TaskMstr entity)
-        {
-            UpdateFirstUser(entity);
-            base.UpdateTaskMstr(entity);
-            this.CreateTaskApply(entity);
-        }
-
-        private static void UpdateFirstUser(TaskMstr entity)
-        {
-            if (!string.IsNullOrEmpty(entity.StartedUser))
-            {
-                entity.FirstUser = entity.StartedUser.Substring(1, entity.StartedUser.IndexOfAny(new char[] { ',', '|' }, 1) - 1);
-                if (entity.AssignStartUserNm.Contains(','))
-                {
-                    entity.FirstUserNm = entity.AssignStartUserNm.Substring(0, entity.AssignStartUserNm.IndexOfAny(new char[] { ',' }));
-                }
-                else
-                {
-                    entity.FirstUserNm = entity.AssignStartUserNm;
-                }
-            }
-            else
-            {
-                entity.FirstUser = null;
-                entity.FirstUserNm = null;
-            }
-        }
-
-
-        [Transaction(TransactionMode.Requires)]
-        public override void CreateTaskMstr(TaskMstr entity)
-        {
-            UpdateFirstUser(entity);
-            base.CreateTaskMstr(entity);
         }
 
         [Transaction(TransactionMode.Unspecified)]
@@ -171,8 +131,7 @@ namespace com.Sconit.ISI.Service.Impl
                 && oldTask.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT
                 && oldTask.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN
                 && oldTask.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS
-                && oldTask.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN
-                && !(oldTask.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE && oldTask.TaskSubType.IsCostCenter))
+                && oldTask.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
             {
                 throw new BusinessErrorException("ISI.Error." + task.Type + "StatusErrorWhenModify", oldTask.Status,
                                                  oldTask.Code);
@@ -180,29 +139,6 @@ namespace com.Sconit.ISI.Service.Impl
             else
             {
                 DateTime now = DateTime.Now;
-
-                //¸üÐÂÔ¤Ëã¹é½átodo
-                if (oldTask.Account1 != task.Account1 || oldTask.Account2 != task.Account2)
-                {
-
-                }
-
-                oldTask.Account1 = task.Account1;
-                oldTask.Account1Desc = task.Account1Desc;
-                oldTask.Account2 = task.Account2;
-                oldTask.Account2Desc = task.Account2Desc;
-                oldTask.Voucher = task.Voucher;
-                oldTask.PayeeCode = task.PayeeCode;
-                oldTask.PayeeName = task.PayeeName;
-                oldTask.TravelType = task.TravelType;
-                oldTask.Taxes = task.Taxes;
-                oldTask.TotalAmount = task.TotalAmount;
-                oldTask.Qty = task.Qty;
-
-                oldTask.CostCenterCode = task.CostCenterCode;
-                oldTask.CostCenterDesc = task.CostCenterDesc;
-                oldTask.WorkHoursUser = task.WorkHoursUser;
-                oldTask.WorkHoursUserNm = task.WorkHoursUserNm;
                 oldTask.PlanAmount = task.PlanAmount;
                 oldTask.Amount = task.Amount;
 
@@ -229,12 +165,8 @@ namespace com.Sconit.ISI.Service.Impl
                 oldTask.Desc2 = task.Desc2;
                 oldTask.PlanStartDate = task.PlanStartDate;
                 oldTask.PlanCompleteDate = task.PlanCompleteDate;
-
-                if (!string.IsNullOrEmpty(task.AssignStartUser))
-                {
-                    oldTask.AssignStartUser = task.AssignStartUser;
-                    oldTask.AssignStartUserNm = task.AssignStartUserNm;
-                }
+                oldTask.AssignStartUser = task.AssignStartUser;
+                oldTask.AssignStartUserNm = task.AssignStartUserNm;
 
                 oldTask.LastModifyDate = now;
                 oldTask.LastModifyUser = user.Code;
@@ -254,6 +186,13 @@ namespace com.Sconit.ISI.Service.Impl
                     this.wfDetailMgrE.CreateWFDetail(oldTask.Code, oldTask.Status, oldTask.Level, oldTask.PreLevel, now, user);
                 }
             }
+        }
+        [Transaction(TransactionMode.Requires)]
+        public override void CreateTaskMstr(TaskMstr entity)
+        {
+            base.CreateTaskMstr(entity);
+
+            this.CreateTaskApply(entity);
         }
 
         [Transaction(TransactionMode.Requires)]

@@ -11,9 +11,9 @@
                 <asp:BoundField DataField="Code" HeaderText="${ISI.FailureMode.Code}" SortExpression="Code" />
                 <asp:BoundField DataField="Desc" HeaderText="${Common.Business.Description}" SortExpression="Desc" />
                 <asp:BoundField DataField="Seq" HeaderText="${ISI.FailureMode.Sequence}" SortExpression="Seq" />
-                <asp:TemplateField HeaderText="${ISI.FailureMode.TaskSubType}" SortExpression="TaskSubType">
+                <asp:TemplateField HeaderText="${ISI.FailureMode.TaskSubType}" SortExpression="TaskSubType.Code">
                     <ItemTemplate>
-                        <%# DataBinder.Eval(Container.DataItem, "TaskSubType")%>
+                        <%# DataBinder.Eval(Container.DataItem, "TaskSubType.Name")%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:CheckBoxField DataField="IsActive" SortExpression="IsActive" HeaderText="${Common.IsActive}" />

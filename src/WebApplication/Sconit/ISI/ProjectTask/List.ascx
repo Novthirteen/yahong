@@ -45,7 +45,7 @@
                 </asp:TemplateField>
             </Columns>
         </cc1:GridView>
-        <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="100">
+        <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="10">
         </cc1:GridPager>
     </div>
 </fieldset>

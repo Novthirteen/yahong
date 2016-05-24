@@ -24,7 +24,6 @@ namespace com.Sconit.ISI.Entity
 				_id = value;
 			}
 		}
-        public int Seq { get; set; }
 		private string _summaryCode;
 		public string SummaryCode
 		{

@@ -1,6 +1,5 @@
 using com.Sconit.ISI.Entity.Util;
 using com.Sconit.ISI.Service.Util;
-using com.Sconit.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,90 +11,6 @@ namespace com.Sconit.ISI.Entity
     public class TaskMstr : TaskMstrBase
     {
         #region Non O/R Mapping Properties
-
-
-        public string TotalAmountDesc
-        {
-            get
-            {
-                if (TotalAmount.HasValue)
-                {
-                    return StringHelper.MoneyCn(TotalAmount.Value);
-                }
-                return string.Empty;
-            }
-        }
-        public string TaxesDesc
-        {
-            get
-            {
-                if (this.Taxes.HasValue)
-                {
-                    return StringHelper.MoneyCn(Taxes.Value);
-                }
-                return string.Empty;
-            }
-        }
-
-        public string AmountDesc
-        {
-            get
-            {
-                if (Amount.HasValue)
-                {
-                    return StringHelper.MoneyCn(Amount.Value);
-                }
-                return string.Empty;
-            }
-        }
-        public string SupplierDesc
-        {
-            get
-            {
-                return this.SupplierCode + "[" + this.SupplierName + "]";
-            }
-        }
-        public string CostCenter
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(CostCenterCode))
-                {
-                    return this.CostCenterCode + "[" + this.CostCenterDesc + "]";
-                }
-                else
-                {
-                    return string.Empty;
-                }
-
-            }
-        }
-
-        public string Account1Name
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(this.Account1)) return string.Empty;
-                return this.Account1 + "[" + this.Account1Desc + "]";
-            }
-        }
-        public string Account2Name
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(this.Account2)) return string.Empty;
-                return this.Account2 + "[" + this.Account2Desc + "]";
-            }
-        }
-
-        public string Payee
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(this.PayeeCode)) return string.Empty;
-                return this.PayeeCode + "[" + this.PayeeName + "]";
-            }
-        }
 
         public bool IsUpdate { get; set; }
         public bool IsCompleteNoRemind { get; set; }

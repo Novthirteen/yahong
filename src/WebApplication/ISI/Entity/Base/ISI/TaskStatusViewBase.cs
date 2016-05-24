@@ -11,8 +11,7 @@ namespace com.Sconit.ISI.Entity
     public abstract class TaskStatusViewBase : EntityBase
     {
         #region O/R Mapping Properties
-        public string FirstUser { get; set; }
-        public string FirstUserNm { get; set; }
+
         private string _taskCode;
         public string TaskCode
         {
@@ -25,9 +24,6 @@ namespace com.Sconit.ISI.Entity
                 _taskCode = value;
             }
         }
-        public string FailureMode { get; set; }
-        public string FailureModeDesc { get; set; }
-        public bool? IsRemind { get; set; }
 
         public DateTime? InApproveDate { get; set; }
         public string InApproveUser { get; set; }
@@ -37,6 +33,7 @@ namespace com.Sconit.ISI.Entity
         public string InDisputeUser { get; set; }
         public string InDisputeUserNm { get; set; }
 
+        public string TraceType { get; set; }
         public string ApprovalUser { get; set; }
         public string ApprovalUserNm { get; set; }
         public string ApprovalLevel { get; set; }
@@ -44,8 +41,8 @@ namespace com.Sconit.ISI.Entity
         public string CountersignUser { get; set; }
         public string CountersignUserNm { get; set; }
         public string CostCenterCode { get; set; }
-        public string CostCenterDesc { get; set; }
-
+        public string CostCenterCodeDesc { get; set; }
+        public string CostCenterUser { get; set; }
 
         public bool IsAssignUser { get; set; }
         public bool IsApply { get; set; }
@@ -192,8 +189,6 @@ namespace com.Sconit.ISI.Entity
                 _startDate = value;
             }
         }
-        /*
-        
         private Int32? _id;
         public Int32? Id
         {
@@ -242,7 +237,6 @@ namespace com.Sconit.ISI.Entity
                 _statusEndDate = value;
             }
         }
-        public string TraceType { get; set; }
         private string _statusUser;
         public string StatusUser
         {
@@ -265,6 +259,42 @@ namespace com.Sconit.ISI.Entity
             set
             {
                 _statusUserNm = value;
+            }
+        }
+        private DateTime? _statusDate;
+        public DateTime? StatusDate
+        {
+            get
+            {
+                return _statusDate;
+            }
+            set
+            {
+                _statusDate = value;
+            }
+        }
+        private Int32? _statusCount;
+        public Int32? StatusCount
+        {
+            get
+            {
+                return _statusCount;
+            }
+            set
+            {
+                _statusCount = value;
+            }
+        }
+        private Int32? _currentStatusCount;
+        public Int32? CurrentStatusCount
+        {
+            get
+            {
+                return _currentStatusCount;
+            }
+            set
+            {
+                _currentStatusCount = value;
             }
         }
         private string _comment;
@@ -303,6 +333,43 @@ namespace com.Sconit.ISI.Entity
                 _commentCreateUser = value;
             }
         }
+        private Int32? _commentCount;
+        public Int32? CommentCount
+        {
+            get
+            {
+                return _commentCount;
+            }
+            set
+            {
+                _commentCount = value;
+            }
+        }
+        private Int32? _currentCommentCount;
+        public Int32? CurrentCommentCount
+        {
+            get
+            {
+                return _currentCommentCount;
+            }
+            set
+            {
+                _currentCommentCount = value;
+            }
+        }
+        private DateTime? _commentCreateDate;
+        public DateTime? CommentCreateDate
+        {
+            get
+            {
+                return _commentCreateDate;
+            }
+            set
+            {
+                _commentCreateDate = value;
+            }
+        }
+        /*
         private string _fileName;
         public string FileName
         {
@@ -401,78 +468,6 @@ namespace com.Sconit.ISI.Entity
             }
         }
          * */
-        private Int32? _commentCount;
-        public Int32? CommentCount
-        {
-            get
-            {
-                return _commentCount;
-            }
-            set
-            {
-                _commentCount = value;
-            }
-        }
-        private Int32? _currentCommentCount;
-        public Int32? CurrentCommentCount
-        {
-            get
-            {
-                return _currentCommentCount;
-            }
-            set
-            {
-                _currentCommentCount = value;
-            }
-        }
-        private DateTime? _commentDate;
-        public DateTime? CommentDate
-        {
-            get
-            {
-                return _commentDate;
-            }
-            set
-            {
-                _commentDate = value;
-            }
-        }
-        private DateTime? _statusDate;
-        public DateTime? StatusDate
-        {
-            get
-            {
-                return _statusDate;
-            }
-            set
-            {
-                _statusDate = value;
-            }
-        }
-        private Int32? _statusCount;
-        public Int32? StatusCount
-        {
-            get
-            {
-                return _statusCount;
-            }
-            set
-            {
-                _statusCount = value;
-            }
-        }
-        private Int32? _currentStatusCount;
-        public Int32? CurrentStatusCount
-        {
-            get
-            {
-                return _currentStatusCount;
-            }
-            set
-            {
-                _currentStatusCount = value;
-            }
-        }
         private Int32? _refTaskCount;
         public Int32? RefTaskCount
         {
@@ -823,10 +818,6 @@ namespace com.Sconit.ISI.Entity
             }
         }
         public string ViewUser { get; set; }
-        public decimal? Amount { get; set; }
-        public string SupplierCode { get; set; }
-        public string SupplierName { get; set; }
-
         private Decimal? _startPercent;
         public Decimal? StartPercent
         {
@@ -839,102 +830,7 @@ namespace com.Sconit.ISI.Entity
                 _startPercent = value;
             }
         }
-        public string CurrentApprovalUser { get; set; }
-        public string CurrentApprovalUserNm { get; set; }
-        public int? Voucher { get; set; }
-        public string PayeeCode { get; set; }
-        public string PayeeName { get; set; }
-        public decimal? Qty { get; set; }
-        private string _account1;
-        public string Account1
-        {
-            get
-            {
-                return _account1;
-            }
-            set
-            {
-                _account1 = value;
-            }
-        }
-        private string _account1Desc;
-        public string Account1Desc
-        {
-            get
-            {
-                return _account1Desc;
-            }
-            set
-            {
-                _account1Desc = value;
-            }
-        }
-        private string _account2;
-        public string Account2
-        {
-            get
-            {
-                return _account2;
-            }
-            set
-            {
-                _account2 = value;
-            }
-        }
-        private string _account2Desc;
-        public string Account2Desc
-        {
-            get
-            {
-                return _account2Desc;
-            }
-            set
-            {
-                _account2Desc = value;
-            }
-        }
-        private Decimal? _noTaxAmount;
-        public Decimal? NoTaxAmount
-        {
-            get
-            {
-                return _noTaxAmount;
-            }
-            set
-            {
-                _noTaxAmount = value;
-            }
-        }
-        private Decimal? _taxes;
-        public Decimal? Taxes
-        {
-            get
-            {
-                return _taxes;
-            }
-            set
-            {
-                _taxes = value;
-            }
-        }
-        private Decimal? _totalAmount;
-        public Decimal? TotalAmount
-        {
-            get
-            {
-                return _totalAmount;
-            }
-            set
-            {
-                _totalAmount = value;
-            }
-        }
-        public string FormType { get; set; }
-        public bool IsCostCenter { get; set; }
-        public string DeptCode { get; set; }
-        public string DeptDesc { get; set; }
-        public string DeptUser { get; set; }
-        public string CostCenterUser { get; set; }
+
         #endregion
 
 

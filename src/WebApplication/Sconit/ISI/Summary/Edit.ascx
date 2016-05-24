@@ -5,14 +5,6 @@
 <script language="javascript" type="text/javascript" src="Js/ui.core-min.js"></script>
 <script language="javascript" type="text/javascript" src="Js/uploadify/jquery.uploadify.min.js?ver=<%=(new Random()).Next(0, 99999).ToString() %>"></script>
 <link rel="stylesheet" type="text/css" href="Js/uploadify/uploadify.css" />
-
-<style type="text/css">
-    .link {
-        text-decoration: underline;
-        color: blue;
-        cursor: pointer;
-    }
-</style>
 <script language="javascript" type="text/javascript">
 
     function GetCount()
@@ -26,7 +18,7 @@
         $("#uploadify").uploadify({
             'debug': false, //开启调试    
             'auto': true,  //是否自动上传    
-            'buttonText': '${ISI.Status.SelectFiles}',  //按钮上的文字
+            'buttonText': '${ISI.Summary.Upload}',  //按钮上的文字
             'swf': "/JS/uploadify/uploadify.swf",//flash      
             'queueID': 'uploadfileQueue',  //文件选择后的容器ID  
             'uploader': '/ISI/Attachment/FileHandler.ashx',  //后台action  
@@ -44,22 +36,22 @@
             'onSelectError': function (file, errorCode, errorMsg) {
                 switch (errorCode) {
                     case -100:
-                        $("#uploadfileQueue").text("${ISI.TSK.UploadTheFileNumberIsBeyondSystemOfFile}" + $('#uploadify').uploadify('settings', 'queueSizeLimit'));
+                        $("#uploadfileQueue").text("${UploadTheFileNumberIsBeyondSystemOfFile}" + $('#uploadify').uploadify('settings', 'queueSizeLimit'));
                         break;
                     case -110:
-                        $("#uploadfileQueue").text(file.name + "${ISI.TSK.Error.FileSize}" + $('#uploadify').uploadify('settings', 'fileSizeLimit'));
+                        $("#uploadfileQueue").text(file.name + "${ISI.Summary.Error.FileSize}" + $('#uploadify').uploadify('settings', 'fileSizeLimit'));
                         break;
                     case -120:
-                        $("#uploadfileQueue").text(file.name + "${ISI.TSK.Error.FileSizeException}");
+                        $("#uploadfileQueue").text(file.name + "${ISI.Summary.Error.FileSizeException}");
                         break;
                     case -130:
-                        $("#uploadfileQueue").text(file.name + "${ISI.TSK.Error.FileType}");
+                        $("#uploadfileQueue").text(file.name + "${ISI.Summary.Error.FileType}");
                         break;
                 }
             },
             //检测FLASH失败调用    
             'onFallback': function () {
-                alert("${ISI.TSK.NoFlash}");
+                alert("${ISI.Summary.NoFlash}");
             },
             'onSelect': function (file) {
                 //$("#uploadfileQueue").append("正在上传...");
@@ -73,16 +65,14 @@
             },
             'onQueueComplete': function (queueData) { //队列里所有的文件处理完成后调用 
                 $("#uploadfileQueue").text('');
-                $("#uploadfileQueue").append(queueData.uploadsSuccessful + "${ISI.TSK.HasBeenUploadedSuccessfully}").fadeIn(300).delay(2500).fadeOut(300);// 这个是渐渐消失
+                $("#uploadfileQueue").append(queueData.uploadsSuccessful + "${ISI.Summary.HasBeenUploadedSuccessfully}").fadeIn(300).delay(2500).fadeOut(300);// 这个是渐渐消失
             }
         });
-        $("#lblFile").hide();
-        $("#uploadify").fadeIn(100);
     }
 
     $(document).ready(function () {
 
-        //TaskUploadify();
+        TaskUploadify();
         $('textarea').tah({
             moreSpace: 25,   // 输入框底部预留的空白, 默认15, 单位像素
             maxHeight: 260,  // 指定Textarea的最大高度, 默认600, 单位像素
@@ -351,8 +341,7 @@
             <table class="mtable">
                 <tr>
                     <td class="td01">
-                        <span class="link" id="lblFile" name="lblFile" onclick="TaskUploadify()">${ISI.Status.Upload}</span>
-                        <input type="file" id="uploadify" name="uploadify" style="display: none;" /></td>
+                        <input type="file" id="uploadify" name="uploadify" /></td>
                     <td class="td02"></td>
                     <td class="td01">
                         <asp:CheckBox runat="server" Checked='<%# Bind("IsCheckup") %>' ID="cbIsCheckup" Enabled="false" Text="${ISI.Summary.IsCheckup}:" />
@@ -397,7 +386,7 @@
                     <ItemTemplate>
                         <table class="mtable">
                             <tr>
-                                <td style="text-align: left; width:2%;">
+                                <td style="text-align: left; width=2%;">
                                     <asp:CheckBox runat="server" ID="cbChecked" Checked="true" Text="<%#Container.DataItemIndex + 1%>" />
                                     <asp:HiddenField ID="hfId" runat="server" Value='<%# Bind("Id") %>' />
                                     <asp:Label ID="lblSeq" Visible="false" runat="server" Text="<%#Container.DataItemIndex + 1%>" />
@@ -411,18 +400,11 @@
                                 <td class="td01">
                                     <asp:Label ID="lblTaskCode" runat="server" Text="${ISI.Summary.Detail.TaskCode}:" />
                                 </td>
-                                <td class="td02">
+                                <td>
                                     <asp:TextBox ID="tbTaskCode" runat="server" TabIndex="1" Text='<%# Bind("TaskCode") %>' />
                                 </td>
-                                <td style="text-align: right; width:10%;">
-                                    <asp:Label ID="ltlSeq" runat="server" TabIndex="1" Text="${Common.GridView.Seq}:" />
-                                </td>
-                                <td style="text-align: right; width:1%; vertical-align: text-bottom;">
-                                    <asp:TextBox ID="tbSeq" runat="server" CssClass="inputRequired" Width="35" Text='<%# Bind("Seq") %>' />
-                                    <asp:RangeValidator ID="rvSeq" runat="server" ControlToValidate="tbSeq"
-                                        Display="Dynamic" ErrorMessage="${Common.Validator.Valid.Number}" ValidationGroup="vgSave"
-                                        Type="Integer" MaximumValue="1000" MinimumValue="1" />
-                                </td>
+                                <td style="text-align: left; width=10%;"></td>
+                                <td style="text-align: right; width=2%; vertical-align: text-bottom;"></td>
                             </tr>
                             <tr>
                                 <td style="text-align: right;" colspan="2">
@@ -430,9 +412,10 @@
                                 </td>
                                 <td class="td02" colspan="4" style="vertical-align: text-bottom;">
                                     <asp:TextBox ID="tbConment" runat="server" Text='<%# Bind("Conment") %>' Height="150"
-                                        Width="100%" TextMode="MultiLine" Font-Size="10" CssClass="inputRequired" />
+                                        Width="95%" TextMode="MultiLine" Font-Size="10" CssClass="inputRequired" />
+
                                 </td>
-                                <td style="text-align: right; width:1%; vertical-align: bottom;">
+                                <td style="text-align: right; width=2%; vertical-align: bottom;">
                                     <asp:Image ID="descImg" onclick="javascript:scroll(0,0)" ImageUrl="~/Images/ISI/top16.png" runat="server" ToolTip="${Common.Return.Top}" />
                                 </td>
                             </tr>
@@ -445,11 +428,11 @@
                                         Width="95%" TextMode="MultiLine" onkeypress="javascript:setMaxLength(this,200);"
                                         onpaste="limitPaste(this, 200)" Font-Size="10" />
                                 </td>
-                                <td style="text-align: left; width:10%;">
+                                <td>
                                     <asp:RadioButtonList ID="rblType" runat="server" RepeatDirection="Vertical" RepeatLayout="Flow" DataTextField="Description" DataValueField="Value">
                                     </asp:RadioButtonList>
                                 </td>
-                                <td style="text-align: right; width:1%; vertical-align: bottom;">
+                                <td style="text-align: right; width=1%; vertical-align: bottom;">
                                     <div>
                                         <asp:Image ID="approveImg" onclick="javascript:scroll(0,0)" ImageUrl="~/Images/ISI/top16.png" runat="server" ToolTip="${Common.Return.Top}" />
                                     </div>

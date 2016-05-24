@@ -34,7 +34,7 @@ public partial class ISI_Batch_Search : SearchModuleBase
     public event EventHandler CompleteEvent;
     public event EventHandler OpenEvent;
     public event EventHandler BatchEvent;
-
+    
     public string ModuleType
     {
         get
@@ -60,9 +60,9 @@ public partial class ISI_Batch_Search : SearchModuleBase
         tbTaskSubType.DataBind();
         if (!IsPostBack)
         {
-            GenerateTree();
-
             this.ddlType.Items.RemoveAt(1);
+
+            GenerateTree();
 
             if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT)
             {
@@ -73,19 +73,23 @@ public partial class ISI_Batch_Search : SearchModuleBase
                 this.lblTaskSubType.Text = "${ISI.TSK.Project}:";
                 //this.ltlType.Visible = false;
                 //this.ddlType.Visible = false;
-                int count = this.ddlType.Items.Count - 3;
-                for (int i = 1; i < count; i++)
-                {
-                    this.ddlType.Items.RemoveAt(1);
-                }
 
-                //this.ddlType.SelectedIndex = 1;
+                this.ddlType.Items.RemoveAt(1);
+                this.ddlType.Items.RemoveAt(1);
+                this.ddlType.Items.RemoveAt(1);
+                this.ddlType.Items.RemoveAt(4);
+                this.ddlType.Items.RemoveAt(4);
+                this.ddlType.Items.RemoveAt(4);
+                this.ddlType.Items.RemoveAt(4);
+
+                this.ddlType.SelectedIndex = 1;
             }
             else
             {
-                this.ddlType.Items.RemoveAt(this.ddlType.Items.Count - 1);
-                this.ddlType.Items.RemoveAt(this.ddlType.Items.Count - 1);
-                this.ddlType.Items.RemoveAt(this.ddlType.Items.Count - 1);
+
+                this.ddlType.Items.RemoveAt(4);
+                this.ddlType.Items.RemoveAt(4);
+                this.ddlType.Items.RemoveAt(4);
                 this.lblPhase.Text = "${ISI.Status.Org}:";
                 this.astvMyTreeOrg.Visible = true;
             }
@@ -165,7 +169,7 @@ public partial class ISI_Batch_Search : SearchModuleBase
             BatchEvent(new object[] {this.rblCreate.SelectedItem.Value, this.cbIsCancel.Checked ,
                     this.cbIsComplete.Checked ,
                     this.rblComplete.SelectedItem.Value , this.cbIsOpen.Checked }, null);
-
+            
             DoSearch();
         }
     }
@@ -211,7 +215,7 @@ public partial class ISI_Batch_Search : SearchModuleBase
         string taskSubType = this.tbTaskSubType.Text.Trim();
         string assignUser = this.tbAssignUser.Text.Trim();
         string startUser = this.tbStartUser.Text.Trim();
-        string targetUser = this.tbUser.Text.Trim();
+
         string flag = this.ddlFlag.SelectedValue;
         string color = this.ddlColor.SelectedValue;
         string priority = this.ddlPriority.SelectedValue;
@@ -235,12 +239,12 @@ public partial class ISI_Batch_Search : SearchModuleBase
         }
         #endregion
 
-        return new object[] { type, taskSubType, assignUser, startUser, flag, color, first, priority, statusList, orgList, phase, seq, targetUser };
+        return new object[] { type, taskSubType, assignUser, startUser, flag, color, first, priority, statusList, orgList, phase, seq };
     }
     private void GenerateTree()
     {
         IList<CodeMaster> statusList = this.TheCodeMasterMgr.GetCachedCodeMasterAsc(ISIConstants.CODE_MASTER_ISI_STATUS);
-
+        
         foreach (CodeMaster status in statusList)
         {
             this.astvMyTree.RootNode.AppendChild(new ASTreeViewLinkNode(this.TheLanguageMgr.TranslateMessage("ISI.Status." + status.Value, CurrentUser), status.Value, string.Empty));
@@ -250,13 +254,13 @@ public partial class ISI_Batch_Search : SearchModuleBase
         this.astvMyTree.RootNode.ChildNodes[4].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[5].CheckedState = ASTreeViewCheckboxState.Checked;
 
-        //this.astvMyTree.RootNode.ChildNodes[7].CheckedState = ASTreeViewCheckboxState.Checked;
+        this.astvMyTree.RootNode.ChildNodes[7].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[8].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[9].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[10].CheckedState = ASTreeViewCheckboxState.Checked;
 
-        this.astvMyTree.InitialDropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
-        this.astvMyTree.DropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
+        this.astvMyTree.InitialDropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[7].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
+        this.astvMyTree.DropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[5].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[7].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[8].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[9].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[10].NodeValue, CurrentUser);
 
         IList<CodeMaster> orgList = this.TheCodeMasterMgr.GetCachedCodeMasterAsc(ISIConstants.CODE_MASTER_ISI_ORG);
         foreach (CodeMaster org in orgList)

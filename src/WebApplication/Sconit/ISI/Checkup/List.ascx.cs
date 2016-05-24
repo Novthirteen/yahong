@@ -60,12 +60,12 @@ public partial class ISI_Checkup_List : ListModuleBase
         try
         {
             this.TheCheckupMgr.DeleteCheckup(int.Parse(code));
-            ShowSuccessMessage("ISI.Checkup.DeleteCheckup.Successfully");
+            ShowSuccessMessage("ISI.FailureMode.DeleteFailureMode.Successfully");
             UpdateView();
         }
         catch (Castle.Facilities.NHibernateIntegration.DataException ex)
         {
-            ShowErrorMessage("ISI.Checkup.DeleteCheckup.Fail");
+            ShowErrorMessage("ISI.FailureMode.DeleteFailureMode.Fail");
         }
 
     }
@@ -105,15 +105,15 @@ public partial class ISI_Checkup_List : ListModuleBase
 
             if (checkup.SubmitDate.HasValue)
             {
-                ((Label)(e.Row.FindControl("lblContent"))).Text = "<span style='color:#0000E5;'>" + checkup.SubmitUserNm + "(" + checkup.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + (!string.IsNullOrEmpty(checkup.Content) ? checkup.Content.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>") : string.Empty);
+                ((Label)(e.Row.FindControl("lblContent"))).Text = "<span style='color:#0000E5;'>" + checkup.SubmitUserNm + "(" + checkup.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + checkup.Content;
             }
             else
             {
-                ((Label)(e.Row.FindControl("lblContent"))).Text = "<span style='color:#0000E5;'>" + checkup.CreateUserNm + "(" + checkup.CreateDate.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + (!string.IsNullOrEmpty(checkup.Content) ? checkup.Content.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>") : string.Empty);
+                ((Label)(e.Row.FindControl("lblContent"))).Text = "<span style='color:#0000E5;'>" + checkup.CreateUserNm + "(" + checkup.CreateDate.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + checkup.Content;
             }
             if (checkup.ApprovalDate.HasValue)
             {
-                ((Label)(e.Row.FindControl("lblAuditInstructions"))).Text = "<span style='color:#0000E5;'>" + checkup.ApprovalUserNm + "(" + checkup.ApprovalDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + (!string.IsNullOrEmpty(checkup.AuditInstructions) ? checkup.AuditInstructions.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>") : string.Empty);
+                ((Label)(e.Row.FindControl("lblAuditInstructions"))).Text = "<span style='color:#0000E5;'>" + checkup.ApprovalUserNm + "(" + checkup.ApprovalDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + checkup.AuditInstructions;
             }
 
             if (checkup.Amount.HasValue)

@@ -24,7 +24,7 @@ namespace com.Sconit.ISI.Service.Impl
     {
         public ITaskSubTypeMgrE taskSubTypeMgrE { get; set; }
         public IHqlMgrE hqlMgrE { get; set; }
-        public ISmtpMgrE smtpMgrE { get; set; }
+        public ISmtpMgrE SmtpMgrE { get; set; }
         public ITaskMstrMgrE taskMstrMgrE { get; set; }
         public IEntityPreferenceMgrE entityPreferenceMgrE { get; set; }
         public ICodeMasterMgrE codeMasterMgrE { get; set; }
@@ -192,7 +192,7 @@ namespace com.Sconit.ISI.Service.Impl
                                     StringBuilder mailDetailBody = new StringBuilder();
                                     colorDic = new Dictionary<string, string>();
                                     string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
-                                    ISIUtil.AppendTestText(smtpMgrE.IsTestSystem(), mailBody, ISIConstants.EMAIL_SEPRATOR);
+                                    ISIUtil.AppendTestText(companyName, mailBody, ISIConstants.EMAIL_SEPRATOR);
                                     StringBuilder subject = new StringBuilder();
                                     subject.Append("ISI系统任务报告");
                                     mailBody.Append("<span style='font-size:13px;'>尊敬的: " + user.Name + " 先生/女士</span><br /><br />");
@@ -324,7 +324,7 @@ namespace com.Sconit.ISI.Service.Impl
                                     mailBody.Append("<span style='font-size:13px;'><a href='http://" + webAddress + "'>http://" + webAddress + "</a></span>");
                                     //todo
                                     //this.SmtpMgrE.AsyncSend(subject.ToString(), mailBody.ToString(), "tiansu@yfgm.com.cn", string.Empty, MailPriority.Normal);
-                                    this.smtpMgrE.AsyncSend(subject.ToString(), mailBody.ToString(), user.Email, string.Empty, MailPriority.Normal);
+                                    this.SmtpMgrE.AsyncSend(subject.ToString(), mailBody.ToString(), user.Email, string.Empty, MailPriority.Normal);
                                 }
                                 catch (Exception e)
                                 {

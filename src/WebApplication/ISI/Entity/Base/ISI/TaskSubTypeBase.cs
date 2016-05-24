@@ -12,10 +12,7 @@ namespace com.Sconit.ISI.Entity
     public abstract class TaskSubTypeBase : EntityBase
     {
         #region O/R Mapping Properties
-        public string CostCenter { get; set; }
-        public string Account1 { get; set; }
-        public string Account2 { get; set; }
-        
+
         private string _code;
         public string Code
         {
@@ -28,7 +25,6 @@ namespace com.Sconit.ISI.Entity
                 _code = value;
             }
         }
-        public bool IsRemind { get; set; }
         public bool IsCtrl { get; set; }
         public string Template { get; set; }
         public bool IsAttachment { get; set; }
@@ -52,11 +48,6 @@ namespace com.Sconit.ISI.Entity
         public string ECUser { get; set; }
         public Int32 Version { get; set; }
         public string Desc2 { get; set; }
-        public string FormType { get; set; }
-        public bool IsAmount { get; set; }
-        public bool IsAmountDetail { get; set; }
-        public bool IsCost { get; set; }
-        public bool IsBudget { get; set; }
 
         private string _desc;
         public string Desc

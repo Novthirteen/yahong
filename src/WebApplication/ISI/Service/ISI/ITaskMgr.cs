@@ -12,7 +12,7 @@ namespace com.Sconit.ISI.Service
     {
         #region Customized Methods
         bool HasAttachmentPermission(string startedUser, string assignUser, string assignUpUser, bool isISIAdmin, bool isTaskFlowAdmin, bool isViewer, bool isAssigner, bool isCloser, bool isDeleteAttachment, string currentUser);
-        bool HasPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isAssigner, bool isCloser, string currentUser);
+        bool HasPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isCloser, string currentUser);
 
         bool HasProcessPermission(string status, string taskCode, int? level, bool isWFAdmin, string currentUser);
         WFPermission ProcessPermission(string status, string taskCode, int? level, bool isWFAdmin, string currentUser);
@@ -24,9 +24,9 @@ namespace com.Sconit.ISI.Service
                                                 string closeUpUser, string[] closeUpLevel,
                                                 bool isISIAdmin, bool isTaskFlowAdmin, bool isCloser, string currentUser);
 
-        bool HasPermissionByProcess(string status, string startedUser, string startUpUser, string createUser, string submitUser, bool isAssigner, bool isISIAdmin, bool isTaskFlowAdmin, string currentUser);
+        bool HasPermissionByProcess(string status, string startedUser, string startUpUser, string createUser, string submitUser, bool isISIAdmin, bool isTaskFlowAdmin, string currentUser);
 
-        bool HasPermissionByClose(string status, string type, bool isWF, string createUser, string submitUser, string assignUser, string assignUpUser, string closeUpUser, bool isAssigner, bool isISIAdmin, bool isCloser, string currentUser);
+        bool HasPermissionByClose(string status, string type, bool isWF, string createUser, string submitUser, bool isISIAdmin, bool isCloser, string currentUser);
 
         bool HasAssignPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isAssigner, string currentUser);
 
@@ -39,8 +39,6 @@ namespace com.Sconit.ISI.Service
         string[] GetUserCodeName(string assignStartUser);
 
         void CreateTask(TaskMstr taskMstr, User user);
-
-        void CreateTask(TaskMstr taskMstr, IList<Cost> costDetList, User user);
 
         //string GetUserName(string userCodes);
         TaskMstr SubmitTask(string code, string userCode);
@@ -105,9 +103,13 @@ namespace com.Sconit.ISI.Service
 
         void Remind(string subject, StringBuilder body);
 
+        void Remind(string subject, StringBuilder body, string mailTo);
 
         void FiveSRemind();
 
+        string FindEmail(string[] userCodes);
+
+        string FindEmailByPermission(string[] permissionCodes);
 
         string FindUserNameByPermission(string[] permissionCodes);
 

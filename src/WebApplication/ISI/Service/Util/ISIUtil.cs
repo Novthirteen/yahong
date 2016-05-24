@@ -8,33 +8,11 @@ using com.Sconit.Entity.MasterData;
 using System.Text.RegularExpressions;
 using com.Sconit.ISI.Entity;
 using com.Sconit.ISI.Entity.Util;
-using com.Sconit.Utility;
 
 namespace com.Sconit.ISI.Service.Util
 {
     public static class ISIUtil
     {
-        /// <summary> 
-        /// 计算本周的周一日期 
-        /// </summary> 
-        /// <returns></returns> 
-        public static DateTime GetMondayDate()
-        {
-            return DateTime.Parse(GetMondayDate(DateTime.Now).ToString("yyyy-MM-dd 00:00:00"));
-        }
-        /// <summary> 
-        /// 计算某日起始日期（礼拜一的日期） 
-        /// </summary> 
-        /// <param name="someDate">该周中任意一天</param> 
-        /// <returns>返回礼拜一日期，后面的具体时、分、秒和传入值相等</returns> 
-        public static DateTime GetMondayDate(DateTime someDate)
-        {
-            int i = someDate.DayOfWeek - DayOfWeek.Monday;
-            if (i == -1) i = 6;// i值 > = 0 ，因为枚举原因，Sunday排在最前，此时Sunday-Monday=-1，必须+7=6。 
-            TimeSpan ts = new TimeSpan(i, 0, 0, 0);
-            return someDate.Subtract(ts);
-        }
-
         /// <summary>
         /// 是否是手机号码
         /// </summary>
@@ -62,17 +40,13 @@ namespace com.Sconit.ISI.Service.Util
             string alias = str + "_" + code + "_" + effDate.ToString("yyyyMMddHHmmssfff") + "_" + Guid.NewGuid() + fileExtension;
             return alias;
         }
-        public static string GetPath(DateTime effDate, bool isTemplates)
-        {
-            return GetPath(effDate, isTemplates, false);
-        }
 
-        public static string GetPath(DateTime effDate, bool isTemplates, bool isSub)
+        public static string GetPath(DateTime effDate, bool isTemplates)
         {
             int y = effDate.Year;
             string md = effDate.ToString("MM-dd");
 
-            string path = "File\\" + (isTemplates ? "Templates\\" : string.Empty) + y + "\\" + md + "\\" + (isSub ? (effDate.ToString("HH-mm-ss") + "\\") : string.Empty);
+            string path = "File/" + (isTemplates ? "Templates/" : string.Empty) + y + "/" + md + "/";
             return path;
         }
 
@@ -369,44 +343,13 @@ namespace com.Sconit.ISI.Service.Util
         {
             return GetUserName(assignStartUserNm, userName, level, approvalLevel, string.Empty, color, approvalColor);
         }
-        public static string GetUserName(string assignStartUserNm, IDictionary<int, string> indexColor)
+        public static string GetUserName(string assignStartUserNm, string userName, int? level, string approvalLevel, string lastApprovalUser, string color, string approvalColor)
         {
             if (string.IsNullOrEmpty(assignStartUserNm)) return string.Empty;
             else
             {
                 StringBuilder html = new StringBuilder();
                 var userNames = assignStartUserNm.Split(ISIConstants.ISI_USERNAME_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < userNames.Length; i++)
-                {
-                    var u = userNames[i];
-                    html.Append("<div>");
-                    if (indexColor.Keys.Contains(i))
-                    {
-                        html.Append("<span style='color:" + indexColor[i] + ";'><b>");
-                    }
-                    html.Append(u);
-                    if (indexColor.Keys.Contains(i))
-                    {
-                        html.Append("</b></span>");
-                    }
-                    html.Append("</div>");
-                }
-                return html.ToString();
-            }
-        }
-        public static string GetUserName(string assignStartUserNm, string userName, int? level, string approvalLevel, string currentApprovalUserNm, string color, string approvalColor)
-        {
-            if (string.IsNullOrEmpty(assignStartUserNm)) return string.Empty;
-            else
-            {
-                StringBuilder html = new StringBuilder();
-                var userNames = assignStartUserNm.Split(ISIConstants.ISI_USERNAME_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
-                IList<string> currentApprovalUserNmList = null;
-                if (!string.IsNullOrEmpty(currentApprovalUserNm))
-                {
-                    currentApprovalUserNmList = currentApprovalUserNm.Split(ISIConstants.ISI_USERNAME_SEPRATOR, StringSplitOptions.RemoveEmptyEntries).ToList();
-                }
-
                 var approvalLevels = approvalLevel != null ? approvalLevel.Split(ISIConstants.ISI_USERNAME_SEPRATOR, StringSplitOptions.RemoveEmptyEntries) : new string[0];
                 for (int i = 0; i < userNames.Length; i++)
                 {
@@ -416,12 +359,12 @@ namespace com.Sconit.ISI.Service.Util
                     {
                         html.Append("<span style='color:" + color + ";'>");
                     }
-                    if (level.HasValue && level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && approvalLevels != null && approvalLevels.Length > 0 && level.Value == int.Parse(approvalLevels[i]) && approvalLevels.Where(a => int.Parse(a) == level.Value).Count() > 0 && currentApprovalUserNmList != null && currentApprovalUserNmList.Count > 0 && currentApprovalUserNmList.Contains(u))
+                    if (level.HasValue && level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && approvalLevels != null && approvalLevels.Length > 0 && level.Value == int.Parse(approvalLevels[i]) && !(approvalLevels.Where(a => int.Parse(a) == level.Value).Count() > 1 && u == lastApprovalUser))
                     {
                         html.Append("<span style='color:" + approvalColor + ";'>");
                     }
                     html.Append(u);
-                    if (level.HasValue && level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && approvalLevels != null && approvalLevels.Length > 0 && level.Value == int.Parse(approvalLevels[i]) && approvalLevels.Where(a => int.Parse(a) == level.Value).Count() > 0 && currentApprovalUserNmList != null && currentApprovalUserNmList.Count > 0 && currentApprovalUserNmList.Contains(u))
+                    if (level.HasValue && level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && approvalLevels != null && approvalLevels.Length > 0 && level.Value == int.Parse(approvalLevels[i]) && !(approvalLevels.Where(a => int.Parse(a) == level.Value).Count() > 1 && u == lastApprovalUser))
                     {
                         html.Append("</span>");
                     }
@@ -635,11 +578,16 @@ namespace com.Sconit.ISI.Service.Util
         }
 
 
-        public static void AppendTestText(bool isTestSystem, StringBuilder content, string separator)
+        public static void AppendTestText(string companyName, StringBuilder content, string separator)
         {
+            bool isTest = false;
             StringBuilder text = new StringBuilder();
+            if (companyName.ToLower().Contains("test"))
+            {
+                isTest = true;
+            }
 
-            if (isTestSystem)
+            if (isTest)
             {
                 if (separator == ISIConstants.SMS_SEPRATOR)
                 {
@@ -1057,15 +1005,6 @@ namespace com.Sconit.ISI.Service.Util
                 {
                     return "<font color='blue'>${" + level.Value / ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL * ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL + "}</font>";
                 }
-            }
-            return string.Empty;
-        }
-
-        public static string ToMoneyString(decimal? amount)
-        {
-            if (amount.HasValue && amount.Value != 0)
-            {
-                return amount.Value.ToString("C") + " " + StringHelper.MoneyCn(amount);
             }
             return string.Empty;
         }

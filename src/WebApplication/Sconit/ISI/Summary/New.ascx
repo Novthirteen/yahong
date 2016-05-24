@@ -85,10 +85,10 @@
                     <ItemTemplate>
                         <table class="mtable">
                             <tr>
-                                <td style="text-align: left; width: 2%;">
+                                <td style="text-align: left; width=2%;">
                                     <asp:CheckBox runat="server" ID="cbChecked" Checked="true" Text="<%#Container.DataItemIndex + 1%>" />
                                 </td>
-                                <td style="text-align: right;">
+                                <td style="text-align: right; ">
                                     <asp:Label ID="lblSubject" runat="server" Text="${ISI.Summary.Detail.Subject}:" />
                                 </td>
                                 <td class="td02">
@@ -100,25 +100,17 @@
                                 <td class="td02">
                                     <asp:TextBox ID="tbTaskCode" runat="server" TabIndex="1" Text='<%# Bind("TaskCode") %>' />
                                 </td>
-                                <td>
-                                    <asp:Label ID="lblSeq" runat="server" TabIndex="1" Text="${Common.GridView.Seq}:" />
-                                </td>
-                                <td style="text-align: right; width: 2%; vertical-align: bottom;">
-                                    <asp:TextBox ID="tbSeq" runat="server" CssClass="inputRequired" Width="35" Text='<%#Container.DataItemIndex + 1%>' />
-                                    <asp:RangeValidator ID="rvSeq" runat="server" ControlToValidate="tbSeq"
-                                        Display="Dynamic" ErrorMessage="${Common.Validator.Valid.Number}" ValidationGroup="vgSave"
-                                        Type="Integer" MaximumValue="1000" MinimumValue="1" />
-                                </td>
+                                <td style="text-align: right; width=2%; vertical-align: bottom;"></td>
                             </tr>
                             <tr>
                                 <td class="td01" colspan="2">
                                     <asp:Label ID="lblConment" runat="server" Text="${ISI.Summary.Detail.Conment}:" />
                                 </td>
-                                <td class="td02" colspan="4">
+                                <td class="td02" colspan="3">
                                     <asp:TextBox ID="tbConment" runat="server" Text='<%# Bind("Conment") %>' Height="150"
-                                        Width="100%" TextMode="MultiLine" Font-Size="10" CssClass="inputRequired" />
+                                        Width="95%" TextMode="MultiLine" Font-Size="10" CssClass="inputRequired" />
                                 </td>
-                                <td style="text-align: right; width: 2%; vertical-align: bottom;">
+                                <td style="text-align: right; width=1%; vertical-align: bottom;">
                                     <div>
                                         <asp:Image ID="descImg" onclick="javascript:scroll(0,0)" ImageUrl="~/Images/ISI/top16.png" runat="server" ToolTip="${Common.Return.Top}" />
                                     </div>

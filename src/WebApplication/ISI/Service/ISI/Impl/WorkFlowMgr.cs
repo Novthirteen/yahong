@@ -108,321 +108,212 @@ namespace com.Sconit.ISI.Service.Impl
             }
             return workHours;
         }
-        [Transaction(TransactionMode.Requires)]
-        public void SetApproval(TaskMstr task, IList<ProcessInstance> newProcessInstanceList)
-        {
-            SetApproval(task, newProcessInstanceList, false);
-        }
-        [Transaction(TransactionMode.Requires)]
-        public void SetApproval(TaskMstr task, IList<ProcessInstance> newProcessInstanceList, bool isUpdate)
-        {
-            int lastLevel = newProcessInstanceList.Max(p => p.Level);
-            StringBuilder userCode = new StringBuilder("|");
-            StringBuilder userName = new StringBuilder();
-            StringBuilder userLevel = new StringBuilder();
-
-            foreach (var p in newProcessInstanceList)
-            {
-                if (p.Level == lastLevel)
-                {
-                    p.Level = ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE;
-                }
-                if (!string.IsNullOrEmpty(p.UserCode) && p.Level >= ISIConstants.CODE_MASTER_WFS_LEVEL3)
-                {
-                    if (userCode.Length > 1)
-                    {
-                        userCode.Append(",");
-                        userName.Append(", ");
-                        userLevel.Append(",");
-                    }
-                    userCode.Append(p.UserCode);
-                    userName.Append(p.UserNm);
-                    userLevel.Append(p.Level);
-                }
-                if (isUpdate)
-                {
-                    processInstanceMgrE.CreateProcessInstance(p);
-                }
-            }
-            userCode.Append("|");
-            task.ApprovalUser = userCode.ToString();
-            task.ApprovalUserNm = userName.ToString();
-            task.ApprovalLevel = userLevel.ToString();
-        }
 
         [Transaction(TransactionMode.Requires)]
-        public void SetApproval(TaskMstr task)
+        public void StartProcessInstance(TaskMstr task, string assignUser, DateTime effDate, User user)
         {
-            var processInstanceList = hqlMgrE.FindAll<ProcessInstance>("from ProcessInstance where UserCode !='' and UserCode is not null and TaskCode='" + task.Code + "' and Level >=" + ISIConstants.CODE_MASTER_WFS_LEVEL3 + " order by Level asc ");
-            StringBuilder userCode = new StringBuilder();
-            StringBuilder userName = new StringBuilder();
-            StringBuilder userLevel = new StringBuilder();
-            if (processInstanceList != null && processInstanceList.Count >= 0)
-            {
-                userCode.Append("|");
-                for (int i = 0; i < processInstanceList.Count; i++)
-                {
-                    var p = processInstanceList[i];
-                    /*if (userCode.ToString() == p.UserCode
-                                || userCode.ToString().EndsWith("," + p.UserCode + "|")
-                                || userCode.ToString().StartsWith("|" + p.UserCode + ",")
-                                || userCode.ToString().IndexOf("," + p.UserCode + ",") != -1
-                                || (i == 1 && userCode.ToString() == ("|" + p.UserCode.ToString())))
-                    {
-                        continue;
-                    }
-                    */
-                    if (i != 0)
-                    {
-                        userCode.Append(",");
-                        userName.Append(", ");
-                        userLevel.Append(",");
-                    }
-                    userCode.Append(p.UserCode);
-                    userName.Append(p.UserNm);
-                    userLevel.Append(p.Level);
-                }
-                userCode.Append("|");
-            }
-            task.ApprovalUser = userCode.ToString();
-            task.ApprovalUserNm = userName.ToString();
-            task.ApprovalLevel = userLevel.ToString();
-        }
-
-        [Transaction(TransactionMode.Requires)]
-        public void StartProcessInstance(TaskMstr task, string assignUser, string costCenterUser, bool isRemind, DateTime effDate, User user)
-        {
-            List<ProcessInstance> newProcessInstanceList = new List<ProcessInstance>();
             if (task.IsWF && task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT)
             {
                 int level = ISIConstants.CODE_MASTER_WFS_LEVEL2;
                 int nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL3;
-
+                List<ProcessInstance> newProcessInstanceList = new List<ProcessInstance>();
                 //加入释放人
                 newProcessInstanceList.Add(AddProcessInstance(task.Code, task.TaskSubType.Code, task.SubmitUser, task.SubmitUserNm, user, effDate));
 
                 var processDefinitionList = processDefinitionMgrE.GetProcessDefinition(task.TaskSubType.Code, task.TaskSubType.ProcessNo);
                 if (processDefinitionList == null || processDefinitionList.Count == 0)
                 {
-                    //task.Qty = GenWorkHours(task.Code, task.FailureMode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE, task.TaskApplyList, task.SubmitUser, task.SubmitUserNm, task.SubmitDate.Value, task.WorkHoursUser, task.WorkHoursUserNm, effDate, user);
+                    task.Qty = GenWorkHours(task.Code, task.FailureMode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE, task.TaskApplyList, task.SubmitUser, task.SubmitUserNm, task.SubmitDate.Value, task.WorkHoursUser, task.WorkHoursUserNm, effDate, user);
                     task.Level = ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
-
+                    return;
                 }
-                else
-                {
 
-                    //流程最终审批人提交
-                    /*
-                    if (processDefinitionList.Last().UserCode == user.Code)
+                //流程最终审批人提交
+                if (processDefinitionList.Last().UserCode == user.Code)
+                {
+                    nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
+                }
+
+                if (task.TaskSubType.IsAssignUser && !string.IsNullOrEmpty(assignUser))
+                {
+                    if (task.TaskSubType.IsCtrl || !ISIUtil.Contains(assignUser, processDefinitionList[0].UserCode))
+                    {
+                        newProcessInstanceList.AddRange(AddDeptProcessInstance(task.Code, task.TaskSubType.Code, nextLevel, assignUser, task.TaskSubType.IsCtrl, user, effDate));
+
+                        level = ISIConstants.CODE_MASTER_WFS_LEVEL3;
+                        if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && ISIUtil.Contains(assignUser, user.Code) && !task.TaskSubType.IsCtrl)
+                        {
+                            //level = ISIConstants.CODE_MASTER_WFS_LEVEL4;
+                            nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL4;
+                        }
+                    }
+                }
+                //true 当前用户是流程审批人，直接审批
+                //false 流程上的用户不直接审批
+                bool isContinuous = true;
+                for (int i = 0; i < processDefinitionList.Count; i++)
+                {
+                    var p = processDefinitionList[i];
+
+                    ProcessInstance processInstance = new ProcessInstance();
+                    processInstance.TaskCode = task.Code;
+                    processInstance.Desc1 = p.Desc1;
+
+                    processInstance.TaskSubType = p.TaskSubType;
+                    processInstance.UserCode = p.UserCode;
+
+                    if (i == 0 || p.Seq != processDefinitionList[i - 1].Seq)
+                    {
+                        level += ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
+                    }
+                    else if (!p.ATicket || p.IsCtrl)
+                    {
+                        //此级别有多个审批人，连续中断
+                        isContinuous = false;
+                    }
+                    processInstance.Level = level;
+                    processInstance.UserNm = p.UserNm;
+                    processInstance.ATicket = p.ATicket;
+                    processInstance.IsOpt = p.IsOpt;
+                    processInstance.IsCtrl = p.IsCtrl;
+                    processInstance.IsApprove = p.IsApprove;
+                    processInstance.IsParallel = p.IsParallel;
+
+                    //提交人不是审批人，加条件审批
+                    if (newProcessInstanceList[newProcessInstanceList.Count - 1].UserCode != user.Code)
+                    {
+                        processInstance.UOM = p.UOM;
+                        processInstance.UOMDesc = p.UOMDesc;
+                        processInstance.Qty = p.Qty;
+                        processInstance.Apply = p.Apply;
+                        processInstance.ApplyDesc = p.ApplyDesc;
+                        processInstance.ApplyQty = p.ApplyQty;
+                    }
+
+                    processInstance.CreateDate = effDate;
+                    processInstance.CreateUser = user.Code;
+                    processInstance.CreateUserNm = user.Name;
+
+                    //1. 审批结束
+                    //2. 连续标志、非会签控制、当前用户是审批人
+                    if (nextLevel == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE
+                             || (isContinuous && !processInstance.IsCtrl && processInstance.UserCode == user.Code))
+                    {
+                        processInstance.Status = ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE;
+                        processInstance.ProcessDate = effDate;
+                        processInstance.ProcessUser = user.Code;
+                        processInstance.ProcessUserNm = user.Name;
+                        if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
+                        {
+                            nextLevel = processInstance.Level;
+                        }
+                    }
+                    else
+                    {
+                        isContinuous = false;
+                        processInstance.Status = ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED;
+                    }
+
+                    newProcessInstanceList.Add(processInstance);
+
+                    if (processInstance.IsCtrl && (i == processDefinitionList.Count - 1 || !string.IsNullOrEmpty(processDefinitionList[i + 1].UserCode)))
+                    {
+                        ProcessInstance newProcessInstance = new ProcessInstance();
+                        newProcessInstance.IsCtrl = false;
+                        newProcessInstance.UserCode = string.Empty;
+                        newProcessInstance.UOM = string.Empty;
+                        newProcessInstance.UOMDesc = string.Empty;
+                        newProcessInstance.IsParallel = true;
+                        newProcessInstance.Qty = null;
+                        newProcessInstance.Apply = string.Empty;
+                        newProcessInstance.ApplyDesc = string.Empty;
+                        newProcessInstance.ApplyQty = null;
+                        level += ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
+                        newProcessInstance.Level = level;
+                        CloneHelper.CopyProperty(processInstance, newProcessInstance);
+                        newProcessInstanceList.Add(newProcessInstance);
+                    }
+                }
+                int lastLevel = newProcessInstanceList.Max(p => p.Level);
+                StringBuilder userCode = new StringBuilder("|");
+                StringBuilder userName = new StringBuilder();
+                StringBuilder userLevel = new StringBuilder();
+                foreach (var p in newProcessInstanceList)
+                {
+                    if (p.Level == lastLevel)
+                    {
+                        p.Level = ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE;
+                    }
+                    if (!string.IsNullOrEmpty(p.UserCode) && p.Level >= ISIConstants.CODE_MASTER_WFS_LEVEL3)
+                    {
+                        if (userCode.Length > 1)
+                        {
+                            userCode.Append(",");
+                            userName.Append(", ");
+                            userLevel.Append(",");
+                        }
+                        userCode.Append(p.UserCode);
+                        userName.Append(p.UserNm);
+                        userLevel.Append(p.Level);
+                    }
+                    this.processInstanceMgrE.CreateProcessInstance(p);
+                }
+                userCode.Append("|");
+                task.ApprovalUser = userCode.ToString();
+                task.ApprovalUserNm = userName.ToString();
+                task.ApprovalLevel = userLevel.ToString();
+                /*
+                if (newProcessInstanceList.Where(p => p.Level == nextLevel && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).Count() == 0)
+                {
+                    var list = newProcessInstanceList.Where(p => p.Level > nextLevel && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED);
+                    if (list == null || list.Count() == 0)
                     {
                         nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
                     }
-                    */
-                    if (task.TaskSubType.IsAssignUser && !string.IsNullOrEmpty(assignUser))
+                    else
                     {
-                        if (task.TaskSubType.IsCtrl || !ISIUtil.Contains(assignUser, processDefinitionList[0].UserCode))
-                        {
-                            newProcessInstanceList.AddRange(AddDeptProcessInstance(task.Code, task.TaskSubType.Code, nextLevel, assignUser, isRemind, task.TaskSubType.IsCtrl, user, effDate));
-
-                            level = ISIConstants.CODE_MASTER_WFS_LEVEL3;
-                            if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && ISIUtil.Contains(assignUser, user.Code) && !task.TaskSubType.IsCtrl)
-                            {
-                                //level = ISIConstants.CODE_MASTER_WFS_LEVEL4;
-                                nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL4;
-                            }
-                        }
-                    }
-
-                    //成本中心审批
-                    if (!string.IsNullOrEmpty(costCenterUser))
-                    {
-                        level += ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
-                        newProcessInstanceList.AddRange(AddCostCenterProcessInstance(task.Code, task.TaskSubType.Code, level, costCenterUser, isRemind, task.TaskSubType.IsCtrl, user, effDate));
-                    }
-
-                    //true 当前用户是流程审批人，直接审批
-                    //false 流程上的用户不直接审批
-                    bool isContinuous = true;
-                    for (int i = 0; i < processDefinitionList.Count; i++)
-                    {
-                        var p = processDefinitionList[i];
-
-                        ProcessInstance processInstance = new ProcessInstance();
-                        processInstance.TaskCode = task.Code;
-                        processInstance.Desc1 = p.Desc1;
-                        processInstance.IsRemind = p.IsRemind;
-                        processInstance.TaskSubType = p.TaskSubType;
-                        processInstance.UserCode = p.UserCode;
-
-                        if (i == 0 || p.Seq != processDefinitionList[i - 1].Seq)
-                        {
-                            level += ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
-                        }
-                        else if (!p.ATicket || p.IsCtrl)
-                        {
-                            //此级别有多个审批人，连续中断
-                            isContinuous = false;
-                        }
-                        processInstance.Level = level;
-                        processInstance.UserNm = p.UserNm;
-                        processInstance.ATicket = p.ATicket;
-                        processInstance.IsOpt = p.IsOpt;
-                        processInstance.IsAccountCtrl = p.IsAccountCtrl;
-                        processInstance.IsCtrl = p.IsCtrl;
-                        processInstance.IsApprove = p.IsApprove;
-                        processInstance.IsParallel = p.IsParallel;
-
-                        //提交人不是审批人，加条件审批
-                        if (newProcessInstanceList[newProcessInstanceList.Count - 1].UserCode != user.Code)
-                        {
-                            processInstance.UOM = p.UOM;
-                            processInstance.UOMDesc = p.UOMDesc;
-                            processInstance.Qty = p.Qty;
-                            processInstance.Apply = p.Apply;
-                            processInstance.ApplyDesc = p.ApplyDesc;
-                            processInstance.ApplyQty = p.ApplyQty;
-                        }
-
-                        processInstance.CreateDate = effDate;
-                        processInstance.CreateUser = user.Code;
-                        processInstance.CreateUserNm = user.Name;
-
-                        //1. 审批结束
-                        //2. 连续标志、非会签控制、当前用户是审批人
-                        if (nextLevel == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE
-                                 || (isContinuous && !processInstance.IsCtrl && processInstance.UserCode == user.Code))
-                        {
-                            processInstance.Status = ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE;
-                            processInstance.ProcessDate = effDate;
-                            processInstance.ProcessUser = user.Code;
-                            processInstance.ProcessUserNm = user.Name;
-                            if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
-                            {
-                                nextLevel = processInstance.Level;
-                            }
-                        }
-                        else
-                        {
-                            isContinuous = false;
-                            processInstance.Status = ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED;
-                        }
-
-                        newProcessInstanceList.Add(processInstance);
-
-                        if (processInstance.IsCtrl && (i == processDefinitionList.Count - 1 || !string.IsNullOrEmpty(processDefinitionList[i + 1].UserCode)))
-                        {
-                            ProcessInstance newProcessInstance = new ProcessInstance();
-                            newProcessInstance.IsAccountCtrl = false;
-                            newProcessInstance.IsCtrl = false;
-                            newProcessInstance.UserCode = string.Empty;
-                            newProcessInstance.UOM = string.Empty;
-                            newProcessInstance.UOMDesc = string.Empty;
-                            newProcessInstance.IsParallel = true;
-                            newProcessInstance.Qty = null;
-                            newProcessInstance.Apply = string.Empty;
-                            newProcessInstance.ApplyDesc = string.Empty;
-                            newProcessInstance.ApplyQty = null;
-                            level += ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
-                            newProcessInstance.Level = level;
-                            CloneHelper.CopyProperty(processInstance, newProcessInstance);
-                            newProcessInstanceList.Add(newProcessInstance);
-                        }
-                    }
-
-                    this.SetApproval(task, newProcessInstanceList, true);
-                    /*
-                    if (newProcessInstanceList.Where(p => p.Level == nextLevel && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).Count() == 0)
-                    {
-                        var list = newProcessInstanceList.Where(p => p.Level > nextLevel && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED);
-                        if (list == null || list.Count() == 0)
-                        {
-                            nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
-                        }
-                        else
-                        {
-                            nextLevel = list.Min(p => p.Level);
-                        }
-                    }
-                    */
-
-                    int lastLevel = newProcessInstanceList.Max(p => p.Level);
-                    if (nextLevel == lastLevel)
-                    {
-                        nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE;
-                        task.PreLevel = newProcessInstanceList.Where(pi => pi.Level < nextLevel).Max(pi => pi.Level);
-                    }
-                    else if (newProcessInstanceList.Where(p => p.Level == nextLevel && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).Count() == 0
-                        || nextLevel > ISIConstants.CODE_MASTER_WFS_LEVEL4 || newProcessInstanceList.Where(p => p.Level == nextLevel).Count() == 0)
-                    {
-                        var uomApplyList = hqlMgrE.FindAll<TaskApply>("from TaskApply where TaskCode='" + task.Code + "' and uom is not null and uom !='' ");
-                        var processInstanceList = newProcessInstanceList.Where(pi => pi.Level > nextLevel && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
-                        nextLevel = GetNextLevel(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, nextLevel, task.Qty, task.Amount, uomApplyList, processInstanceList, null);
-                        task.PreLevel = newProcessInstanceList.Where(pi => pi.Level < nextLevel).Max(pi => pi.Level);
-                    }
-                    /*
-                    else if (nextLevel > ISIConstants.CODE_MASTER_WFS_LEVEL3)
-                    {
-                        task.PreLevel = nextLevel - ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
-                    }
-                     * */
-                    else// if (nextLevel <= ISIConstants.CODE_MASTER_WFS_LEVEL3)
-                    {
-                        task.PreLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_DEFAULT;
-                    }
-
-                    //task.Qty = GenWorkHours(task.Code, task.FailureMode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, nextLevel, task.TaskApplyList, task.SubmitUser, task.SubmitUserNm, task.SubmitDate.Value, task.WorkHoursUser, task.WorkHoursUserNm, effDate, user);
-                    task.Level = GetLevel(ref nextLevel, newProcessInstanceList);
-
-                    if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
-                    {
-                        //发送通知需要
-                        //发审批通知
-                        var userCodeArray = newProcessInstanceList.Where(p => p.Level == nextLevel && !string.IsNullOrEmpty(p.UserCode)).Select(p => p.UserCode).ToArray();
-                        ApproveRemind(task, user, userCodeArray);
+                        nextLevel = list.Min(p => p.Level);
                     }
                 }
-            }
-            else
-            {
-                task.Level = ISIConstants.CODE_MASTER_WFS_LEVEL_DEFAULT;
-            }
-
-            SetCurrentApprovalUser(task, newProcessInstanceList);
-        }
-
-        public void SetCurrentApprovalUser(TaskMstr task, IList<ProcessInstance> newProcessInstanceList)
-        {
-            if (!task.Level.HasValue || task.Level.Value < ISIConstants.CODE_MASTER_WFS_LEVEL3
-                                        || task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE || string.IsNullOrEmpty(task.ApprovalUser)
-                                        || newProcessInstanceList == null || newProcessInstanceList.Count == 0)
-            {
-                task.CurrentApprovalUser = string.Empty;
-                task.CurrentApprovalUserNm = string.Empty;
-            }
-            else
-            {
-                StringBuilder userCodes = new StringBuilder("|");
-                StringBuilder userNames = new StringBuilder();
-                foreach (var p in newProcessInstanceList)
+                */
+                if (nextLevel == lastLevel)
                 {
-                    if (p.Level == task.Level.Value && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED && !string.IsNullOrEmpty(p.UserCode))
-                    {
-                        if (userCodes.Length > 1)
-                        {
-                            userCodes.Append(",");
-                            userNames.Append(", ");
-                        }
-                        userCodes.Append(p.UserCode);
-                        userNames.Append(p.UserNm);
-                    }
+                    nextLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE;
+                    task.PreLevel = newProcessInstanceList.Where(pi => pi.Level < nextLevel).Max(pi => pi.Level);
                 }
-                userCodes.Append("|");
-                task.CurrentApprovalUser = userCodes.ToString();
-                task.CurrentApprovalUserNm = userNames.ToString();
+                else if (newProcessInstanceList.Where(p => p.Level == nextLevel && p.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).Count() == 0
+                    || nextLevel > ISIConstants.CODE_MASTER_WFS_LEVEL4 || newProcessInstanceList.Where(p => p.Level == nextLevel).Count() == 0)
+                {
+                    var uomApplyList = hqlMgrE.FindAll<TaskApply>("from TaskApply where TaskCode='" + task.Code + "' and uom is not null and uom !='' ");
+                    var processInstanceList = newProcessInstanceList.Where(pi => pi.Level > nextLevel && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+                    nextLevel = GetNextLevel(ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, nextLevel, uomApplyList, processInstanceList, null);
+                    task.PreLevel = newProcessInstanceList.Where(pi => pi.Level < nextLevel).Max(pi => pi.Level);
+                }
+                /*
+                else if (nextLevel > ISIConstants.CODE_MASTER_WFS_LEVEL3)
+                {
+                    task.PreLevel = nextLevel - ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL;
+                }
+                 * */
+                else// if (nextLevel <= ISIConstants.CODE_MASTER_WFS_LEVEL3)
+                {
+                    task.PreLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_DEFAULT;
+                }
+
+                task.Qty = GenWorkHours(task.Code, task.FailureMode, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, nextLevel, task.TaskApplyList, task.SubmitUser, task.SubmitUserNm, task.SubmitDate.Value, task.WorkHoursUser, task.WorkHoursUserNm, effDate, user);
+                task.Level = GetLevel(ref nextLevel, newProcessInstanceList);
+
+                if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
+                {
+                    //发送通知需要
+                    //发审批通知
+                    var userCodeArray = newProcessInstanceList.Where(p => p.Level == nextLevel && !string.IsNullOrEmpty(p.UserCode)).Select(p => p.UserCode).ToArray();
+                    ApproveRemind(task, user, userCodeArray);
+                }
+                return;
             }
+            task.Level = ISIConstants.CODE_MASTER_WFS_LEVEL_DEFAULT;
         }
-
-
         private int GetLevel(ref int nextLevel, IList<ProcessInstance> processInstanceList)
         {
             if (nextLevel != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && processInstanceList != null && processInstanceList.Count > 0)
@@ -435,12 +326,6 @@ namespace com.Sconit.ISI.Service.Impl
             }
             return nextLevel;
         }
-        /// <summary>
-        /// 审批提醒
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="user"></param>
-        /// <param name="userCodeArray"></param>
         private void ApproveRemind(TaskMstr task, User user, string[] userCodeArray)
         {
             if (userCodeArray != null && userCodeArray.Length > 0)
@@ -461,223 +346,251 @@ namespace com.Sconit.ISI.Service.Impl
             }
         }
 
+        [Transaction(TransactionMode.Requires)]
+        public void SetApproval(TaskMstr task)
+        {
+            var processInstanceList = hqlMgrE.FindAll<ProcessInstance>("from ProcessInstance where UserCode !='' and UserCode is not null and TaskCode='" + task.Code + "' and Level >=" + ISIConstants.CODE_MASTER_WFS_LEVEL3 + " order by Level asc ");
+            StringBuilder userCode = new StringBuilder();
+            StringBuilder userName = new StringBuilder();
+            StringBuilder userLevel = new StringBuilder();
+            if (processInstanceList != null && processInstanceList.Count >= 0)
+            {
+                userCode.Append("|");
+                for (int i = 0; i < processInstanceList.Count; i++)
+                {
+                    var p = processInstanceList[i];
+                    if (userCode.ToString() == p.UserCode
+                                || userCode.ToString().EndsWith("," + p.UserCode + "|")
+                                || userCode.ToString().StartsWith("|" + p.UserCode + ",")
+                                || userCode.ToString().IndexOf("," + p.UserCode + ",") != -1
+                                || (i == 1 && userCode.ToString() == ("|" + p.UserCode.ToString())))
+                    {
+                        continue;
+                    }
+                    if (i != 0)
+                    {
+                        userCode.Append(",");
+                        userName.Append(", ");
+                        userLevel.Append(",");
+                    }
+                    userCode.Append(p.UserCode);
+                    userName.Append(p.UserNm);
+                    userLevel.Append(p.Level);
+                }
+                userCode.Append("|");
+            }
+            task.ApprovalUser = userCode.ToString();
+            task.ApprovalUserNm = userName.ToString();
+            task.ApprovalLevel = userLevel.ToString();
+        }
 
         [Transaction(TransactionMode.Requires)]
         public void ProcessNew(TaskMstr task, string wfsStatus, string approveDesc, string color, IList<object> countersignList, bool isiAdmin, DateTime effDate, bool isEmail, User user)
         {
-            IList<ProcessInstance> processInstanceList = null;
-            if (task.Level.HasValue && task.Level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
+            if (!task.Level.HasValue || task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE) return;
+            //判断流程是否结束
+            var processInstanceList = hqlMgrE.FindAll<ProcessInstance>("from ProcessInstance where TaskCode='" + task.Code + "' and Level >= " + ISIConstants.CODE_MASTER_WFS_LEVEL3 + " order by Level asc ");
+
+            if (processInstanceList == null || processInstanceList.Count == 0) return;
+            List<ProcessInstance> thisLevelList = processInstanceList.Where(pi => pi.Level == task.Level.Value && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+
+            List<ProcessInstance> thisUserLevelList = processInstanceList.Where(pi => pi.Level == task.Level.Value && pi.UserCode == user.Code && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+            bool isPermission = thisUserLevelList != null && thisUserLevelList.Count > 0;
+
+            IList<ProcessInstance> nextUserLevelList = null;
+            //下一级如果也是当前审批人的话自动审批，本级无会签
+            if ((isPermission || isiAdmin)
+                    && (thisLevelList.Count == 1 || thisUserLevelList.Where(l => l.ATicket).Count() > 0)
+                    && (countersignList == null || countersignList.Count < 3)
+                    && (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE))
             {
-                //判断流程是否结束
-                processInstanceList = hqlMgrE.FindAll<ProcessInstance>("from ProcessInstance where TaskCode='" + task.Code + "' and Level >= " + ISIConstants.CODE_MASTER_WFS_LEVEL3 + " order by Level asc ");
-
-                if (processInstanceList != null || processInstanceList.Count > 0)
+                if (thisLevelList.Where(l => l.IsCtrl).Count() > 0)
                 {
-                    List<ProcessInstance> thisLevelList = processInstanceList.Where(pi => pi.Level == task.Level.Value && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+                    nextUserLevelList = processInstanceList.Where(pi => pi.Level == (task.Level.Value + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL) && pi.UserCode == user.Code && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+                }
+                else
+                {
+                    nextUserLevelList = processInstanceList.Where(pi => pi.Level == (task.Level.Value + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL) && pi.UserCode == user.Code && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+                }
+                //下一级审批不能使会签步骤
+                if (nextUserLevelList != null && nextUserLevelList.Count > 0 && nextUserLevelList.Where(l => l.IsCtrl).Count() > 0)
+                {
+                    nextUserLevelList = null;
+                }
+            }
 
-                    List<ProcessInstance> thisUserLevelList = processInstanceList.Where(pi => pi.Level == task.Level.Value && pi.UserCode == user.Code && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
-                    bool isPermission = thisUserLevelList != null && thisUserLevelList.Count > 0;
+            IList<TaskApply> uomApplyList = null;
+            if (task.Level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
+            {
+                uomApplyList = hqlMgrE.FindAll<TaskApply>("from TaskApply where TaskCode='" + task.Code + "' and uom is not null and uom !='' ");
+            }
 
-                    IList<ProcessInstance> nextUserLevelList = null;
-                    //下一级如果也是当前审批人的话自动审批，本级无会签
-                    if ((isPermission || isiAdmin)
-                            && (thisLevelList.Count == 1 || thisUserLevelList.Where(l => l.ATicket).Count() > 0)
-                            && (countersignList == null || countersignList.Count < 3)
-                            && (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE))
+            int? nextLevel = task.Level;
+            bool isPrePermission = false;
+
+            //当前级别权限
+            if (isPermission || (isiAdmin && !isEmail))
+            {
+                //退回清空处理时间
+                ProcessReturn(task, wfsStatus, effDate, user, processInstanceList);
+
+                if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE
+                    //终极审批才能不批准                
+                                            || (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE && task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE))
+                {
+                    List<ProcessInstance> levelList = isPermission ? thisUserLevelList : thisLevelList;
+
+                    if (nextUserLevelList != null && nextUserLevelList.Count > 0)
                     {
-                        if (thisLevelList.Where(l => l.IsCtrl).Count() > 0)
-                        {
-                            nextUserLevelList = processInstanceList.Where(pi => pi.Level == (task.Level.Value + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL) && pi.UserCode == user.Code && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
-                        }
-                        else
-                        {
-                            nextUserLevelList = processInstanceList.Where(pi => pi.Level == (task.Level.Value + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL) && pi.UserCode == user.Code && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
-                        }
-                        //下一级审批不能使会签步骤
-                        if (nextUserLevelList != null && nextUserLevelList.Count > 0 && nextUserLevelList.Where(l => l.IsCtrl).Count() > 0)
-                        {
-                            nextUserLevelList = null;
-                        }
+                        levelList.AddRange(nextUserLevelList);
                     }
 
-                    IList<TaskApply> uomApplyList = null;
-                    if (task.Level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
+                    bool isCtrl = false;
+                    int levelT = 0;
+                    foreach (var processInstance in levelList)
                     {
-                        uomApplyList = hqlMgrE.FindAll<TaskApply>("from TaskApply where TaskCode='" + task.Code + "' and uom is not null and uom !='' ");
-                    }
-
-                    int? nextLevel = task.Level;
-                    bool isPrePermission = false;
-
-                    //当前级别权限
-                    if (isPermission || (isiAdmin && !isEmail))
-                    {
-                        //退回清空处理时间
-                        ProcessReturn(task, wfsStatus, effDate, user, processInstanceList);
-
-                        if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE
-                            //终极审批才能不批准                
-                                                    || (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE && task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE))
+                        if (processInstance.Level <= levelT)
                         {
-                            List<ProcessInstance> levelList = isPermission ? thisUserLevelList : thisLevelList;
-
-                            if (nextUserLevelList != null && nextUserLevelList.Count > 0)
-                            {
-                                levelList.AddRange(nextUserLevelList);
-                            }
-
-                            bool isCtrl = false;
-                            int levelT = 0;
-                            foreach (var processInstance in levelList)
-                            {
-                                if (processInstance.Level <= levelT)
-                                {
-                                    continue;
-                                }
-
-                                processInstance.Status = wfsStatus;
-                                processInstance.ProcessDate = effDate;
-                                processInstance.ProcessUser = user.Code;
-                                processInstance.ProcessUserNm = user.Name;
-                                processInstanceMgrE.UpdateProcessInstance(processInstance);
-
-                                if (processInstance.IsCtrl)
-                                {
-                                    isCtrl = true;
-                                }
-                                if (thisLevelList.Count == 1 || processInstance.ATicket || isiAdmin || processInstance.Level >= nextLevel)
-                                {
-                                    var unapprovedProcessInstanceList = processInstanceList.Where(pi => pi.Level > processInstance.Level && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
-
-                                    nextLevel = GetNextLevel(wfsStatus, task.Level.Value, task.Qty, task.Amount, uomApplyList, unapprovedProcessInstanceList, countersignList);
-
-                                    if (processInstance.ATicket)
-                                    {
-                                        levelT = processInstance.Level;
-                                        //break;
-                                    }
-                                }
-                            }
-
-                            if (nextLevel == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
-                            {
-                                if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE)
-                                {
-                                    task.Qty = GenWorkHours(task.Code, task.FailureMode, wfsStatus, ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE, uomApplyList, task.SubmitUser, task.SubmitUserNm, task.SubmitDate.Value, task.WorkHoursUser, task.WorkHoursUserNm, effDate, user);
-                                    SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, nextLevel, processInstanceList, effDate, user);
-                                }
-                                else if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE)
-                                {
-                                    if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
-                                    {
-                                        SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE, nextLevel, processInstanceList, effDate, user);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (isCtrl && countersignList != null && countersignList.Count >= 3 && countersignList[0] != task.CountersignUser && nextLevel.HasValue)
-                                {
-                                    //会签                        
-                                    var countersignProcessInstance = processInstanceList.Where(p => p.Level == nextLevel).FirstOrDefault();
-                                    CreateCountersignUser(task, effDate, user, countersignProcessInstance, countersignList, processInstanceList);
-                                }
-                                if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)
-                                {
-                                    SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE, nextLevel, processInstanceList, effDate, user);
-                                }
-                                else if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE)
-                                {
-                                    SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE, nextLevel, processInstanceList, effDate, user);
-                                }
-                            }
+                            continue;
                         }
-                    }
-                    //level刚起步，不需要重做；level等于PreLevel 说明有其他人操作过
-                    else if (!isEmail && task.Level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL3 && task.PreLevel.HasValue && task.Level.Value != task.PreLevel.Value && (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE))
-                    {
-                        //前一级是否有权限
-                        IList<ProcessInstance> preLevelList = processInstanceList.Where(pi => pi.Level == task.PreLevel.Value && pi.UserCode == user.Code && (pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED || pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE || pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)).ToList();
-                        isPrePermission = preLevelList != null && preLevelList.Count > 0;
-                        if (isPrePermission)
+
+                        processInstance.Status = wfsStatus;
+                        processInstance.ProcessDate = effDate;
+                        processInstance.ProcessUser = user.Code;
+                        processInstance.ProcessUserNm = user.Name;
+                        processInstanceMgrE.UpdateProcessInstance(processInstance);
+
+                        if (processInstance.IsCtrl)
                         {
-                            //会签
-                            if (countersignList != null && countersignList.Count >= 3 && countersignList[0] != task.CountersignUser)
+                            isCtrl = true;
+                        }
+                        if (thisLevelList.Count == 1 || processInstance.ATicket || isiAdmin)
+                        {
+                            var unapprovedProcessInstanceList = processInstanceList.Where(pi => pi.Level > processInstance.Level && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+
+                            nextLevel = GetNextLevel(wfsStatus, task.Level.Value, uomApplyList, unapprovedProcessInstanceList, countersignList);
+
+                            if (processInstance.ATicket)
                             {
-                                var countersignProcessInstanceList = processInstanceList.Where(pi => pi.Level > task.PreLevel.Value && pi.Level < (task.PreLevel.Value + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL) && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
-
-                                //如果之前已经指定会签人，需要将之前的会签人删除
-                                if (countersignProcessInstanceList != null && countersignProcessInstanceList.Count > 1)
-                                {
-                                    //保留一个位置，因此Skip（1）
-                                    this.processInstanceMgrE.DeleteProcessInstance(countersignProcessInstanceList.Skip(1).ToList());
-                                    foreach (var countersignProcessInstance in countersignProcessInstanceList)
-                                    {
-                                        processInstanceList.Remove(countersignProcessInstance);
-                                    }
-                                }
-                                //如果之前已指定会签人，此字段会有值，因此需要清空
-                                countersignProcessInstanceList[0].UserCode = string.Empty;
-                                //会签   
-                                CreateCountersignUser(task, effDate, user, countersignProcessInstanceList[0], countersignList, processInstanceList);
-                                task.Level = countersignProcessInstanceList[0].Level;
-                            }
-                            //退回
-
-                            ProcessReturn(task, wfsStatus, effDate, user, processInstanceList);
-                            if (wfsStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
-                            {
-                                foreach (var preLevel in preLevelList)
-                                {
-                                    preLevel.Status = wfsStatus;
-                                    preLevel.ProcessDate = effDate;
-                                    preLevel.ProcessUser = user.Code;
-                                    preLevel.ProcessUserNm = user.Name;
-                                    this.processInstanceMgrE.UpdateProcessInstance(preLevel);
-                                }
-                                //清空后续步骤
-                                IList<ProcessInstance> nextLevelList = processInstanceList.Where(pi => pi.Level > task.PreLevel.Value && pi.UserCode == user.Code && (pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE || pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)).ToList();
-                                if (nextLevelList != null && nextLevelList.Count > 0)
-                                {
-                                    foreach (var nextLevelProcessInstance in nextLevelList)
-                                    {
-                                        nextLevelProcessInstance.Status = ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED;
-                                        nextLevelProcessInstance.ProcessDate = null;
-                                        nextLevelProcessInstance.ProcessUser = null;
-                                        nextLevelProcessInstance.ProcessUserNm = null;
-                                        processInstanceMgrE.UpdateProcessInstance(nextLevelProcessInstance);
-                                    }
-                                }
-
-                                SetStatus(task, wfsStatus, processInstanceList, effDate, user);
+                                levelT = processInstance.Level;
+                                //break;
                             }
                         }
                     }
 
-
-
-                    if (task.IsUpdate && task.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
+                    if (nextLevel == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
                     {
-                        wfDetailMgrE.CreateWFDetail(task.Code, task.Status, task.Level, task.PreLevel, effDate, user);
-
-                        //todo 邮件通知
-                        if (!string.IsNullOrEmpty(color))
+                        if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE)
                         {
-                            task.Color = color;
+                            task.Qty = GenWorkHours(task.Code, task.FailureMode, wfsStatus, ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE, uomApplyList, task.SubmitUser, task.SubmitUserNm, task.SubmitDate.Value, task.WorkHoursUser, task.WorkHoursUserNm, effDate, user);
+                            SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE, nextLevel, processInstanceList, effDate, user);
+                        }
+                        else if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE)
+                        {
+                            if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
+                            {
+                                SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE, nextLevel, processInstanceList, effDate, user);
+                            }
                         }
                     }
-
-                    this.CreateApprove(task.Code, approveDesc, task.Flag, color, effDate, user);
-
-                    if (task.IsUpdate || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
+                    else
                     {
-                        ApproveRemind(task, user, processInstanceList);
+                        if (isCtrl && countersignList != null && countersignList.Count >= 3 && countersignList[0] != task.CountersignUser && nextLevel.HasValue)
+                        {
+                            //会签                        
+                            var countersignProcessInstance = processInstanceList.Where(p => p.Level == nextLevel).FirstOrDefault();
+                            CreateCountersignUser(task, effDate, user, countersignProcessInstance, countersignList, processInstanceList);
+                        }
+                        if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)
+                        {
+                            SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE, nextLevel, processInstanceList, effDate, user);
+                        }
+                        else if (wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE)
+                        {
+                            SetTask(task, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE, nextLevel, processInstanceList, effDate, user);
+                        }
+                    }
+                }
+            }
+            //level刚起步，不需要重做；level等于PreLevel 说明有其他人操作过
+            else if (!isEmail && task.Level.Value != ISIConstants.CODE_MASTER_WFS_LEVEL3 && task.PreLevel.HasValue && task.Level.Value != task.PreLevel.Value && (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE))
+            {
+                //前一级是否有权限
+                IList<ProcessInstance> preLevelList = processInstanceList.Where(pi => pi.Level == task.PreLevel.Value && pi.UserCode == user.Code && (pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED || pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE || pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)).ToList();
+                isPrePermission = preLevelList != null && preLevelList.Count > 0;
+                if (isPrePermission)
+                {
+                    //会签
+                    if (countersignList != null && countersignList.Count >= 3 && countersignList[0] != task.CountersignUser)
+                    {
+                        var countersignProcessInstanceList = processInstanceList.Where(pi => pi.Level > task.PreLevel.Value && pi.Level < (task.PreLevel.Value + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL + ISIConstants.CODE_MASTER_WFS_LEVEL_INTERVAL) && pi.Status == ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED).ToList();
+
+                        //如果之前已经指定会签人，需要将之前的会签人删除
+                        if (countersignProcessInstanceList != null && countersignProcessInstanceList.Count > 1)
+                        {
+                            //保留一个位置，因此Skip（1）
+                            this.processInstanceMgrE.DeleteProcessInstance(countersignProcessInstanceList.Skip(1).ToList());
+                            foreach (var countersignProcessInstance in countersignProcessInstanceList)
+                            {
+                                processInstanceList.Remove(countersignProcessInstance);
+                            }
+                        }
+                        //如果之前已指定会签人，此字段会有值，因此需要清空
+                        countersignProcessInstanceList[0].UserCode = string.Empty;
+                        //会签   
+                        CreateCountersignUser(task, effDate, user, countersignProcessInstanceList[0], countersignList, processInstanceList);
+                        task.Level = countersignProcessInstanceList[0].Level;
+                    }
+                    //退回
+
+                    ProcessReturn(task, wfsStatus, effDate, user, processInstanceList);
+                    if (wfsStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
+                    {
+                        foreach (var preLevel in preLevelList)
+                        {
+                            preLevel.Status = wfsStatus;
+                            preLevel.ProcessDate = effDate;
+                            preLevel.ProcessUser = user.Code;
+                            preLevel.ProcessUserNm = user.Name;
+                            this.processInstanceMgrE.UpdateProcessInstance(preLevel);
+                        }
+                        //清空后续步骤
+                        IList<ProcessInstance> nextLevelList = processInstanceList.Where(pi => pi.Level > task.PreLevel.Value && pi.UserCode == user.Code && (pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE || pi.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)).ToList();
+                        if (nextLevelList != null && nextLevelList.Count > 0)
+                        {
+                            foreach (var nextLevelProcessInstance in nextLevelList)
+                            {
+                                nextLevelProcessInstance.Status = ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED;
+                                nextLevelProcessInstance.ProcessDate = null;
+                                nextLevelProcessInstance.ProcessUser = null;
+                                nextLevelProcessInstance.ProcessUserNm = null;
+                                processInstanceMgrE.UpdateProcessInstance(nextLevelProcessInstance);
+                            }
+                        }
+
+                        SetStatus(task, wfsStatus, processInstanceList, effDate, user);
                     }
                 }
             }
 
-            SetCurrentApprovalUser(task, processInstanceList);
+            if (task.IsUpdate && task.Status != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
+            {
+                wfDetailMgrE.CreateWFDetail(task.Code, task.Status, task.Level, task.PreLevel, effDate, user);
 
+                //todo 邮件通知
+                if (!string.IsNullOrEmpty(color))
+                {
+                    task.Color = color;
+                }
+                this.CreateApprove(task.Code, approveDesc, task.Flag, color, effDate, user);
+            }
+
+            if (task.IsUpdate || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
+            {
+                ApproveRemind(task, user, processInstanceList);
+            }
+
+            
         }
 
         private void ApproveRemind(TaskMstr task, User user, IList<ProcessInstance> processInstanceList)
@@ -687,21 +600,18 @@ namespace com.Sconit.ISI.Service.Impl
                 string[] userCodeArray = null;
                 string userCodes = string.Empty;
 
-                //发送审批，邮件审批
+                //发送审批
                 if (task.Level != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && task.Level >= ISIConstants.CODE_MASTER_WFS_LEVEL3)
                 {
-                    //过滤科目控制部门（财务），财务部门不邮件审批，通过后续发送通知
-                    //userCodeArray = processInstanceList.Where(p => p.Level == task.Level && !string.IsNullOrEmpty(p.UserCode) && !p.IsAccountCtrl).Select(p => p.UserCode).ToArray();
                     userCodeArray = processInstanceList.Where(p => p.Level == task.Level && !string.IsNullOrEmpty(p.UserCode)).Select(p => p.UserCode).ToArray();
                     ApproveRemind(task, user, userCodeArray);
                 }
 
                 //发送通知
                 IList<string> remindUserCodeList = new List<string>();
-                //退回、不批准、争议 通知流程审批用户
+                //退回、不批准才通知流程审批用户
                 if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN
-                        || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE
-                        || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)
+                        || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE)
                 {
                     if (userCodeArray == null || userCodeArray.Length == 0)
                     {
@@ -723,7 +633,7 @@ namespace com.Sconit.ISI.Service.Impl
         }
 
         [Transaction(TransactionMode.Requires)]
-        public void CreateApprove(string taskCode, string approveDesc, string flag, string color, DateTime now, User user)
+        protected void CreateApprove(string taskCode, string approveDesc, string flag, string color, DateTime now, User user)
         {
             if (!string.IsNullOrEmpty(approveDesc))
             {
@@ -791,16 +701,12 @@ namespace com.Sconit.ISI.Service.Impl
             }
             if (status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE)
             {
-                task.Flag = ISIConstants.CODE_MASTER_ISI_FLAG_DI4;
-                task.Color = string.Empty;
                 task.ApproveDate = effDate;
                 task.ApproveUser = user.Code;
                 task.ApproveUserNm = user.Name;
             }
             if (status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_REFUSE)
             {
-                task.Flag = ISIConstants.CODE_MASTER_ISI_FLAG_DI4;
-                task.Color = string.Empty;
                 task.RefuseDate = effDate;
                 task.RefuseUser = user.Code;
                 task.RefuseUserNm = user.Name;
@@ -864,8 +770,6 @@ namespace com.Sconit.ISI.Service.Impl
                     {
                         processInstance = new ProcessInstance();
                         processInstance.TaskCode = taskCode;
-                        processInstance.IsRemind = countersignProcessInstance.IsRemind;
-
                         processInstance.Desc1 = countersignProcessInstance.Desc1;
                         if (isCountersignSerial)
                         {
@@ -876,7 +780,6 @@ namespace com.Sconit.ISI.Service.Impl
                         processInstance.UserCode = countersignUserCode[i];
                         processInstance.UserNm = countersignUserName[i];
                         processInstance.IsOpt = countersignProcessInstance.IsOpt;
-                        processInstance.IsAccountCtrl = countersignProcessInstance.IsAccountCtrl;
                         processInstance.IsCtrl = countersignProcessInstance.IsCtrl || countersignUserCode[i] == user.Code;
                         processInstance.IsApprove = countersignProcessInstance.IsApprove;
                         processInstance.IsParallel = !isCountersignSerial;
@@ -905,7 +808,7 @@ namespace com.Sconit.ISI.Service.Impl
             }
         }
 
-        private int GetNextLevel(string wfsStatus, int level, decimal? qty, decimal? amount, IList<TaskApply> uomApplyList, IList<ProcessInstance> processInstanceList, IList<object> countersignList)
+        private int GetNextLevel(string wfsStatus, int level, IList<TaskApply> uomApplyList, IList<ProcessInstance> processInstanceList, IList<object> countersignList)
         {
             if (level == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE || processInstanceList == null || processInstanceList.Count == 0)
             {
@@ -932,44 +835,36 @@ namespace com.Sconit.ISI.Service.Impl
             }
 
             //金额和工时小于设定，审批完成,争议不判断条件，到下一级审批
-            if (wfsStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE
-                    && (qty.HasValue || amount.HasValue || uomApplyList != null && uomApplyList.Count > 0))
+            if (wfsStatus != ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE && uomApplyList != null && uomApplyList.Count > 0)
             {
-                var processInstanceList1 = processInstanceList.Where(pi => pi.Level == nextLevel && (pi.Qty.HasValue || pi.ApplyQty.HasValue));
-                if (processInstanceList1 != null && processInstanceList1.Count() > 0)
+                var t1 = processInstanceList.Where(pi => pi.Level == nextLevel && !string.IsNullOrEmpty(pi.UOM) && pi.Qty.HasValue && pi.Qty.Value != 0).ToList();
+                var t2 = processInstanceList.Where(pi => pi.Level == nextLevel && !string.IsNullOrEmpty(pi.Apply) && pi.ApplyQty.HasValue && pi.ApplyQty.Value != 0).ToList();
+                if ((t1 == null || t1.Count == 0) && (t2 == null || t2.Count == 0)) return nextLevel;
+                if (t1 != null && t1.Count > 0)
                 {
-                    foreach (var pi in processInstanceList1)
+                    foreach (var p in t1)
                     {
-                        if (string.IsNullOrEmpty(pi.UOM) && qty.HasValue && qty.Value > pi.Qty.Value
-                                || string.IsNullOrEmpty(pi.Apply) && amount.HasValue && amount.Value > pi.ApplyQty.Value)
+                        var uomApply = uomApplyList.Where(u => u.UOM == p.UOM).ToList();
+                        if (uomApply.Where(u => u.Qty > p.Qty).Count() > 0)
                         {
                             return nextLevel;
                         }
+                    }
+                }
 
-                        if (uomApplyList != null && uomApplyList.Count > 0)
+                if (t2 != null && t2.Count > 0)
+                {
+                    foreach (var p in t2)
+                    {
+                        var uomApply = uomApplyList.Where(u => u.Apply == p.Apply).ToList();
+                        if (uomApply.Where(u => u.Qty > p.ApplyQty).Count() > 0)
                         {
-                            if (!string.IsNullOrEmpty(pi.UOM))
-                            {
-                                var uomApply = uomApplyList.Where(u => u.UOM == pi.UOM).ToList();
-                                if (uomApply.Where(u => u.Qty > pi.Qty).Count() > 0)
-                                {
-                                    return nextLevel;
-                                }
-                            }
-
-                            if (!string.IsNullOrEmpty(pi.Apply))
-                            {
-                                var uomApply = uomApplyList.Where(u => u.Apply == pi.Apply).ToList();
-                                if (uomApply.Where(u => u.Qty > pi.ApplyQty).Count() > 0)
-                                {
-                                    return nextLevel;
-                                }
-                            }
+                            return nextLevel;
                         }
                     }
-
-                    return ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
                 }
+
+                return ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE;
             }
 
             return nextLevel;
@@ -986,7 +881,7 @@ namespace com.Sconit.ISI.Service.Impl
         /// <param name="effDate"></param>
         /// <returns></returns>
         [Transaction(TransactionMode.Requires)]
-        public IList<ProcessInstance> AddDeptProcessInstance(string taskCode, string taskSubTypeCode, int nextLevel, string userList, bool isRemind, bool isCtrl, User user, DateTime effDate)
+        public IList<ProcessInstance> AddDeptProcessInstance(string taskCode, string taskSubTypeCode, int nextLevel, string userList, bool isCtrl, User user, DateTime effDate)
         {
             IList<ProcessInstance> processInstanceList = new List<ProcessInstance>();
             IDictionary<string, object> param = new Dictionary<string, object>();
@@ -1003,74 +898,11 @@ namespace com.Sconit.ISI.Service.Impl
                 processInstance.UserCode = u[0].ToString();
                 processInstance.UserNm = (u[1] == null ? string.Empty : u[1].ToString()) + (u[2] == null ? string.Empty : " " + u[2].ToString());
                 processInstance.IsOpt = false;
-                processInstance.IsAccountCtrl = false;
                 processInstance.IsCtrl = isCtrl;
                 processInstance.IsApprove = true;
                 processInstance.IsParallel = userNameObj.Count > 1;
                 processInstance.ATicket = true;
                 processInstance.UOM = null;
-                processInstance.IsRemind = isRemind;
-                processInstance.UOMDesc = null;
-                processInstance.Qty = null;
-                processInstance.Apply = null;
-                processInstance.ApplyDesc = null;
-                processInstance.ApplyQty = null;
-                //终结审批人、部门经理提交
-                if (nextLevel == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE || (u[0].ToString() == user.Code && !processInstance.IsCtrl))
-                {
-                    processInstance.Status = ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE;
-                    processInstance.ProcessDate = effDate;
-                    processInstance.ProcessUser = user.Code;
-                    processInstance.ProcessUserNm = user.Name;
-                }
-                else
-                {
-                    processInstance.Status = ISIConstants.CODE_MASTER_WFS_STATUS_VALUE_UNAPPROVED;
-                }
-                processInstance.CreateDate = effDate;
-                processInstance.CreateUser = user.Code;
-                processInstance.CreateUserNm = user.Name;
-                processInstanceList.Add(processInstance);
-            }
-            return processInstanceList;
-        }
-
-        /// <summary>
-        /// 成本中心审批
-        /// </summary>
-        /// <param name="taskCode"></param>
-        /// <param name="taskSubTypeCode"></param>
-        /// <param name="nextLevel"></param>
-        /// <param name="userList"></param>
-        /// <param name="isCtrl"></param>
-        /// <param name="user"></param>
-        /// <param name="effDate"></param>
-        /// <returns></returns>
-        [Transaction(TransactionMode.Requires)]
-        public IList<ProcessInstance> AddCostCenterProcessInstance(string taskCode, string taskSubTypeCode, int nextLevel, string userList, bool isRemind, bool isCtrl, User user, DateTime effDate)
-        {
-            IList<ProcessInstance> processInstanceList = new List<ProcessInstance>();
-            IDictionary<string, object> param = new Dictionary<string, object>();
-            string[] userCodeArr = userList.Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray();
-            param.Add("UserCode", userCodeArr);
-            IList<object[]> userNameObj = hqlMgrE.FindAll<object[]>("select u.Code,u.FirstName,u.LastName from User u where u.Code in (:UserCode) ", param);
-            foreach (var u in userNameObj)
-            {
-                ProcessInstance processInstance = new ProcessInstance();
-                processInstance.TaskCode = taskCode;
-                processInstance.Desc1 = "成本中心审批";
-                processInstance.Level = ISIConstants.CODE_MASTER_WFS_LEVEL4;
-                processInstance.TaskSubType = taskSubTypeCode;
-                processInstance.UserCode = u[0].ToString();
-                processInstance.UserNm = (u[1] == null ? string.Empty : u[1].ToString()) + (u[2] == null ? string.Empty : " " + u[2].ToString());
-                processInstance.IsOpt = false;
-                processInstance.IsAccountCtrl = false;
-                processInstance.IsCtrl = isCtrl;
-                processInstance.IsApprove = true;
-                processInstance.IsParallel = userNameObj.Count > 1;
-                processInstance.ATicket = false;
-                processInstance.UOM = null;
-                processInstance.IsRemind = isRemind;
                 processInstance.UOMDesc = null;
                 processInstance.Qty = null;
                 processInstance.Apply = null;
@@ -1108,9 +940,7 @@ namespace com.Sconit.ISI.Service.Impl
             processInstance.UserNm = userName;
             processInstance.ATicket = false;
             processInstance.IsOpt = false;
-            processInstance.IsAccountCtrl = false;
             processInstance.IsCtrl = false;
-            processInstance.IsRemind = false;
             processInstance.IsApprove = false;
             processInstance.IsParallel = false;
             processInstance.UOM = null;
@@ -1143,11 +973,9 @@ namespace com.Sconit.ISI.Service.Impl
                 processInstance.UserCode = task.CreateUser;
                 processInstance.UserNm = task.CreateUserNm;
                 processInstance.IsOpt = false;
-                processInstance.IsAccountCtrl = false;
                 processInstance.IsCtrl = false;
                 processInstance.IsApprove = false;
                 processInstance.IsParallel = false;
-                processInstance.IsRemind = false;
                 processInstance.UOM = null;
                 processInstance.UOMDesc = null;
                 processInstance.Qty = null;

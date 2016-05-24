@@ -14,8 +14,7 @@
         <asp:GridView ID="GV_List" runat="server" OnRowDataBound="GV_List_RowDataBound" AutoGenerateColumns="false"
             RowStyle-CssClass="abc" OnDataBound="GV_List_DataBound">
             <Columns>
-                <asp:BoundField DataField="Desc2" HeaderText="${ISI.Checkup.CheckupUserNm}" ItemStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" SortExpression="CheckupUserNm" HeaderStyle-Width="5%" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="JobNo" HeaderText="${ISI.Checkup.JobNo}" ItemStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" SortExpression="CheckupUserNm" HeaderStyle-Width="5%" HeaderStyle-Wrap="false" />
+                <asp:BoundField DataField="Desc" HeaderText="${ISI.Checkup.CheckupUserNm}" ItemStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Top" SortExpression="CheckupUserNm" HeaderStyle-Width="5%" HeaderStyle-Wrap="false" />
                 <asp:TemplateField HeaderText="${ISI.Checkup.CheckupDate}" HeaderStyle-Width="6%" HeaderStyle-Wrap="false">
                     <ItemTemplate>
                         <div>

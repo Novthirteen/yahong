@@ -99,9 +99,8 @@ public partial class ISI_TaskStatus_Search : SearchModuleBase
                     bool isISIAdmin = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN);
                     bool isTaskFlowAdmin = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN);
                     bool isCloser = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_CLOSE);
-                    bool isAssigner = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ASSIGN);
 
-                    if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isAssigner, isCloser, this.CurrentUser.Code)
+                    if (this.TheTaskMgr.HasPermission(task, isISIAdmin, isTaskFlowAdmin, isCloser, this.CurrentUser.Code)
                                     || ISIUtil.Contains(task.StartedUser, this.CurrentUser.Code)
                                     || task.CreateUser == this.CurrentUser.Code
                                     || task.SubmitUser == this.CurrentUser.Code)

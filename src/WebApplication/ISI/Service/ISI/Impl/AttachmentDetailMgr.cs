@@ -290,19 +290,17 @@ namespace com.Sconit.ISI.Service.Impl
         [Transaction(TransactionMode.Requires)]
         public void UploadFile(string code, string type, HttpRequest request, User user)
         {
-
+            if (type == typeof(TaskMstr).FullName)
+            {
+                UploadFile(code, type, request, false, user);
+            }
             if (type == typeof(ProjectTask).FullName)
             {
                 UploadFile(code, type, request, true, user);
             }
-            else if (type == typeof(TaskSubType).FullName)
+            if (type == typeof(TaskSubType).FullName)
             {
                 UploadFile(code, type, request, true, user);
-            }
-            //if (type == typeof(TaskMstr).FullName)
-            else
-            {
-                UploadFile(code, type, request, false, user);
             }
         }
 

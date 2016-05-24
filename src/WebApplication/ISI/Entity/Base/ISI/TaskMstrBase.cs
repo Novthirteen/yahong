@@ -11,10 +11,7 @@ namespace com.Sconit.ISI.Entity
     public abstract class TaskMstrBase : EntityBase
     {
         #region O/R Mapping Properties
-        public string FirstUser { get; set; }
-        public string FirstUserNm { get; set; }
-        public string CurrentApprovalUser { get; set; }
-        public string CurrentApprovalUserNm { get; set; }
+
         private string _code;
         public string Code
         {
@@ -27,10 +24,6 @@ namespace com.Sconit.ISI.Entity
                 _code = value;
             }
         }
-        public string Dept { get; set; }
-        public decimal? Amount { get; set; }
-        public string SupplierCode { get; set; }
-        public string SupplierName { get; set; }
         public string Template { get; set; }
         public decimal? Qty { get; set; }
         public string ApprovalUser { get; set; }
@@ -39,9 +32,7 @@ namespace com.Sconit.ISI.Entity
         public bool? IsCountersignSerial { get; set; }
         public string CountersignUser { get; set; }
         public string CountersignUserNm { get; set; }
-        //public TaskSubType CostCenter { get; set; }
-        public string CostCenterCode { get; set; }
-        public string CostCenterDesc { get; set; }
+        public TaskSubType CostCenter { get; set; }
 
         public bool IsApply { get; set; }
 
@@ -188,9 +179,6 @@ namespace com.Sconit.ISI.Entity
                 _backYards = value;
             }
         }
-        public int? Voucher { get; set; }
-        public string PayeeCode { get; set; }
-        public string PayeeName { get; set; }
         private string _userName;
         public string UserName
         {
@@ -432,6 +420,8 @@ namespace com.Sconit.ISI.Entity
             }
         }
         public decimal? PlanAmount { get; set; }
+
+        public decimal? Amount { get; set; }
 
         private string _submitUser;
         public string SubmitUser
@@ -702,7 +692,6 @@ namespace com.Sconit.ISI.Entity
 
         public string RefNo { get; set; }
         public string ExtNo { get; set; }
-        public string TravelType { get; set; }
 
         public Int32 Version { get; set; }
         public string AssignStartUserNm { get; set; }
@@ -713,92 +702,6 @@ namespace com.Sconit.ISI.Entity
         public string SuspendUser { get; set; }
         public string SuspendUserNm { get; set; }
         public DateTime? SuspendDate { get; set; }
-
-        private string _account1;
-        public string Account1
-        {
-            get
-            {
-                return _account1;
-            }
-            set
-            {
-                _account1 = value;
-            }
-        }
-        private string _account1Desc;
-        public string Account1Desc
-        {
-            get
-            {
-                return _account1Desc;
-            }
-            set
-            {
-                _account1Desc = value;
-            }
-        }
-        private string _account2;
-        public string Account2
-        {
-            get
-            {
-                return _account2;
-            }
-            set
-            {
-                _account2 = value;
-            }
-        }
-        private string _account2Desc;
-        public string Account2Desc
-        {
-            get
-            {
-                return _account2Desc;
-            }
-            set
-            {
-                _account2Desc = value;
-            }
-        }
-        private Decimal? _noTaxAmount;
-        public Decimal? NoTaxAmount
-        {
-            get
-            {
-                return _noTaxAmount;
-            }
-            set
-            {
-                _noTaxAmount = value;
-            }
-        }
-        private Decimal? _taxes;
-        public Decimal? Taxes
-        {
-            get
-            {
-                return _taxes;
-            }
-            set
-            {
-                _taxes = value;
-            }
-        }
-        private Decimal? _totalAmount;
-        public Decimal? TotalAmount
-        {
-            get
-            {
-                return _totalAmount;
-            }
-            set
-            {
-                _totalAmount = value;
-            }
-        }
-        public string FormType { get; set; }
         #endregion
 
         private IList<TaskDetail> _taskDetails;

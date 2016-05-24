@@ -116,6 +116,7 @@ public partial class ISI_Summary_Edit : EditModuleBase
             if (this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE && !summaryDet.IsBlankDetail && Summary.CreateUser == this.CurrentUser.Code)
             {
                 e.Row.FindControl("lbtnDelete").Visible = true;
+
             }
 
             if ((this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT)
@@ -140,8 +141,6 @@ public partial class ISI_Summary_Edit : EditModuleBase
             ((TextBox)e.Row.FindControl("tbTaskCode")).ReadOnly = !((Summary.CreateUser == this.CurrentUser.Code || Summary.SubmitUser == this.CurrentUser.Code) && (this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT));
             ((TextBox)e.Row.FindControl("tbSubject")).ReadOnly = !((Summary.CreateUser == this.CurrentUser.Code || Summary.SubmitUser == this.CurrentUser.Code) && (this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT));
             ((CheckBox)e.Row.FindControl("cbChecked")).Visible = ((Summary.CreateUser == this.CurrentUser.Code || Summary.SubmitUser == this.CurrentUser.Code) && (this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT));
-            e.Row.FindControl("tbSeq").Visible = ((Summary.CreateUser == this.CurrentUser.Code || Summary.SubmitUser == this.CurrentUser.Code) && (this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT));
-            e.Row.FindControl("ltlSeq").Visible = ((Summary.CreateUser == this.CurrentUser.Code || Summary.SubmitUser == this.CurrentUser.Code) && (this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || this.Summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT));
             e.Row.FindControl("lblSeq").Visible = !((CheckBox)e.Row.FindControl("cbChecked")).Visible;
 
             if (this.CurrentUser.UserLanguage == BusinessConstants.CODE_MASTER_LANGUAGE_VALUE_ZH_CN)
@@ -339,6 +338,7 @@ public partial class ISI_Summary_Edit : EditModuleBase
         FileExtensions = null;
         ContentLength = 0;
         this.SummaryDetList = null;
+
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -504,7 +504,6 @@ public partial class ISI_Summary_Edit : EditModuleBase
 
                     TextBox tbConment = (TextBox)row.FindControl("tbConment");
                     TextBox tbSubject = (TextBox)row.FindControl("tbSubject");
-                    TextBox tbSeq = (TextBox)row.FindControl("tbSeq");
                     SummaryDet summaryDet = new SummaryDet();
                     if (!string.IsNullOrEmpty(hfId.Value))
                     {
@@ -518,7 +517,7 @@ public partial class ISI_Summary_Edit : EditModuleBase
                         summaryDet.Subject = tbSubject.Text.Trim();
                         summaryDet.Conment = tbConment.Text.Trim();
                         summaryDet.TaskCode = tbTaskCode.Text.Trim();
-                        summaryDet.Seq = int.Parse(tbSeq.Text.Trim());
+
                         //if (isApprove || this.CurrentUser.HasPermission(ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_APPROVECHECKUP))
                         {
                             TextBox tbApproveDesc = (TextBox)row.FindControl("tbApproveDesc");

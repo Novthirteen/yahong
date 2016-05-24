@@ -11,10 +11,7 @@ namespace com.Sconit.ISI.Entity
         /// 审批权限
         /// </summary>
         public bool IsApprove { get; set; }
-        /// <summary>
-        /// 科目编辑
-        /// </summary>
-        public bool IsAccountCtrl { get; set; }
+
         /// <summary>
         /// 流程控制
         /// </summary>

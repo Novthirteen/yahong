@@ -62,18 +62,25 @@ namespace com.Sconit.ISI.Service.Report.Impl
                 }
 
                 this.init(templateFileName);
+
                 int pageIndex = 1;
+                int rowIndex = 1;
                 if (task.IsWF)
                 {
                     this.SetRowCell(pageIndex, 0, 0, task.TaskSubType.Description);
                 }
-                this.SetRowCell(pageIndex, 1, 1, task.CreateUserNm);
-                this.SetRowCell(pageIndex, 1, 3, task.CostCenter);
-                
-                this.SetRowCell(pageIndex, 1, 5, task.SubmitDate.Value.ToString("yyyy-MM-dd"));
+                this.SetRowCell(pageIndex, rowIndex, 1, task.CreateUserNm);
+                if (task.CostCenter != null)
+                {
+                    this.SetRowCell(pageIndex, rowIndex, 3, task.CostCenter.Description);
+                }
+                this.SetRowCell(pageIndex, rowIndex, 5, task.SubmitDate.Value.ToString("yyyy-MM-dd"));
+
                 this.SetRowCell(pageIndex, 2, 1, task.Code);
                 this.SetRowCell(pageIndex, 2, 3, languageMgrE.ProcessLanguage("${ISI.Status." + task.Status + "}", BusinessConstants.CODE_MASTER_LANGUAGE_VALUE_ZH_CN));
 
+                rowIndex++;
+                rowIndex++;
                 //描述与申请项
                 StringBuilder desc = new StringBuilder();
                 if (!string.IsNullOrEmpty(task.Desc1))
@@ -112,8 +119,10 @@ namespace com.Sconit.ISI.Service.Report.Impl
                     var taskApplyList = taskApplyMgrE.GetTaskApply(task.Code);
                     taskApplyMgrE.OutputApply(desc, taskApplyList);
                 }
-                this.SetRowCell(pageIndex, 4, 0, desc.ToString());
+                this.SetRowCell(pageIndex, rowIndex, 0, desc.ToString());
 
+                rowIndex++;
+                rowIndex++;
                 if (task.IsWF)
                 {
                     //批示
@@ -137,7 +146,7 @@ namespace com.Sconit.ISI.Service.Report.Impl
                             desc.Append("): ");
                             desc.Append(traceView.Desc);
                         }
-                        this.SetRowCell(pageIndex, 6, 0, desc.ToString());
+                        this.SetRowCell(pageIndex, rowIndex, 0, desc.ToString());
                     }
                 }
 

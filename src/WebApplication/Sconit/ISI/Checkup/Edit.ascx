@@ -228,7 +228,7 @@
                                 CssClass="apply" ValidationGroup="vgSave" />
                             <asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="${Common.Button.Submit}"
                                 CssClass="apply" ValidationGroup="vgSave" />
-                            <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Text="${Common.Button.Delete}"
+                            <asp:Button ID="btnDelete" runat="server" CommandName="Delete" Text="${Common.Button.Delete}"
                                 CssClass="delete" OnClientClick="return confirm('${Common.Button.Delete.Confirm}')" />
                             <asp:Button ID="btnApprove" runat="server" Text="${ISI.Button.Approve}" OnClick="btnApprove_Click"
                                 CssClass="apply" OnClientClick="return confirm('${ISI.Button.Approve.Confirm}')" />
@@ -247,8 +247,12 @@
 </div>
 <asp:ObjectDataSource ID="ODS_Checkup" runat="server" TypeName="com.Sconit.Web.CheckupMgrProxy"
     DataObjectTypeName="com.Sconit.ISI.Entity.Checkup" UpdateMethod="UpdateCheckup"
-    OnUpdated="ODS_Checkup_Updated" SelectMethod="LoadCheckup" OnUpdating="ODS_Checkup_Updating" >
+    OnUpdated="ODS_Checkup_Updated" SelectMethod="LoadCheckup" OnUpdating="ODS_Checkup_Updating"
+    DeleteMethod="DeleteCheckup" OnDeleting="ODS_Checkup_Deleting" OnDeleted="ODS_Checkup_Deleted">
     <SelectParameters>
         <asp:Parameter Name="id" Type="Int32" />
     </SelectParameters>
+    <DeleteParameters>
+        <asp:Parameter Name="id" Type="Int32" />
+    </DeleteParameters>
 </asp:ObjectDataSource>

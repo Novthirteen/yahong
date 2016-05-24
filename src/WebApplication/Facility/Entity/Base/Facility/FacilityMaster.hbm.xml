@@ -35,6 +35,7 @@
     <property name="ChargeOrganization" column="ChargeOrg" type="String" length="100" />
     <property name="ChargeDate" column="ChargeDate" type="DateTime"  />
     <property name="Category" column="Category" type="String" length="100" />
+	<property name="ParentCategory" column="ParentCategory" type="String" length="100" />
     <!--先借用维护报表分组-->
     <property name="MaintainType" column="MaintainType" type="String" length="100" />
     <property name="MaintainPeriod" column="MaintainPeriod" type="Int32"  /> 

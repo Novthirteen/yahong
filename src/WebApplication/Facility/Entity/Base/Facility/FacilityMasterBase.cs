@@ -540,6 +540,8 @@ namespace com.Sconit.Facility.Entity
                 _printTemplate = value;
             }
         }
+
+        public string ParentCategory { get; set; }
         #endregion
 
 		public override int GetHashCode()

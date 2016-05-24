@@ -13,8 +13,7 @@
     <property name="ATicket" column="ATicket" type="Boolean"  />
     <property name="IsParallel" column="IsParallel" type="Boolean"  />
     <property name="IsOpt" column="IsOpt" type="Boolean"  />	
-		<property name="IsApprove" column="IsApprove" type="Boolean"  />
-    <property name="IsAccountCtrl" column="IsAccountCtrl" type="Boolean"  />
+		<property name="IsApprove" column="IsApprove" type="Boolean"  />	
 		<property name="IsCtrl" column="IsCtrl" type="Boolean"  />    
 		<property name="CreateDate" column="CreateDate" type="DateTime"  />	
 		<property name="CreateUserNm" column="CreateUserNm" type="String" length="50" />	
@@ -29,7 +28,6 @@
     <property name="Apply" column="Apply" type="String" length="50" />
     <property name="ApplyDesc" column="ApplyDesc" type="String" length="50"  />
     <property name="ApplyQty" column="ApplyQty" type="Decimal"  />
-    <property name="IsRemind" column="IsRemind" type="Boolean"  />
     <property name="Version" column="Version" type="Int32"  />	
   	</class>
 </hibernate-mapping>

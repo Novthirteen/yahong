@@ -20,7 +20,7 @@ namespace com.Sconit.Web
         }
 
         #region ISI
-        protected IAccountMgrE TheAccountMgr { get { return ServiceLocator.GetService<IAccountMgrE>("AccountMgr.service"); } }
+     
         protected IBudgetMgrE TheBudgetMgr { get { return ServiceLocator.GetService<IBudgetMgrE>("BudgetMgr.service"); } }
         protected IBudgetDetMgrE TheBudgetDetMgr { get { return ServiceLocator.GetService<IBudgetDetMgrE>("BudgetDetMgr.service"); } }
         protected ISmtpMgrE TheSmtpMgr { get { return ServiceLocator.GetService<ISmtpMgrE>("SmtpMgr.service"); } }
@@ -56,9 +56,7 @@ namespace com.Sconit.Web
         protected ISummaryMgrE TheSummaryMgr { get { return GetService<ISummaryMgrE>("SummaryMgr.service"); } }
         protected ISummaryDetMgrE TheSummaryDetMgr { get { return GetService<ISummaryDetMgrE>("SummaryDetMgr.service"); } }
 
-        protected IMouldMgrE TheMouldMgr { get { return GetService<IMouldMgrE>("MouldMgr.service"); } }
-        protected IMouldDetailMgrE TheMouldDetailMgr { get { return GetService<IMouldDetailMgrE>("MouldDetailMgr.service"); } }
-
+  
         #endregion
 
     }

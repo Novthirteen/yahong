@@ -82,8 +82,6 @@ public partial class ISI_TaskSubType_New : NewModuleBase
         ((TextBox)(this.FV_TaskSubType.FindControl("tbSeq"))).Text = string.Empty;
         ((Controls_TextBox)(this.FV_TaskSubType.FindControl("tbParent"))).Text = string.Empty;
         ((CheckBox)(this.FV_TaskSubType.FindControl("ckIsActive"))).Checked = true;
-        ((CheckBox)(this.FV_TaskSubType.FindControl("cbIsCost"))).Checked = this.ModuleType == ISIConstants.ISI_TASK_TYPE_GENERAL || this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT;
-
         ((CheckBox)(this.FV_TaskSubType.FindControl("ckIsAutoAssign"))).Checked = false;
         ((CheckBox)(this.FV_TaskSubType.FindControl("ckIsAutoStart"))).Checked = false;
         ((CheckBox)(this.FV_TaskSubType.FindControl("ckIsAutoComplete"))).Checked = false;
@@ -152,12 +150,18 @@ public partial class ISI_TaskSubType_New : NewModuleBase
             taskSubType.IsTrace = true;
             taskSubType.IsAssignUser = true;
 
+            com.Sconit.Control.CodeMstrDropDownList ddlTemplate = (com.Sconit.Control.CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlTemplate"));
+            if (ddlTemplate.SelectedIndex != -1)
+            {
+                taskSubType.Template = ddlTemplate.SelectedValue;
+            }
+
             taskSubType.Type = this.ModuleType;//((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlType"))).SelectedValue;
             taskSubType.ProjectType = ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlProjectType"))).SelectedValue;
             taskSubType.Color = ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlColor"))).SelectedValue;
 
             taskSubType.Org = ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlOrg"))).SelectedValue;
-            //taskSubType.FormType = ISIConstants.CODE_MASTER_WFS_FORMTYPE_1;
+
             taskSubType.ECType = ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlECType"))).SelectedValue;
 
             DateTime now = DateTime.Now;

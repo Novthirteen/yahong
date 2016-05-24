@@ -150,7 +150,7 @@ public partial class ISI_TSK_CostList : ListModuleBase
             }
             else
             {
-                costDet = this.TheCostMgr.LoadCost(int.Parse(code));
+              //  costDet = this.TheCostMgr.LoadCost(int.Parse(code));
             }
 
             if (!string.IsNullOrEmpty(costCenter))
@@ -168,9 +168,9 @@ public partial class ISI_TSK_CostList : ListModuleBase
             string account1Code = ((Controls_TextBox)newCostDetRow.FindControl("tbAccount1")).Text.Trim();
             if (!string.IsNullOrEmpty(account1Code))
             {
-                var account = this.TheAccountMgr.LoadAccount(account1Code);
-                costDet.Account1 = account.Code;
-                costDet.Account1Desc = account.Desc1;
+             //   var account = this.TheAccountMgr.LoadAccount(account1Code);
+              //  costDet.Account1 = account.Code;
+             //   costDet.Account1Desc = account.Desc1;
             }
             else
             {
@@ -181,9 +181,9 @@ public partial class ISI_TSK_CostList : ListModuleBase
             string account2Code = ((Controls_TextBox)newCostDetRow.FindControl("tbAccount2")).Text.Trim();
             if (!string.IsNullOrEmpty(account2Code))
             {
-                var account = this.TheAccountMgr.LoadAccount(account2Code);
-                costDet.Account2 = account.Code;
-                costDet.Account2Desc = account.Desc1;
+               // var account = this.TheAccountMgr.LoadAccount(account2Code);
+              //  costDet.Account2 = account.Code;
+               // costDet.Account2Desc = account.Desc1;
             }
             else
             {
@@ -476,12 +476,12 @@ public partial class ISI_TSK_CostList : ListModuleBase
             {
                 if (costDet.Id == 0)
                 {
-                    this.TheCostMgr.CreateCost(costDet);
+                  //  this.TheCostMgr.CreateCost(costDet);
                 }
                 else
                 {
                     this.TheCostList = this.TheCostList.Where(c => c.Id != costDet.Id).ToList();
-                    this.TheCostMgr.UpdateCost(costDet);
+                 //   this.TheCostMgr.UpdateCost(costDet);
                     this.ShowSuccessMessage("WFS.Cost.Update.Successfully");
                 }
             }
@@ -743,7 +743,7 @@ public partial class ISI_TSK_CostList : ListModuleBase
                 int id = int.Parse(code);
                 if (id > 0)
                 {
-                    this.TheCostMgr.DeleteCost(id);
+//                    this.TheCostMgr.DeleteCost(id);
                 }
             }
             InitPageParameter(this.TheCostList);

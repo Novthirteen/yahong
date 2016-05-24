@@ -4,7 +4,7 @@
 		<id name="Id" column="Id" type="Int32" unsaved-value="0" >
       		<generator class="identity" />
         </id>
-    <property name="Subject" column="Subject" type="String" length="200" />
+    <property name="Subject" column="Subject" type="String" length="100" />
 		<property name="TaskCode" column="TaskCode" type="String" length="50" />
     <property name="TaskSubType" column="TaskSubType" type="String" length="50" />
     <property name="FailureMode" column="FailureMode" type="String" length="50" />

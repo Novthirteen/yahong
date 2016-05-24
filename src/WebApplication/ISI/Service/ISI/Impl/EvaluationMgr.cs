@@ -7,7 +7,6 @@ using com.Sconit.ISI.Persistence;
 using NHibernate.Expression;
 using com.Sconit.ISI.Entity;
 using com.Sconit.Service.Ext.Criteria;
-using com.Sconit.ISI.Entity.Util;
 
 //TODO: Add other using statements here.
 
@@ -30,42 +29,6 @@ namespace com.Sconit.ISI.Service.Impl
             }
             return this.criteriaMgrE.FindAll<Evaluation>(criteria);
 
-        }
-
-        /// <summary>
-        /// 获取未提交月度自评的人
-        /// </summary>
-        /// <returns></returns>
-        [Transaction(TransactionMode.Unspecified)]
-        public IList<Evaluation> GetEvaluation(DateTime date)
-        {
-            return GetEvaluation(date, false);
-        }
-
-       
-        [Transaction(TransactionMode.Unspecified)]
-        public IList<Evaluation> GetEvaluation(DateTime date, bool isInclude)
-        {
-            DetachedCriteria criteria = DetachedCriteria.For(typeof(Evaluation));
-            criteria.Add(Expression.Eq("IsActive", true));
-
-            DetachedCriteria summaryCrieteria = DetachedCriteria.For<Summary>();
-
-            summaryCrieteria.Add(Expression.Eq("Date", date));
-            
-            summaryCrieteria.Add(Expression.Not(Expression.Eq("Status", ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CANCEL)));
-            summaryCrieteria.SetProjection(Projections.Distinct(Projections.ProjectionList().Add(Projections.GroupProperty("UserCode"))));
-            
-            if (isInclude)
-            {
-                criteria.Add(Subqueries.PropertyIn("UserCode", summaryCrieteria));
-            }
-            else
-            {
-                criteria.Add(Subqueries.PropertyNotIn("UserCode", summaryCrieteria));
-            }
-            
-            return this.criteriaMgrE.FindAll<Evaluation>(criteria);
         }
 
         [Transaction(TransactionMode.Requires)]

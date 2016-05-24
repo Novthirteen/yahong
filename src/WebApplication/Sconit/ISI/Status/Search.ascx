@@ -6,16 +6,14 @@
     <table class="mtable">
         <tr>
             <td align="right">
-                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${ISI.Task.Type}:" Visible="false" ID="cbExcludeType" Checked="false" />
-                <asp:Literal ID="lblType" runat="server" Text="${ISI.Task.Type}:" />
+                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${ISI.Task.Type}:" ID="cbExcludeType" Checked="false" />
             </td>
             <td>
                 <cc2:CodeMstrDropDownList ID="ddlType" Code="ISIType" runat="server" IncludeBlankOption="true"
                     Width="120px" DefaultSelectedValue="" />
             </td>
             <td align="right">
-                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${ISI.Task.TaskSubType}:" Visible="false" ID="cbExclude" Checked="false" />
-                <asp:Literal ID="lblTaskSubType" runat="server" Text="${ISI.Task.TaskSubType}:" />
+                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${ISI.Task.TaskSubType}:" ID="cbExclude" Checked="false" />
             </td>
             <td>
                 <uc3:textbox ID="tbTaskSubType" runat="server" Visible="true" DescField="Name" MustMatch="true"
@@ -35,8 +33,7 @@
                     DefaultSelectedValue="" />
             </td>
             <td align="right">
-                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" ID="cbPhase" Visible="false" Checked="false" />
-                <asp:Literal ID="lblPhase" runat="server" Text="${ISI.Task.Phase}:" />
+                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" ID="cbPhase" Checked="false" />
             </td>
             <td>
                 <cc2:CodeMstrDropDownList ID="ddlPhase" Code="ISIPhase" runat="server" IncludeBlankOption="true"
@@ -59,8 +56,7 @@
                 <asp:TextBox ID="tbDesc" runat="server" />
             </td>
             <td align="right">
-                <asp:CheckBox runat="server" Text="${Common.CodeMaster.Status}:" Visible="false" ToolTip="${ISI.Status.Exclude}" ID="cbStatus" Checked="false" />
-                <asp:Literal ID="lblStatus" runat="server" Text="${Common.CodeMaster.Status}:" />
+                <asp:CheckBox runat="server" Text="${Common.CodeMaster.Status}:" ToolTip="${ISI.Status.Exclude}" ID="cbStatus" Checked="false" />
             </td>
             <td>
                 <ct:ASDropDownTreeView ID="astvMyTree" runat="server" BasePath="~/Js/astreeview/"
@@ -72,31 +68,28 @@
                     MaxDropdownHeight="200" />
             </td>
             <td align="right">
-                <asp:CheckBox runat="server" Text="${Common.Business.StartDate}" ID="cbIsStatus" Visible="false" ToolTip="${ISI.Status.IsStatus}" />
-                <asp:Literal ID="lblStartDate" runat="server" Text="${Common.Business.StartDate}:" />
+                <asp:CheckBox runat="server" Text="${Common.Business.StartDate}" ID="cbIsStatus" ToolTip="${ISI.Status.IsStatus}" />
             </td>
             <td>
-                <asp:TextBox ID="tbStartDate" runat="server" onClick="var ctl01_ucSearch_tbEndDate=$dp.$('ctl01_ucSearch_tbEndDate');WdatePicker({dateFmt:'yyyy-MM-dd',onpicked:function(){ctl01_ucSearch_tbEndDate.click();},maxDate:'#F{$dp.$D(\'ctl01_ucSearch_tbEndDate\')}' })" />
+                <asp:TextBox ID="tbStartDate" runat="server" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
             </td>
             <td align="right">
                 <asp:Literal ID="ltlEndDate" runat="server" Text="${Common.Business.EndDate}:" />
             </td>
             <td>
-                <asp:TextBox ID="tbEndDate" runat="server" onClick="WdatePicker({doubleCalendar:true,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'ctl01_ucSearch_tbStartDate\')}'})" />
+                <asp:TextBox ID="tbEndDate" runat="server" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
             </td>
         </tr>
         <tr>
             <td align="right">
-                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${Common.Business.CreateUser}:" Visible="false" ID="cbExcludeSubmitUser" Checked="false" />
-                <asp:Literal ID="lblCreateUser" runat="server" Text="${Common.Business.CreateUser}:" />
+                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${Common.Business.CreateUser}:" ID="cbExcludeSubmitUser" Checked="false" />
             </td>
             <td>
                 <uc3:textbox ID="tbCreateUser" runat="server" Visible="true" DescField="Name" MustMatch="true"
                     ValueField="Code" ServicePath="UserSubscriptionMgr.service" ServiceMethod="GetCacheAllUser" Width="250" />
             </td>
             <td align="right">
-                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${ISI.Task.AssignUser}:" ID="cbExcludeAssignUser" Visible="false" Checked="false" />
-                <asp:Literal ID="lblAssignUser" runat="server" Text="${ISI.Task.AssignUser}:" />
+                <asp:CheckBox runat="server" ToolTip="${ISI.Status.Exclude}" Text="${ISI.Task.AssignUser}:" ID="cbExcludeAssignUser" Checked="false" />
             </td>
             <td>
                 <uc3:textbox ID="tbAssignUser" runat="server" Visible="true" DescField="Name" MustMatch="true"

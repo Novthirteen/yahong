@@ -12,7 +12,6 @@ using com.Sconit.Service.Ext.MasterData;
 using com.Sconit.Entity.MasterData;
 using com.Sconit.Service.Ext.Hql;
 using com.Sconit.ISI.Entity.Util;
-using System.Linq;
 
 //TODO: Add other using statements here.
 
@@ -78,26 +77,6 @@ namespace com.Sconit.ISI.Service.Impl
             return this.criteriaMgrE.FindAll<TaskSubType>(criteria);
         }
 
-        [Transaction(TransactionMode.Unspecified)]
-        public IList<TaskSubType> GetCostCenter()
-        {
-            return GetCostCenter(null);
-        }
-        [Transaction(TransactionMode.Unspecified)]
-        public IList<TaskSubType> GetCostCenter(bool? isActive)
-        {
-            DetachedCriteria criteria = DetachedCriteria.For(typeof(TaskSubType));
-            if (isActive.HasValue)
-            {
-                criteria.Add(Expression.Eq("IsActive", isActive.Value));
-            }
-            criteria.Add(Expression.Eq("IsCost", true));
-            criteria.AddOrder(Order.Desc("IsActive"));
-            criteria.AddOrder(Order.Asc("Type"));
-            criteria.AddOrder(Order.Asc("Seq"));
-            criteria.AddOrder(Order.Asc("Code"));
-            return this.criteriaMgrE.FindAll<TaskSubType>(criteria);
-        }
 
         [Transaction(TransactionMode.Unspecified)]
         public IList<TaskSubType> GetTaskSubType(string userCode)
@@ -134,18 +113,6 @@ namespace com.Sconit.ISI.Service.Impl
         public IList<TaskSubType> GetTaskSubType(string type, string userCode, bool includeInactive, bool onlyPublic)
         {
             return this.GetTaskSubType(type, false, userCode, includeInactive, true, onlyPublic, false);
-        }
-
-        [Transaction(TransactionMode.Unspecified)]
-        public IList<TaskSubType> GetProjectTaskSubType()
-        {
-            DetachedCriteria criteria = DetachedCriteria.For<TaskSubType>();
-            criteria.Add(Expression.Eq("Type", ISIConstants.ISI_TASK_TYPE_PROJECT));
-            criteria.AddOrder(Order.Desc("IsActive"));
-            criteria.AddOrder(Order.Asc("Seq"));
-            criteria.AddOrder(Order.Asc("Code"));
-            IList<TaskSubType> taskSubTypeList = criteriaMgrE.FindAll<TaskSubType>(criteria);
-            return taskSubTypeList;
         }
 
         [Transaction(TransactionMode.Unspecified)]
@@ -273,12 +240,11 @@ namespace com.Sconit.ISI.Service.Impl
         }
 
         [Transaction(TransactionMode.Unspecified)]
-        public IList<TaskSubType> GetCostCenter2()
+        public IList<TaskSubType> GetCostCenter()
         {
             DetachedCriteria criteria = DetachedCriteria.For<TaskSubType>();
             criteria.Add(Expression.Or(Expression.Eq("Type", ISIConstants.ISI_TASK_TYPE_PROJECT), Expression.Eq("Type", ISIConstants.ISI_TASK_TYPE_GENERAL)));
-            criteria.AddOrder(Order.Desc("IsActive"));
-            criteria.AddOrder(Order.Asc("Type"));
+            criteria.AddOrder(Order.Desc("Type"));
             criteria.AddOrder(Order.Asc("Seq"));
             criteria.AddOrder(Order.Asc("Code"));
             IList<TaskSubType> taskSubTypeList = criteriaMgrE.FindAll<TaskSubType>(criteria);
@@ -416,23 +382,6 @@ namespace com.Sconit.ISI.Service.Impl
             }
 
             return false;
-        }
-
-        [Transaction(TransactionMode.Unspecified)]
-        public string GetCostCenter(string taskCode, string costCenter)
-        {
-            DetachedCriteria criteria = DetachedCriteria.For(typeof(TaskSubType)).SetProjection(Projections.Distinct(Projections.ProjectionList()
-                            .Add(Projections.Property("AssignUser").As("AssignUser"))));
-            DetachedCriteria subCriteria = DetachedCriteria.For(typeof(Cost));
-            subCriteria.Add(Expression.Eq("TaskCode", taskCode));
-            subCriteria.Add(Expression.Not(Expression.Eq("TaskSubType", costCenter)));
-            subCriteria.Add(Expression.Not(Expression.Eq("TaskSubType", string.Empty)));
-            subCriteria.Add(Expression.IsNotNull("TaskSubType"));
-            subCriteria.SetProjection(Projections.ProjectionList().Add(Projections.GroupProperty("TaskSubType")));
-            criteria.Add(Subqueries.PropertyIn("Code", subCriteria));
-            var assignUserList = this.criteriaMgrE.FindAll<object>(criteria);
-            string costCenterUser = string.Join(";", assignUserList.Select(t => t.ToString()).Distinct().ToArray<string>());
-            return costCenterUser;
         }
 
         [Transaction(TransactionMode.Unspecified)]

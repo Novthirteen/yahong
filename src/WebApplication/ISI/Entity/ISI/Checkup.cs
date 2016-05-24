@@ -20,15 +20,6 @@ namespace com.Sconit.ISI.Entity
             }
         }
 
-        public string Desc2
-        {
-            get
-            {
-                return this.CheckupUserNm
-                    + (!string.IsNullOrEmpty(this.Dept2) ? " " + this.Dept2 : string.Empty)
-                    + (!string.IsNullOrEmpty(this.Department) ? " " + this.Department : string.Empty);
-            }
-        }
         #endregion
     }
 }

@@ -4,14 +4,13 @@
 		<id name="Id" column="Id" type="Int32" unsaved-value="0" >
       		<generator class="identity" />
         </id>    
-    	<property name="SummaryCode" column="SummaryCode" type="String" length="50" />	
+		<property name="SummaryCode" column="SummaryCode" type="String" length="50" />	
 		<property name="TaskCode" column="TaskCode" type="String" length="50" />	
 		<property name="Subject" column="Subject" type="String" length="200" />	
 		<property name="Conment" column="Conment" type="String" />	
 		<property name="ApproveDesc" column="ApproveDesc" type="String" length="400" />	
 		<property name="Type" column="Type" type="String" length="20" />	
 		<property name="ApproveUser" column="ApproveUser" type="String" length="50" />	
-		<property name="ApproveUserNm" column="ApproveUserNm" type="String" length="50" />
-    	<property name="Seq" column="Seq" type="Int32" />
-  </class>
+		<property name="ApproveUserNm" column="ApproveUserNm" type="String" length="50" />	
+  	</class>
 </hibernate-mapping>

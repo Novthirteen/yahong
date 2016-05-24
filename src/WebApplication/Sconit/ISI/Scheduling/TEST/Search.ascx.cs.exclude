@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using com.Sconit.Web;
+using NHibernate.Expression;
+using System.Collections.Generic;
+using com.Sconit.Entity.MasterData;
+
+public partial class ISI_Scheduling_Search : SearchModuleBase
+{
+    public event EventHandler SearchEvent;
+    public event EventHandler NewEvent;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+
+    protected void btnSearch_Click(object sender, EventArgs e)
+    {
+        DoSearch();
+    }
+
+    protected void btnNew_Click(object sender, EventArgs e)
+    {
+        NewEvent(sender, e);
+    }
+
+    protected override void DoSearch()
+    {
+        string SchedulingId = this.tbId.Text.Trim() != string.Empty ? this.tbId.Text.Trim() : string.Empty;
+        string SchedulingDesc = this.tbDesc.Text.Trim() != string.Empty ? this.tbDesc.Text.Trim() : string.Empty;
+
+        if (SearchEvent != null)
+        {
+            #region DetachedCriteria
+            DetachedCriteria selectCriteria = DetachedCriteria.For(typeof(ShiftPlanSchedule));
+            DetachedCriteria selectCountCriteria = DetachedCriteria.For(typeof(ShiftPlanSchedule))
+                .SetProjection(Projections.Count("Id"));
+
+            if (SchedulingId != string.Empty)
+            {
+                selectCriteria.Add(Expression.Like("Id", SchedulingId, MatchMode.Anywhere));
+                selectCountCriteria.Add(Expression.Like("Id", SchedulingId, MatchMode.Anywhere));
+            }
+            if (SchedulingDesc != string.Empty)
+            {
+                selectCriteria.Add(Expression.Like("SchedulingName", SchedulingDesc, MatchMode.Anywhere));
+                selectCountCriteria.Add(Expression.Like("SchedulingName", SchedulingDesc, MatchMode.Anywhere));
+            }
+            #endregion
+
+            SearchEvent((new object[] { selectCriteria, selectCountCriteria }), null);
+        }
+    }
+
+    protected override void InitPageParameter(IDictionary<string, string> actionParameter)
+    {
+        if (actionParameter.ContainsKey("Id"))
+        {
+            this.tbId.Text = actionParameter["Id"];
+        }
+        if (actionParameter.ContainsKey("SchedulingName"))
+        {
+            this.tbDesc.Text = actionParameter["SchedulingName"];
+        }
+    }
+}

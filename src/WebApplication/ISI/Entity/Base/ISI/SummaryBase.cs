@@ -138,18 +138,6 @@ namespace com.Sconit.ISI.Entity
                 _cancelDate = value;
             }
         }
-        protected string _department;
-        public string Department
-        {
-            get
-            {
-                return _department;
-            }
-            set
-            {
-                _department = value;
-            }
-        }
         private string _userName;
         public string UserName
         {
@@ -186,7 +174,6 @@ namespace com.Sconit.ISI.Entity
                 _status = value;
             }
         }
-        public string Position { get; set; }
         public string JobNo { get; set; }
         public string Company { get; set; }
         public string Desc { get; set; }

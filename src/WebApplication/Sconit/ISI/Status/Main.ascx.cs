@@ -34,17 +34,6 @@ public partial class ISI_Status_Main : MainModuleBase
             ViewState["TaskCode"] = value;
         }
     }
-    public bool IsToDoList
-    {
-        get
-        {
-            return ViewState["IsToDoList"] != null ? (bool)ViewState["IsToDoList"] : false;
-        }
-        set
-        {
-            ViewState["IsToDoList"] = value;
-        }
-    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -66,10 +55,7 @@ public partial class ISI_Status_Main : MainModuleBase
             {
                 this.ModuleType = this.ModuleParameter["ModuleType"];
             }
-            if (this.ModuleParameter.ContainsKey("IsToDoList"))
-            {
-                this.IsToDoList = bool.Parse(this.ModuleParameter["IsToDoList"]);
-            }
+
             if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT)
             {
                 this.ucNew.ModuleType = ISIConstants.ISI_TASK_TYPE_PROJECT;
@@ -82,15 +68,10 @@ public partial class ISI_Status_Main : MainModuleBase
             {
                 this.ucNew.ModuleType = ISIConstants.ISI_TASK_TYPE_PLAN;
             }
-            this.ucList.IsToDoList = this.IsToDoList;
-            this.ucSearch.IsToDoList = this.IsToDoList;
+
             this.ucList.ModuleType = this.ModuleType;
             this.ucSearch.ModuleType = this.ModuleType;
             this.ucSearch.TaskCode = this.TaskCode;
-            if (this.IsToDoList)
-            {
-                this.ucSearch.Visible = false;
-            }
         }
     }
 
@@ -106,7 +87,7 @@ public partial class ISI_Status_Main : MainModuleBase
     void NewBack_Render(object sender, EventArgs e)
     {
         this.ucNew.Visible = false;
-        this.ucSearch.Visible = !IsToDoList; ;
+        this.ucSearch.Visible = true;
         this.ucList.Visible = true;
         this.ucList.UpdateView();
     }
@@ -116,9 +97,9 @@ public partial class ISI_Status_Main : MainModuleBase
     {
         this.ucEdit.Visible = false;
         this.ucNew.Visible = false;
-        this.ucSearch.Visible = !IsToDoList;
+        this.ucSearch.Visible = true;
         this.ucList.Visible = true;
-        this.ucList.UpdateView(sender.ToString());
+        this.ucList.UpdateView();
     }
 
 

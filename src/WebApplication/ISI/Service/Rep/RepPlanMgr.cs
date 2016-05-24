@@ -28,7 +28,6 @@ namespace com.Sconit.ISI.Service.Report.Impl
         public ICodeMasterMgrE codeMasterMgrE { get; set; }
         public ITaskMstrMgrE taskMstrMgrE { get; set; }
         public ITaskStatusMgrE taskStatusMgrE { get; set; }
-        public ICommentDetailMgrE commentDetailMgrE { get; set; }
 
         public RepPlanMgr()
         {
@@ -135,10 +134,6 @@ namespace com.Sconit.ISI.Service.Report.Impl
                         cell1.Append(ISIConstants.TEXT_SEPRATOR);
                         cell1.Append(taskView.TaskAddress);
                     }
-                    cell1.Append(ISIConstants.TEXT_SEPRATOR);
-                    cell1.Append(taskView.CreateDate.ToString("yyyy-MM-dd HH:mm"));
-                    cell1.Append(ISIConstants.TEXT_SEPRATOR);
-                    cell1.Append(taskView.CreateUserNm);
                     if (string.IsNullOrEmpty(taskSubTypeCode))
                     {
                         cell1.Append(ISIConstants.TEXT_SEPRATOR);
@@ -229,36 +224,27 @@ namespace com.Sconit.ISI.Service.Report.Impl
                     this.SetRowCell(pageIndex, rowIndex, 7, taskView.Flag);
 
                     //"当前状态工作描述Current status working description"	
-
-                    var taskStatus = this.taskStatusMgrE.GetTaskStatus(taskView.TaskCode, 0, 5);
-                    StringBuilder statusStr = new StringBuilder();
-                    if (taskStatus != null && taskStatus.Count() > 0)
+                    if (!string.IsNullOrEmpty(taskView.StatusDesc) && taskView.StatusDate.HasValue)
                     {
-                        foreach (var status in taskStatus)
+                        var taskStatus = this.taskStatusMgrE.GetTaskStatus(taskView.TaskCode, 0, 5);
+                        StringBuilder statusStr = new StringBuilder();
+                        if (taskStatus != null && taskStatus.Count() > 0)
                         {
-                            if (statusStr.Length != 0)
+                            foreach (var status in taskStatus)
                             {
-                                statusStr.Append("\n");
+                                if (statusStr.Length != 0)
+                                {
+                                    statusStr.Append("\n");
+                                }
+                                statusStr.Append(status.LastModifyUserNm + "(" + status.LastModifyDate.ToString("yyyy-MM-dd HH:mm") + "):" + status.Desc);
                             }
-                            statusStr.Append(status.LastModifyUserNm + "(" + status.LastModifyDate.ToString("yyyy-MM-dd HH:mm") + "):" + status.Desc);
+                            this.SetRowCell(pageIndex, rowIndex, 8, statusStr.ToString());
                         }
-                        this.SetRowCell(pageIndex, rowIndex, 8, statusStr.ToString());
                     }
-
                     //"最新评论Comment"
-                    var commentDetList = this.commentDetailMgrE.GetComment(taskView.TaskCode, 0, 5);
-                    StringBuilder commentDetStr = new StringBuilder();
-                    if (commentDetList != null && commentDetList.Count() > 0)
+                    if (!string.IsNullOrEmpty(taskView.Comment) && taskView.CommentCreateDate.HasValue)
                     {
-                        foreach (var commentDet in commentDetList)
-                        {
-                            if (commentDetStr.Length != 0)
-                            {
-                                commentDetStr.Append("\n");
-                            }
-                            commentDetStr.Append(commentDet.CreateUser + "(" + commentDet.CreateDate.ToString("yyyy-MM-dd HH:mm") + "):" + commentDet.Value);
-                        }
-                        this.SetRowCell(pageIndex, rowIndex, 9, statusStr.ToString());
+                        this.SetRowCell(pageIndex, rowIndex, 9, taskView.CommentCreateUserNm + "(" + taskView.CommentCreateDate.Value.ToString("yyyy-MM-dd HH:mm") + "):" + taskView.Comment);
                     }
 
                     rowIndex++;
@@ -301,7 +287,7 @@ namespace com.Sconit.ISI.Service.Report.Impl
                 TaskSubType taskSubType = taskSubTypeMgrE.LoadTaskSubType(taskSubTypeCode);
                 if (type == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE || type == ISIConstants.ISI_TASK_TYPE_PROJECT || type == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
                 {
-                    this.SetRowCell(1, 0, "项目Project:");
+                     this.SetRowCell(1, 0, "项目Project:");
                 }
                 else
                 {

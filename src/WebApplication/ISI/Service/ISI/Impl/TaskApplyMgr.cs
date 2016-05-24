@@ -194,7 +194,6 @@ namespace com.Sconit.ISI.Service.Impl
                         }
                     }
                 }
-                desc.Append(seprator);
             }
         }
         #endregion Customized Methods

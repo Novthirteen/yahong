@@ -21,17 +21,6 @@ using System.Text;
 
 public partial class ISI_TaskSubType_List : ListModuleBase
 {
-    public string Action
-    {
-        get
-        {
-            return (string)ViewState["Action"];
-        }
-        set
-        {
-            ViewState["Action"] = value;
-        }
-    }
     public string ModuleType
     {
         get
@@ -46,6 +35,7 @@ public partial class ISI_TaskSubType_List : ListModuleBase
     public EventHandler EditEvent;
     protected void Page_Load(object sender, EventArgs e)
     {
+
     }
     public override void UpdateView()
     {
@@ -112,29 +102,13 @@ public partial class ISI_TaskSubType_List : ListModuleBase
                 IList<ProcessDefinition> pds = this.TheProcessDefinitionMgr.GetProcessDefinition(taskSubType.Code);
                 if (taskSubType.IsAssignUser)
                 {
-                    detail.Append("${ISI.TaskSubType.IsAssignUser}" + (taskSubType.IsRemind ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#40;${ISI.TaskSubType.ProcessDefinition.IsRemind}&#41;" : string.Empty) + "<br>");
+                    detail.Append("${ISI.TaskSubType.IsAssignUser}<br>");
                 }
                 if (pds != null && pds.Count > 0)
                 {
                     foreach (ProcessDefinition pd in pds)
                     {
-                        detail.Append(pd.Desc1 + (!string.IsNullOrEmpty(pd.UserNm) ? "：&nbsp;" + pd.UserNm : string.Empty) + (pd.IsRemind ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#40;${ISI.TaskSubType.ProcessDefinition.IsRemind}&#41;" : string.Empty) + "<br>");
-                    }
-                }
-                if (taskSubType.IsAutoAssign || !string.IsNullOrEmpty(taskSubType.StartUser))
-                {
-                    detail.Append("${ISI.TaskSubType.StartUser}：");
-                    if (taskSubType.IsAutoAssign)
-                    {
-                        detail.Append("${ISI.TaskApply.SubmitUser}");
-                    }
-                    if (!string.IsNullOrEmpty(taskSubType.StartUser))
-                    {
-                        if (taskSubType.IsAutoAssign)
-                        {
-                            detail.Append(", ");
-                        }
-                        detail.Append(this.TheUserSubscriptionMgr.GetUserName(taskSubType.StartUser));
+                        detail.Append(pd.Desc1 + (!string.IsNullOrEmpty(pd.UserNm) ? ":&nbsp;" + pd.UserNm : string.Empty) + "<br>");
                     }
                 }
                 e.Row.Cells[e.Row.Cells.Count - 2].Text = detail.ToString();
@@ -149,25 +123,14 @@ public partial class ISI_TaskSubType_List : ListModuleBase
         IList<ProcessDefinition> pds = this.TheProcessDefinitionMgr.GetProcessDefinition(taskSubType.Code);
         if (taskSubType.IsAssignUser)
         {
-            detail.Append("<tr><td></td><td>${ISI.TaskSubType.IsAssignUser}</td><td></td></tr>");
+            detail.Append("<tr><td></td><td>${ISI.TaskSubType.IsAssignUser}</td></tr>");
         }
         foreach (ProcessDefinition pd in pds)
         {
-            detail.Append("<tr><td>" + pd.Desc1 + "</td><td>" + pd.UserNm + "</td><td>" + (pd.IsRemind ? "${ISI.TaskSubType.ProcessDefinition.IsRemind}" : string.Empty) + "</td></tr>");
+            detail.Append("<tr><td>" + pd.Desc1 + "</td><td>" + pd.UserNm + "</td></tr>");
         }
         detail.Append("</table>]");
         return detail.ToString();
     }
 
-    protected void GV_List_DataBound(object sender, EventArgs e)
-    {
-        /*
-        bool b = this.Action != "View" && this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_WF_TASK_VALUE_WFADMIN);
-        for (int i = 4; i <= 10; i++)
-        {
-            GV_List.Columns[i].Visible = b;
-        }
-         */
-        GV_List.Columns[GV_List.Columns.Count - 1].Visible = ModuleType != ISIConstants.ISI_TASK_TYPE_WORKFLOW && this.Action != "View" || ModuleType == ISIConstants.ISI_TASK_TYPE_WORKFLOW && this.Action != "View" && this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_WF_TASK_VALUE_WFADMIN);
-    }
 }

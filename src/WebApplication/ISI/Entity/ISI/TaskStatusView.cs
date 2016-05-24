@@ -9,14 +9,8 @@ namespace com.Sconit.ISI.Entity
     public class TaskStatusView : TaskStatusViewBase
     {
         #region Non O/R Mapping Properties
-        public string SupplierDesc
-        {
-            get
-            {
-                return this.SupplierCode + "[" + this.SupplierName + "]";
-            }
-        }
 
+        
         public int StartedUserCount
         {
             get
@@ -32,31 +26,6 @@ namespace com.Sconit.ISI.Entity
             }
         }
 
-        public string Account1Name
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(this.Account1)) return string.Empty;
-                return this.Account1 + "[" + this.Account1Desc + "]";
-            }
-        }
-        public string Account2Name
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(this.Account2)) return string.Empty;
-                return this.Account2 + "[" + this.Account2Desc + "]";
-            }
-        }
-
-        public string Payee
-        {
-            get
-            {
-                if (String.IsNullOrEmpty(this.PayeeCode)) return string.Empty;
-                return this.PayeeCode + "[" + this.PayeeName + "]";
-            }
-        }
         public string GetAssignStartUserNm(int topNo, string userCode)
         {
             if (!string.IsNullOrEmpty(this.AssignStartUserNm))
@@ -108,21 +77,6 @@ namespace com.Sconit.ISI.Entity
             }
         }
 
-        public string CostCenter
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(CostCenterCode))
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return this.CostCenterCode + "[" + this.CostCenterDesc + "]";
-                }
-            }
-        }
-        
         public Int32 CommentCount1
         {
             get

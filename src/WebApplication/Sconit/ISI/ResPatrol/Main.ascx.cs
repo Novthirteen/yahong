@@ -21,19 +21,21 @@ public partial class Modules_ISI_ResPatrol_Main : MainModuleBase
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (this.CurrentUser.IsSupper)
-        {
-            this.btnRun.Visible = true;
-        }
-        else
-        {
-            this.btnRun.Visible = false;
-        }
+        //if (this.CurrentUser.IsSupper)
+        //{
+        //    this.btnRun.Visible = true;
+        //}
+        //else
+        //{
+        //    this.btnRun.Visible = false;
+        //}
+        this.btnRun.Visible = false;
     }
 
     protected void btnRun_Click(object sender, EventArgs e)
     {
-        DateTime dt = DateTimeHelper.GetWeekStart(DateTime.Now);
+        DateTime dt = DateTimeHelper.GetWeekStart(DateTime.Now).AddHours(38);
+        dt = DateTime.Parse("2014-07-01 12:00");
         TheResMatrixMgr.CreateTask(TheUserMgr.LoadUser("monitor"), dt);
     }
 

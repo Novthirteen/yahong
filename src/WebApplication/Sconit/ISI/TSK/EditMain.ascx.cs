@@ -59,13 +59,11 @@ public partial class ISI_TSK_EditMain : MainModuleBase
             this.ucAttachment.AttachmentType = typeof(TaskMstr).FullName;
             this.ucRefTask.ModuleType = this.ModuleType;
             this.ucProcessInstance.ModuleType = this.ModuleType;
-            this.ucResMatrixDet.ModuleType = this.ModuleType;
         }
         this.ucTabNavigator.Visible = true;
         this.ucEdit.Visible = true;
         //this.ucEdit.InitPageParameter(taskCode);
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucDetail.Visible = false;
         this.ucWiki.Visible = false;
         this.ucProcess.Visible = false;
@@ -94,7 +92,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.UpdateAttacmentTitleEvent += new System.EventHandler(this.UpdateAttacmentTitle_Render);
         this.ucStatus.BackEvent += new System.EventHandler(this.Back_Render);
         this.ucProcessInstance.BackEvent += new System.EventHandler(this.Back_Render);
-        this.ucResMatrixDet.BackEvent += new System.EventHandler(this.Back_Render);
 
         this.ucTabNavigator.lblMstrClickEvent += new System.EventHandler(this.TabMstrClick_Render);
         this.ucTabNavigator.lblDetailClickEvent += new System.EventHandler(this.TabDetailClick_Render);
@@ -102,7 +99,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucTabNavigator.lblWikiClickEvent += new System.EventHandler(this.TabWikiClick_Render);
         this.ucTabNavigator.lblStatusClickEvent += new System.EventHandler(this.TabStatusClick_Render);
         this.ucTabNavigator.lblProcessInstanceClickEvent += new System.EventHandler(this.TabProcessInstanceClick_Render);
-        this.ucTabNavigator.lblResMatrixDetClickEvent += new System.EventHandler(this.TabResMatrixClick_Render);
 
         this.ucTabNavigator.lblProcessClickEvent += new System.EventHandler(this.TabProcessClick_Render);
         this.ucTabNavigator.lblAttachmentClickEvent += new System.EventHandler(this.TabAttachmentClick_Render);
@@ -115,7 +111,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
             this.ucWiki.ModuleType = this.ModuleType;
             this.ucStatus.ModuleType = this.ModuleType;
             this.ucProcessInstance.ModuleType = this.ModuleType;
-            this.ucResMatrixDet.ModuleType = this.ModuleType;
             this.ucProcess.ModuleType = this.ModuleType;
             this.ucEdit.ModuleType = this.ModuleType;
             this.ucAttachment.ModuleType = this.ModuleType;
@@ -127,7 +122,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucProcess.TaskCode = this.TaskCode;
         this.ucStatus.TaskCode = this.TaskCode;
         this.ucProcessInstance.TaskCode = this.TaskCode;
-        this.ucResMatrixDet.TaskCode = this.TaskCode;
         this.ucWiki.TaskCode = this.TaskCode;
         this.ucAttachment.TaskCode = this.TaskCode;
         this.ucTabNavigator.TaskCode = this.TaskCode;
@@ -170,7 +164,7 @@ public partial class ISI_TSK_EditMain : MainModuleBase
     {
         if (BackEvent != null)
         {
-            BackEvent(this.TaskCode, e);
+            BackEvent(this, e);
         }
     }
 
@@ -185,7 +179,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = false;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
     }
 
     protected void TabRefTaskClick_Render(object sender, EventArgs e)
@@ -201,7 +194,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = true;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucRefTask.InitPageParameter(TaskCode);
     }
 
@@ -219,7 +211,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = false;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucDetail.InitPageParameter(TaskCode);
     }
 
@@ -233,7 +224,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = false;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucWiki.InitPageParameter(TaskCode);
     }
 
@@ -247,7 +237,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = false;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucProcess.InitPageParameter(TaskCode);
 
     }
@@ -261,7 +250,6 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = true;
         this.ucRefTask.Visible = false;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucAttachment.InitPageParameter(TaskCode, typeof(TaskMstr).FullName);
     }
 
@@ -275,8 +263,7 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucProcessInstance.Visible = true;
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = false;
-        this.ucResMatrixDet.Visible = false;
-        this.ucProcessInstance.InitPageParameter(TaskCode, this.ModuleType);
+        this.ucProcessInstance.InitPageParameter(TaskCode);
     }
 
     protected void TabStatusClick_Render(object sender, EventArgs e)
@@ -289,22 +276,7 @@ public partial class ISI_TSK_EditMain : MainModuleBase
         this.ucAttachment.Visible = false;
         this.ucRefTask.Visible = false;
         this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = false;
         this.ucStatus.InitPageParameter(TaskCode, this.ModuleType);
-    }
-
-    protected void TabResMatrixClick_Render(object sender, EventArgs e)
-    {
-        this.ucEdit.Visible = false;
-        this.ucDetail.Visible = false;
-        this.ucWiki.Visible = false;
-        this.ucProcess.Visible = false;
-        this.ucStatus.Visible = false;
-        this.ucProcessInstance.Visible = false;
-        this.ucResMatrixDet.Visible = true;
-        this.ucAttachment.Visible = false;
-        this.ucRefTask.Visible = false;
-        this.ucResMatrixDet.InitPageParameter(TaskCode);
     }
 
 }

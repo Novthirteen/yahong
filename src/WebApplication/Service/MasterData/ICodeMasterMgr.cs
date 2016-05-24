@@ -10,6 +10,10 @@ namespace com.Sconit.Service.MasterData
     {
         #region Customized Methods
 
+        IList<CodeMaster> GetCachedCodeMasterAsc(string code);
+
+        IList<CodeMaster> GetCachedCodeMasterDesc(string code);
+
         IList<CodeMaster> GetCachedCodeMaster(string code);
 
         CodeMaster GetCachedCodeMaster(string code, string value);

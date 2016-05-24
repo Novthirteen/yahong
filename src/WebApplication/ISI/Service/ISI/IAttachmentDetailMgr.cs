@@ -13,7 +13,7 @@ namespace com.Sconit.ISI.Service
         #region Customized Methods
 
         int GetAttachmentCount(string key);
-        int GetAttachmentCount(string key, string type);
+
         int GetTaskAttachmentCount(string key);
         int GetMaintainPlanAttachmentCount(string key);
         int GetProjectAttachmentCount(string key);

@@ -48,8 +48,8 @@ namespace com.Sconit.ISI.Entity
                 _desc = value;
             }
         }
-        private string _taskSubType;
-        public string TaskSubType
+        private TaskSubType _taskSubType;
+        public TaskSubType TaskSubType
         {
             get
             {

@@ -61,19 +61,16 @@
     <cc1:GridView ID="GV_List_Attachment" runat="server" AutoGenerateColumns="False"
         DataKeyNames="Id" SkinID="GV" AllowMultiColumnSorting="false" AutoLoadStyle="false"
         SeqNo="0" SeqText="No." ShowSeqNo="true" AllowSorting="True" AllowPaging="True"
-        PagerID="gp" Width="100%" CellMaxLength="10" OnRowDataBound="GV_List_RowDataBound"
-        DefaultSortDirection="Descending" DefaultSortExpression="CreateDate">
+        PagerID="gp" Width="100%" CellMaxLength="10" OnRowDataBound="GV_List_RowDataBound">
         <Columns>
             <asp:BoundField DataField="TaskCode" SortExpression="TaskCode" HeaderStyle-Wrap="false"
                 HeaderText="${ISI.Attachment.TaskCode}" />
-            <asp:BoundField DataField="ModuleType" SortExpression="ModuleType" HeaderStyle-Wrap="false"
-                HeaderText="${ISI.Attachment.ModuleType}" />
             <asp:BoundField DataField="CreateUserNm" SortExpression="CreateUser" HeaderStyle-Wrap="false"
                 HeaderText="${ISI.TSK.Attachment.CreateUser}" />
             <asp:BoundField DataField="CreateDate" SortExpression="CreateDate" HeaderStyle-Wrap="false"
                 HeaderText="${ISI.TSK.Attachment.CreateDate}" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
             <asp:BoundField DataField="Size" HeaderText="${ISI.TSK.Attachment.Size}"
-                SortExpression="Size" DataFormatString="{0:0.##}" />
+                    SortExpression="Size" DataFormatString="{0:0.##}" />
             <asp:TemplateField HeaderText="${Common.GridView.Action}">
                 <ItemTemplate>
                     <asp:LinkButton ID="lbtnDownLoad" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "Id") %>'
@@ -82,6 +79,6 @@
             </asp:TemplateField>
         </Columns>
     </cc1:GridView>
-    <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List_Attachment" PageSize="50">
+    <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List_Attachment" PageSize="15">
     </cc1:GridPager>
 </fieldset>

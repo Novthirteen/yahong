@@ -78,7 +78,7 @@ public partial class ISI_TSK_List : ListModuleBase
             }
 
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE
-                    && this.TheTaskMgr.HasPermission(task, this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN), false, false, false, this.CurrentUser.Code))
+                    && this.TheTaskMgr.HasPermission(task, this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN), false, false, this.CurrentUser.Code))
             {
                 LinkButton lbtnDelete = (LinkButton)e.Row.FindControl("lbtnDelete");
                 if (lbtnDelete != null)

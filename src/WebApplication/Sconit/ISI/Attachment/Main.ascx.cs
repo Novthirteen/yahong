@@ -42,8 +42,8 @@ public partial class ISI_Attachment_Main : com.Sconit.Web.MainModuleBase
 
         if (!string.IsNullOrEmpty(taskCode))
         {
-            selectCriteria.Add(Expression.Like("TaskCode", taskCode, MatchMode.Anywhere));
-            selectCountCriteria.Add(Expression.Like("TaskCode", taskCode, MatchMode.Anywhere));
+            selectCriteria.Add(Expression.Eq("TaskCode", taskCode));
+            selectCountCriteria.Add(Expression.Eq("TaskCode", taskCode));
         }
         if (!string.IsNullOrEmpty(createUser))
         {
@@ -68,15 +68,13 @@ public partial class ISI_Attachment_Main : com.Sconit.Web.MainModuleBase
 
         if (!this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN)
                && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN)
-               && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_VIEW)
-               && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ASSIGN)
-               && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_CLOSE))
+               && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_VIEW))
         {
             selectCriteria.Add(Subqueries.PropertyIn("TaskCode", ISIUtil.GetTaskPermissionCriteria(this.CurrentUser.Code, this.tbTaskCode.Text.Trim())));
             selectCountCriteria.Add(Subqueries.PropertyIn("TaskCode", ISIUtil.GetTaskPermissionCriteria(this.CurrentUser.Code, this.tbTaskCode.Text.Trim())));
         }
 
-        //selectCriteria.AddOrder(Order.Desc("CreateDate"));
+        selectCriteria.AddOrder(Order.Desc("CreateDate"));
         new SessionHelper(this.Page).AddUserSelectCriteria(this.TemplateControl.AppRelativeVirtualPath, selectCriteria, selectCountCriteria);
         this.GV_List_Attachment.Execute();
         if ((Button)sender == this.btnExport)
@@ -139,19 +137,14 @@ public partial class ISI_Attachment_Main : com.Sconit.Web.MainModuleBase
 
     protected void GV_List_RowDataBound(object sender, GridViewRowEventArgs e)
     {
+        AttachmentDetail attachment = (AttachmentDetail)e.Row.DataItem;
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            AttachmentDetail attachment = (AttachmentDetail)e.Row.DataItem;
             LinkButton lbtnDownLoad = (LinkButton)e.Row.FindControl("lbtnDownLoad");
             if (lbtnDownLoad != null)
             {
                 lbtnDownLoad.Text = attachment.FileName;
             }
-            if (!string.IsNullOrEmpty(attachment.ModuleType) && attachment.ModuleType.Contains('.'))
-            {
-                e.Row.Cells[2].Text = attachment.ModuleType.Substring(attachment.ModuleType.LastIndexOf('.') + 1);
-            }
-            e.Row.Cells[6].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
         }
     }
 }

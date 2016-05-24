@@ -24,13 +24,13 @@ namespace com.Sconit.ISI.Service.Impl
         [Transaction(TransactionMode.Unspecified)]
         public IList<FailureMode> GetAllFailureMode(string taskSubType)
         {
-            if (string.IsNullOrEmpty(taskSubType))
-            {
-                return null;
-            }
             DetachedCriteria criteria = DetachedCriteria.For(typeof(FailureMode));
             criteria.Add(Expression.Eq("IsActive", true));
-            criteria.Add(Expression.Eq("TaskSubType", taskSubType));
+            if (!string.IsNullOrEmpty(taskSubType))
+            {
+                criteria.Add(Expression.Eq("TaskSubType.Code", taskSubType));
+            }
+
             IList<FailureMode> cachedAllFailureMode = this.criteriaMgrE.FindAll<FailureMode>(criteria);
 
             return cachedAllFailureMode;

@@ -4,7 +4,8 @@
 <%@ Register Assembly="Whidsoft.WebControls.OrgChart" Namespace="Whidsoft.WebControls"
     TagPrefix="oc" %>
 <fieldset>
-    <table class="mtable">        
+    <table class="mtable">
+        
         <tr>
             <td class="td01">
                 <asp:Literal ID="lblStartDate" runat="server" Text="${Common.Business.StartDate}:" />

@@ -27,10 +27,6 @@ namespace com.Sconit.ISI.Service.Impl
         public IUserMgrE userMgrE { get; set; }
         public IEntityPreferenceMgrE entityPreferenceMgrE { get; set; }
 
-        public bool IsTestSystem()
-        {
-            return !string.IsNullOrEmpty(TestSystem) && TestSystem.ToUpper() != "FALSE";
-        }
 
         [Transaction(TransactionMode.Requires)]
         public void Send(string subject, string body, string mailTo, string replyTo, MailPriority priority)
@@ -110,6 +106,8 @@ namespace com.Sconit.ISI.Service.Impl
 
         public string Send(string subject, string body, string MailFrom, string mailTo, string SmtpServer, string MailFromPasswd, string replyTo, MailPriority priority, IList<string> files)
         {
+
+
             return Send(subject, body, MailFrom, mailTo, SmtpServer, MailFromPasswd, replyTo, MailPriority.Normal, files == null ? null : files.Select(f => new string[] { f }).ToList());
         }
 
@@ -117,30 +115,26 @@ namespace com.Sconit.ISI.Service.Impl
         {
             MailMessage message = null;
 
-            if (this.IsTestSystem())
+            if (!string.IsNullOrEmpty(TestSystem) && TestSystem.Contains('@'))
             {
                 mailTo = TestSystem;
             }
+
             try
             {
-                string address = MailFrom;
-
                 message = new MailMessage();
                 SmtpClient client = new SmtpClient(SmtpServer);
                 var MailTos = mailTo.Split(';');
                 foreach (string m in MailTos)
                 {
-                    if (!string.IsNullOrEmpty(m))
+                    var mailTos = m.Split(';');
+                    foreach (string mailto in mailTos)
                     {
-                        var mailTos = m.Split(';');
-                        foreach (string mailto in mailTos)
+                        if (ISIUtil.IsValidEmail(mailto))
                         {
-                            if (!string.IsNullOrEmpty(mailto) && mailto != address && mailto != "user@yfgm.com.cn" && mailto != "portal@yfgm.com.cn" && ISIUtil.IsValidEmail(mailto))
+                            if (!message.Bcc.Contains(new MailAddress(mailto)))
                             {
-                                if (!message.Bcc.Contains(new MailAddress(mailto)))
-                                {
-                                    message.Bcc.Add(new MailAddress(mailto));
-                                }
+                                message.Bcc.Add(new MailAddress(mailto));
                             }
                         }
                     }
@@ -149,6 +143,8 @@ namespace com.Sconit.ISI.Service.Impl
                 message.Priority = priority;//优先级
                 message.Subject = subject;
                 message.Body = body;
+
+                string address = MailFrom;
 
                 string displayName = string.Empty;
                 /*
@@ -174,7 +170,7 @@ namespace com.Sconit.ISI.Service.Impl
                 message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
 
                 client.UseDefaultCredentials = false;
-                client.Credentials = new System.Net.NetworkCredential(address, MailFromPasswd);
+                client.Credentials = new System.Net.NetworkCredential(MailFrom, MailFromPasswd);
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
                 // System.Net.Mail.Attachment attachment = new System.Net.Mail.Attachment("D:\\logs\\" + filePath);
@@ -243,7 +239,7 @@ namespace com.Sconit.ISI.Service.Impl
                                                     ISIConstants.ENTITY_PREFERENCE_WEBADDRESS});
             string companyName = entityPreferenceList.Where(e => e.Code == BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).SingleOrDefault().Value;
             string webAddress = entityPreferenceList.Where(e => e.Code == ISIConstants.ENTITY_PREFERENCE_WEBADDRESS).SingleOrDefault().Value;
-
+            
 
             if (string.IsNullOrEmpty(mailList)) return;
 
@@ -251,7 +247,7 @@ namespace com.Sconit.ISI.Service.Impl
             content.Append("<p style='font-size:15px;'>");
             string separator = ISIConstants.EMAIL_SEPRATOR;
 
-            ISIUtil.AppendTestText(this.IsTestSystem(), content, separator);
+            ISIUtil.AppendTestText(companyName, content, separator);
 
             content.Append(separator);
             content.Append("您好");

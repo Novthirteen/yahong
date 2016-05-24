@@ -152,7 +152,7 @@
                                     'onSelectError': function (file, errorCode, errorMsg) {
                                         switch (errorCode) {
                                             case -100:
-                                                alter("${ISI.TSK.UploadTheFileNumberIsBeyondSystemOfFile}" + $('#uploadify').uploadify('settings', 'queueSizeLimit'));
+                                                alter("${UploadTheFileNumberIsBeyondSystemOfFile}" + $('#uploadify').uploadify('settings', 'queueSizeLimit'));
                                                 break;
                                             case -110:
                                                 alter(file.name + "${ISI.TSK.Error.FileSize}" + $('#uploadify').uploadify('settings', 'fileSizeLimit'));
@@ -412,6 +412,7 @@
 
     function approve(contronl,status)
     {
+        
         var taskCode = $("#hdTaskCode").val();
         var subject = $("#hdSubject").val();
         var currentCount = $("#hdCurrentCount").val();
@@ -449,7 +450,6 @@
                                 }
                                 $(control + "spanCancel").hide();
                                 $(control + "lblLevel").html("<font color='blue'>"+result.Level+"</font>");
-                                $(control + "lblFlag").parent().css("background-color", result.Color);
                                 $(control + "lblFlag").html(result.Flag);
                                 if (result.TaskStatus == 'Complete') {
                                     $(control + "lblStatus").html("${ISI.Status.Complete}");
@@ -880,8 +880,8 @@
                 $("#tbStatusDesc").val('');
                 $("#cbIsCurrentStatus").attr("checked", true);
                 $("#cbIsRemindCreateUser").attr("checked", true);
-                $("#cbIsRemindAssignUser").attr("checked", true);
-                $("#cbIsRemindStartUser").attr("checked", true);
+                $("#cbIsRemindAssignUser").attr("checked", false);
+                $("#cbIsRemindStartUser").attr("checked", false);
                 $("#cbIsRemindCommentUser").attr("checked", true);
         
                 $("#ddlFlag").find("option[value='DI3']").attr("selected", true);
@@ -893,7 +893,7 @@
                 $("#cbCompleteIsCurrentStatus").attr("checked", true);
                 $("#cbCompleteIsRemindCreateUser").attr("checked", true);
                 $("#cbCompleteIsRemindAssignUser").attr("checked", false);
-                $("#cbCompleteIsRemindStartUser").attr("checked", true);
+                $("#cbCompleteIsRemindStartUser").attr("checked", false);
                 $("#cbCompleteIsRemindCommentUser").attr("checked", true);
                 $("#ddlCompleteColor").find("option[value='green']").attr("selected", true);
 
@@ -962,15 +962,7 @@
         $("#hdCurrentCount").val(currentStatusCount);
         $("#hdCount").val(statusCount);
         $("#ui-id-4").html(taskCode + '&nbsp;' + subject);
-        if(buttonIndex == 1)
-        {
-            $(".ui-dialog-buttonset button").eq(7).hide();
-            $(".ui-dialog-buttonset button").eq(9).hide();
-        }
-        else
-        {
-            $(".ui-dialog-buttonset button").eq(buttonIndex).hide();
-        }
+        $(".ui-dialog-buttonset button").eq(buttonIndex).hide();
         $("#approveDiv").dialog("open");        
         displayIndex += Number('2');
     }
@@ -1116,7 +1108,7 @@
             'onSelectError': function (file, errorCode, errorMsg) {
                 switch (errorCode) {
                     case -100:
-                        alter("${ISI.TSK.UploadTheFileNumberIsBeyondSystemOfFile}" + $('#uploadify').uploadify('settings', 'queueSizeLimit'));
+                        alter("${UploadTheFileNumberIsBeyondSystemOfFile}" + $('#uploadify').uploadify('settings', 'queueSizeLimit'));
                         break;
                     case -110:
                         alter(file.name + "${ISI.TSK.Error.FileSize}" + $('#uploadify').uploadify('settings', 'fileSizeLimit'));
@@ -1211,11 +1203,9 @@
                 <asp:TemplateField HeaderText="${ISI.Status.Subject}" HeaderStyle-Wrap="false" SortExpression="CreateDate">
                     <ItemTemplate>
                         <div>
-                            <a id="<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>" name="<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>"></a>
                             <asp:LinkButton ID="lbtnEdit" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "TaskCode") %>'
                                 Text='<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>' OnClick="lbtnEdit_Click" />
                             <asp:HiddenField ID="hfIsApply" runat="server" Value='<%# Bind("IsApply") %>' />
-                            <asp:HiddenField ID="hfFormType" runat="server" Value='<%# Bind("FormType") %>' />
                         </div>
                         <div>
                             <asp:Label ID="lblSubject" Width="90" runat="server" Text='' />
@@ -1314,6 +1304,7 @@
                         </div>
                         <div>
                             <asp:Label ID="lblTaskSubTypeCode" runat="server" Text='' />
+                            <asp:Label ID="lblCostCenter" runat="server" TText='<%# Eval("CostCenterCode")%>' />
                         </div>
                         <div><span style="color: #0000E5;"><%#Eval("Phase")%></span></div>
                         <div><%#Eval("Seq")%></div>
@@ -1361,8 +1352,9 @@
                         <asp:Label ID="lblFlag" runat="server" Text='<%# Bind("Flag") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="${ISI.Status.Comment}" HeaderStyle-Wrap="false" SortExpression="CommentDate" HeaderStyle-Width="15%" ItemStyle-Width="15%">
-                    <ItemTemplate>                        
+                <asp:TemplateField HeaderText="${ISI.Status.Comment}" HeaderStyle-Wrap="false" SortExpression="CommentCreateDate" HeaderStyle-Width="15%" ItemStyle-Width="15%">
+                    <ItemTemplate>
+                        <a id="<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>" name="<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>"></a>
                         <asp:Label ID="lblComment" runat="server" Text='' />
                         <div>
                             <table width="100%">
@@ -1404,7 +1396,7 @@
                 </asp:TemplateField>
             </Columns>
         </cc1:GridView>
-        <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="25" AlwaysShow="true">
+        <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="20" AlwaysShow="true">
         </cc1:GridPager>
         <script language="javascript" type="text/javascript">
             $(document).ready(function () {
@@ -1442,14 +1434,12 @@
                 <td>
                     <label for="tbStartDate">${Common.Business.StartTime}:</label>
                     <input type="text" cssclass="inputRequired" id="tbStartDate" name="tbStartDate"
-                        onclick="var tbEndDate=$dp.$('tbEndDate');WdatePicker({dateFmt:'yyyy-MM-dd',onpicked:function(){tbEndDate.click();},maxDate:'#F{$dp.$D(\'tbEndDate\')}' })"
-                        value="" style="width: 120px;" />
+                        onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" value="" style="width: 120px;" />
                 </td>
                 <td>
                     <label for="lblEndDate">${Common.Business.EndTime}:</label>
                     <input type="text" cssclass="inputRequired" id="tbEndDate" name="tbEndDate"
-                        onclick="WdatePicker({doubleCalendar:true,dateFmt:'yyyy-MM-dd',maxDate:'%y-%M-%d',minDate:'#F{$dp.$D(\'tbStartDate\')}'})"
-                        value="" style="width: 120px;" />
+                        onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" value="" style="width: 120px;" />
                 </td>
                 <td>
                     <input type="radio" value="DI2" name="ddlFlag" />DI2
@@ -1467,11 +1457,11 @@
                         <label for="cbIsRemindCreateUser">${ISI.TaskStatus.IsRemindCreateUser}</label>
                     </span>
                     <span>
-                        <input type="checkbox" id="cbIsRemindAssignUser" name="cbIsRemindAssignUser" checked="checked" />
+                        <input type="checkbox" id="cbIsRemindAssignUser" name="cbIsRemindAssignUser" />
                         <label for="cbIsRemindAssignUser">${ISI.TaskStatus.IsRemindAssignUser}</label>
                     </span>
                     <span>
-                        <input type="checkbox" id="cbIsRemindStartUser" name="cbIsRemindStartUser" checked="checked" />
+                        <input type="checkbox" id="cbIsRemindStartUser" name="cbIsRemindStartUser" />
                         <label for="cbIsRemindStartUser">${ISI.TaskStatus.IsRemindStartUser}</label>
                     </span>
                     <span>
@@ -1499,14 +1489,12 @@
                 <td>
                     <label for="tbCompleteStartDate">${Common.Business.StartTime}:</label>
                     <input type="text" cssclass="inputRequired" id="tbCompleteStartDate" name="tbStartDate"
-                        onclick="var tbCompleteEndDate=$dp.$('tbCompleteEndDate');WdatePicker({dateFmt:'yyyy-MM-dd',onpicked:function(){tbCompleteEndDate.click();},maxDate:'#F{$dp.$D(\'tbCompleteEndDate\')}' })"
-                        value="" style="width: 120px;" />
+                        onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" value="" style="width: 120px;" />
                 </td>
                 <td>
                     <label for="tbCompleteEndDate">${Common.Business.EndTime}:</label>
                     <input type="text" cssclass="inputRequired" id="tbCompleteEndDate" name="tbEndDate"
-                        onclick="WdatePicker({doubleCalendar:true,dateFmt:'yyyy-MM-dd',maxDate:'%y-%M-%d',minDate:'#F{$dp.$D(\'tbCompleteStartDate\')}'})"
-                        value="" style="width: 120px;" />
+                        onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" value="" style="width: 120px;" />
                 </td>
                 <td>
                     <input type="radio" value="DI4" checked="checked" name="ddlCompleteFlag" />DI4
@@ -1527,7 +1515,7 @@
                         <label for="cbCompleteIsRemindAssignUser">${ISI.TaskStatus.IsRemindAssignUser}</label>
                     </span>
                     <span>
-                        <input type="checkbox" id="cbCompleteIsRemindStartUser" name="cbIsRemindStartUser" checked="checked" />
+                        <input type="checkbox" id="cbCompleteIsRemindStartUser" name="cbIsRemindStartUser" />
                         <label for="cbCompleteIsRemindStartUser">${ISI.TaskStatus.IsRemindStartUser}</label>
                     </span>
                     <span>
@@ -1548,14 +1536,12 @@
                 <td>
                     <label for="tbPlanStartDate">${ISI.TSK.PlanStartDate}:</label>
                     <input type="text" cssclass="inputRequired" id="tbPlanStartDate" name="tbPlanStartDate"
-                        onclick="var tbPlanCompleteDate=$dp.$('tbPlanCompleteDate');WdatePicker({startDate:'%y-%M-%d 08:00:00',dateFmt:'yyyy-MM-dd HH:mm',onpicked:function(){tbPlanCompleteDate.click();},maxDate:'#F{$dp.$D(\'tbPlanCompleteDate\')}' })"
-                        value="" style="width: 150px;" />
+                        onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" value="" style="width: 150px;" />
                 </td>
                 <td>
                     <label for="tbPlanCompleteDate">${ISI.TSK.PlanCompleteDate}:</label>
                     <input type="text" cssclass="inputRequired" id="tbPlanCompleteDate" name="tbPlanCompleteDate"
-                        onclick="WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',dateFmt:'yyyy-MM-dd HH:mm',minDate:'#F{$dp.$D(\'tbPlanStartDate\')}'})"
-                        value="" style="width: 150px;" />
+                        onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" value="" style="width: 150px;" />
                 </td>
                 <td>
                     <label for="tbBackYards">${ISI.TSK.BackYards}:</label>

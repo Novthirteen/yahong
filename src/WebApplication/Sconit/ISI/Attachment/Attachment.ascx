@@ -63,6 +63,7 @@
         </tr>
     </table>
 </fieldset>
+
 <fieldset>
     <legend>${ISI.TSK.AttachmentList}</legend>
     <asp:GridView ID="GV_List_Attachment" runat="server" OnRowDataBound="GV_List_RowDataBound"

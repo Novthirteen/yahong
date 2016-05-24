@@ -389,10 +389,8 @@ namespace com.Sconit.ISI.Service.Impl
                                 if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE
                                         && ((user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_CLOSE)
                                             && task.TaskSubType.Type != ISIConstants.ISI_TASK_TYPE_PRIVACY) ||
-                                            taskMgrE.HasPermission(task, 
-                                            user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN),
+                                            taskMgrE.HasPermission(task, user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN),
                                             user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ISIADMIN),
-                                            user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ASSIGN),
                                             user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_CLOSE), user.Code)))
                                 {
                                     task.Status = ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CLOSE;

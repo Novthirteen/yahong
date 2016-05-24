@@ -60,6 +60,7 @@ public partial class ISI_Checkup_Edit : EditModuleBase
         Checkup checkup = this.TheCheckupMgr.LoadCheckup(int.Parse(this.CheckupId));
         this.ModuleType = checkup.Type;
         this.ODS_Checkup.SelectParameters["Id"].DefaultValue = this.CheckupId;
+        this.ODS_Checkup.DeleteParameters["Id"].DefaultValue = this.CheckupId;
     }
 
     protected void FV_Checkup_DataBound(object sender, EventArgs e)
@@ -263,19 +264,21 @@ public partial class ISI_Checkup_Edit : EditModuleBase
 
     }
 
-    protected void btnDelete_Click(object sender, EventArgs e)
+    protected void ODS_Checkup_Deleting(object sender, ObjectDataSourceMethodEventArgs e)
     {
-        try
+
+    }
+    protected void ODS_Checkup_Deleted(object sender, ObjectDataSourceStatusEventArgs e)
+    {
+        if (e.Exception == null)
         {
-            this.TheCheckupMgr.DeleteCheckup(int.Parse(this.CheckupId));
             btnBack_Click(this, e);
             ShowSuccessMessage("ISI.Checkup.DeleteCheckup.Successfully");
         }
-        catch (Castle.Facilities.NHibernateIntegration.DataException ex)
+        else if (e.Exception.InnerException is Castle.Facilities.NHibernateIntegration.DataException)
         {
             ShowErrorMessage("ISI.Checkup.DeleteCheckup.Fail");
+            e.ExceptionHandled = true;
         }
-
     }
-
 }

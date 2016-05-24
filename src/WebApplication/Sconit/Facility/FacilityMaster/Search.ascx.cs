@@ -119,6 +119,9 @@ public partial class Facility_FacilityMaster_Search : SearchModuleBase
 
         DetachedCriteria selectCriteria = DetachedCriteria.For(typeof(FacilityMaster));
         DetachedCriteria selectCountCriteria = DetachedCriteria.For(typeof(FacilityMaster)).SetProjection(Projections.Count("FCID"));
+        selectCriteria.Add(Expression.Eq("ParentCategory", "YH_SB"));
+        selectCountCriteria.Add(Expression.Eq("ParentCategory", "YH_SB"));
+
         if (this.tbFCID.Text.Trim() != string.Empty)
         {
             selectCriteria.Add(Expression.Like("FCID", this.tbFCID.Text.Trim(), MatchMode.Anywhere));

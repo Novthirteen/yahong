@@ -438,7 +438,7 @@
                     </div>
                     <div runat="server" id="downLoadDiv">
                         <div>
-                            <asp:LinkButton ID="lbtnDownLoad1" runat="server" CommandArgument=''
+                            <asp:LinkButton ID="lbtnDownLoad1" runat="server" CommandArgument='<%#  "{"+DataBinder.Eval(Container.DataItem, "FileName") + "}{"+DataBinder.Eval(Container.DataItem, "ContentType") + "}{"+DataBinder.Eval(Container.DataItem, "Path")+"}" %>'
                                 OnClick="lbtnDownLoad_Click" Visible="False" />
                         </div>
                         <div>
@@ -530,7 +530,7 @@
                     <div>
                         <a id="<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>" name="<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>" />
                         <a onclick="javascript:ShowComment('<%# DataBinder.Eval(Container.DataItem, "TaskCode")%>','<%# DataBinder.Eval(Container.DataItem, "Subject")%>',<%# Container.DisplayIndex %>,<%# DataBinder.Eval(Container.DataItem, "CurrentCommentCount1")%>,<%# DataBinder.Eval(Container.DataItem, "CommentCount1")%>);" id="lnkComment<%# DataBinder.Eval(Container.DataItem, "TaskCode") %>" name="lnkComment<%# DataBinder.Eval(Container.DataItem, "TaskCode") %>" href="#">${ISI.Status.Comment}</a>
-
+                            
                     </div>
                 </ItemTemplate>
             </asp:TemplateField>

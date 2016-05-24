@@ -9,8 +9,6 @@ namespace com.Sconit.ISI.Service
     public interface IEvaluationMgr : IEvaluationBaseMgr
     {
         #region Customized Methods
-        IList<Evaluation> GetEvaluation(DateTime date, bool isInclude);
-        IList<Evaluation> GetEvaluation(DateTime date);
         void UpdateEvaluation(IList<Evaluation> evaluationList);
         IList<Evaluation> GetEvaluation(string userCode);
 

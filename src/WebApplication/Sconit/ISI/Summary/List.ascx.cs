@@ -53,7 +53,7 @@ public partial class ISI_Summary_List : ListModuleBase
     {
         if (this.IsNoSubmit && !string.IsNullOrEmpty(SummaryDate))
         {
-            IList<Evaluation> evaluationList = this.TheSummaryMgr.GetNoSummary(SummaryDate, this.CurrentUser, false);
+            IList<Evaluation> evaluationList = this.TheSummaryMgr.GetNoSummary(SummaryDate, this.CurrentUser);
             GV_Evaluation.DataSource = evaluationList;
             GV_Evaluation.DataBind();
             GV_Evaluation.Visible = true;
@@ -81,17 +81,7 @@ public partial class ISI_Summary_List : ListModuleBase
             Summary summary = (Summary)e.Row.DataItem;
             ((Label)e.Row.FindControl("lblStatus")).Text = "${ISI.Status." + summary.Status + "}";
             e.Row.Cells[2].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
-            e.Row.Cells[10].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
-            if (!string.IsNullOrEmpty(summary.Desc))
-            {
-                e.Row.Cells[2].Text = summary.Desc.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>");
-            }
-            if (!string.IsNullOrEmpty(summary.ApproveDesc))
-            {
-                e.Row.Cells[13].Text = summary.ApproveDesc.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>");
-            }
-
-            //e.Row.Cells[9].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
+            e.Row.Cells[9].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
             if ((summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE || summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_SUBMIT
                             || summary.Status == ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_INAPPROVE)
                         && (this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_SUMMARY_VALUE_SUMMARYADMIN) ||
@@ -123,12 +113,12 @@ public partial class ISI_Summary_List : ListModuleBase
         try
         {
             TheSummaryMgr.CancelSummary(code, this.CurrentUser);
-            ShowSuccessMessage("ISI.Summary.CancelSummary.Successfully", code);
+            ShowSuccessMessage("ISI.Summary.DeleteSummary.Successfully", code);
             UpdateView();
         }
         catch (Castle.Facilities.NHibernateIntegration.DataException ex)
         {
-            ShowErrorMessage("ISI.Summary.CancelSummary.Fail", code);
+            ShowErrorMessage("ISI.Summary.DeleteSummary.Fail", code);
         }
     }
 }

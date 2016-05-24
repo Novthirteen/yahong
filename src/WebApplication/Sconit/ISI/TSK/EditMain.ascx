@@ -8,12 +8,10 @@
 <%@ Register Src="Wiki.ascx" TagName="Wiki" TagPrefix="uc2" %>
 <%@ Register Src="~/ISI/Attachment/Attachment.ascx" TagName="Attachment" TagPrefix="uc2" %>
 <%@ Register Src="ProcessInstance.ascx" TagName="ProcessInstance" TagPrefix="uc2" %>
-<%@ Register Src="ResMatrixDet.ascx" TagName="ResMatrixDet" TagPrefix="uc2" %>
 
 <uc2:TabNavigator ID="ucTabNavigator" runat="server" Visible="true" />
 <div class="ajax__tab_body">
     <uc2:Edit ID="ucEdit" runat="server" Visible="true" />
-    <uc2:ResMatrixDet ID="ucResMatrixDet" runat="server" Visible="false" />
     <uc2:Attachment ID="ucAttachment" runat="server" Visible="false" />
     <uc2:ProcessInstance ID="ucProcessInstance" runat="server" Visible="false" />
     <uc2:Status ID="ucStatus" runat="server" Visible="false" />

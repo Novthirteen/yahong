@@ -276,7 +276,7 @@ public partial class Facility_FacilityDistribution_Edit : EditModuleBase
         }
     }
 
-    public override void UpdateView()
+    public  void UpdateView()
     {
         this.FV_FacilityDistribution.DataBind();
     }

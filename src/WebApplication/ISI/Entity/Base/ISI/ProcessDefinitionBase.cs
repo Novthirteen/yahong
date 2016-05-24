@@ -23,7 +23,7 @@ namespace com.Sconit.ISI.Entity
                 _id = value;
             }
         }
-        public bool IsRemind { get; set; }
+
         public string Apply { get; set; }
         public string ApplyDesc { get; set; }
         public decimal? ApplyQty { get; set; }
@@ -109,7 +109,6 @@ namespace com.Sconit.ISI.Entity
                 _isApprove = value;
             }
         }
-        public bool IsAccountCtrl { get; set; }
         private Boolean _isCtrl;
         public Boolean IsCtrl
         {

@@ -1,0 +1,92 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="New.ascx.cs" Inherits="ISI_Scheduling_New" %>
+<%@ Register Src="~/Controls/TextBox.ascx" TagName="textbox" TagPrefix="uc3" %>
+
+
+
+<div id="divFV" runat="server">
+    <asp:FormView ID="FV_Scheduling" runat="server" DataSourceID="ODS_Scheduling" DefaultMode="Insert"
+        DataKeyNames="Code">
+        <InsertItemTemplate>
+            <fieldset>
+                <legend>${ISI.Scheduling.NewScheduling}</legend>
+                <table class="mtable">
+                    <tr>
+                        <td class="td01">
+                            <asp:Literal ID="ltlId" runat="server" Text="${ISI.Scheduling.Id}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbId" runat="server" Text='<%#Bind("Id") %>' CssClass="inputRequired" />
+                        </td>
+                        <td class="td01">
+                            <asp:Literal ID="lblDesc" runat="server" Text="${ISI.Scheduling.Description}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbDesc" runat="server" Text='<%#Bind("Desc_") %>' CssClass="inputRequired" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td01">
+                            <asp:Literal ID="lblTaskSubType" runat="server" Text="${ISI.Scheduling.TaskSubType}:" />
+                        </td>
+                        <td class="td02">
+                            <uc3:textbox ID="tbTaskSubType" runat="server" DescField="Name" ValueField="Code" Width="200"
+                                ServicePath="TaskSubTypeMgr.service" ServiceMethod="GetTaskSubType" MustMatch="true" CssClass="inputRequired" />
+                            <asp:RequiredFieldValidator ID="rfvRegion" runat="server" ErrorMessage="${ISI.Scheduling.TaskSubType.Empty}"
+                                Display="Dynamic" ControlToValidate="tbTaskSubType" ValidationGroup="vgSave" />
+                        </td>
+                        <td class="td01">
+                            <asp:Literal ID="lblShift" runat="server" Text="${ISI.Scheduling.Shift}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbShift" runat="server" Text='<%#Bind("Shift") %>' />
+                        </td>
+                    </tr>
+                    <tr>
+                    <td class="td01">
+                            <asp:Literal ID="lblStartUser" runat="server" Text="${ISI.Scheduling.StartUser}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbStartUser" runat="server" Text='<%# Bind("StartUser") %>' CssClass="inputRequired" />
+                            <asp:RegularExpressionValidator ID="revStartUser" runat="server" Display="Dynamic"
+                                ValidationExpression="(\b(20|21|22|23|[0-1]+\d):([0-5]+\d)-(20|21|22|23|[0-1]+\d):[0-5]+\d(\||\b))*"
+                                ControlToValidate="tbStartUser" ErrorMessage="${ISI.Scheduling.ErrorMessage.StartUserFormat}"></asp:RegularExpressionValidator>
+                            <asp:Label ID="lbStartUserFormat" runat="server" Text="${ISI.Scheduling.StartUser.StartUserFormat}: xxx|xxx" />
+                        </td>
+                        <td class="td01">
+                            <asp:Literal ID="lblIsSpecial" runat="server" Text="${ISI.Scheduling.IsSpecial}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbIsSpecial" runat="server" Text='<%#Bind("IsSpecial") %>' />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="td01">
+                            <asp:Literal ID="lblStartDate" runat="server" Text="${Common.Business.EffDateFrom}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbStartDate" runat="server" Text='<%# Bind("StartDate") %>' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                        </td>
+                        <td class="td01">
+                            <asp:Literal ID="lblEndDate" runat="server" Text="${Common.Business.EffDateTo}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbEndDate" runat="server" Text='<%# Bind("EndDate") %>' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <div class="tablefooter">
+                <div class="buttons">
+                    <asp:Button ID="btnInsert" runat="server" CommandName="Insert" Text="${Common.Button.Save}"
+                        CssClass="apply" ValidationGroup="vgSave" />
+                    <asp:Button ID="btnBack" runat="server" Text="${Common.Button.Back}" OnClick="btnBack_Click"
+                        CssClass="back" />
+                </div>
+            </div>
+        </InsertItemTemplate>
+    </asp:FormView>
+</div>
+<asp:ObjectDataSource ID="ODS_Scheduling" runat="server" TypeName="com.Sconit.Web.ShiftMgrProxy"
+    DataObjectTypeName="com.Sconit.Entity.ISI.Shceduling" InsertMethod="CreateShceduling"
+    OnInserted="ODS_Scheduling_Inserted" OnInserting="ODS_Scheduling_Inserting"></asp:ObjectDataSource>

@@ -16,18 +16,6 @@ using NHibernate.Expression;
 
 public partial class ISI_TaskSubType_Main : MainModuleBase
 {
-
-    public string Action
-    {
-        get
-        {
-            return (string)ViewState["Action"];
-        }
-        set
-        {
-            ViewState["Action"] = value;
-        }
-    }
     public string ModuleType
     {
         get
@@ -55,15 +43,9 @@ public partial class ISI_TaskSubType_Main : MainModuleBase
             {
                 this.ModuleType = this.ModuleParameter["ModuleType"];
             }
-            if (this.ModuleParameter.ContainsKey("Action"))
-            {
-                this.Action = this.ModuleParameter["Action"];
-            }
             this.ucNew.ModuleType = this.ModuleType;
             this.ucEdit.ModuleType = this.ModuleType;
             this.ucList.ModuleType = this.ModuleType;
-            this.ucList.Action = this.Action;
-            this.ucSearch.Action = this.Action;
             this.ucSearch.ModuleType = this.ModuleType;
 
             if (this.Action == BusinessConstants.PAGE_LIST_ACTION)

@@ -4,35 +4,42 @@
     <div class="GridView">
         <cc1:GridView ID="GV_List" runat="server" AutoGenerateColumns="False" DataKeyNames="Code"
             SkinID="GV" AllowMultiColumnSorting="false" AutoLoadStyle="false" SeqNo="0" SeqText="No."
-            ShowSeqNo="true" AllowSorting="true" AllowPaging="True" PagerID="gp" Width="100%"
+            ShowSeqNo="false" AllowSorting="true" AllowPaging="True" PagerID="gp" Width="100%"
             CellMaxLength="10" TypeName="com.Sconit.Web.CriteriaMgrProxy" SelectMethod="FindAll"
             SelectCountMethod="FindCount" DefaultSortDirection="Ascending" DefaultSortExpression="Seq"
-            OnRowDataBound="GV_List_RowDataBound" OnDataBound="GV_List_DataBound">
+            OnRowDataBound="GV_List_RowDataBound">
             <Columns>
                 <asp:BoundField DataField="Seq" HeaderText="${ISI.TaskSubType.Sequence}" SortExpression="Seq" />
                 <asp:BoundField DataField="Code" HeaderText="${ISI.TaskSubType.Code}" SortExpression="Code" />
                 <asp:BoundField DataField="Desc" HeaderText="${Common.Business.Description}" SortExpression="Desc" />
-                <asp:CheckBoxField DataField="IsCost" HeaderText="${ISI.TaskSubType.IsCost}"
-                    SortExpression="IsCost" />
-                <asp:CheckBoxField DataField="IsCostCenter" HeaderText="${ISI.TaskSubType.IsCostCenter}"
-                    SortExpression="IsCostCenter" />
-                <asp:CheckBoxField DataField="IsBudget" HeaderText="${ISI.TaskSubType.IsBudget}"
-                    SortExpression="IsBudget" />
-                <asp:CheckBoxField DataField="IsTrace" HeaderText="${ISI.TaskSubType.IsTrace}"
-                    SortExpression="IsTrace" />
-                <asp:CheckBoxField DataField="IsAmount" HeaderText="${ISI.TaskSubType.IsAmount}"
-                    SortExpression="IsAmount" />
-                <asp:CheckBoxField DataField="IsAmountDetail" HeaderText="${ISI.TaskSubType.IsAmountDetail}"
-                    SortExpression="IsAmountDetail" />
-                <asp:CheckBoxField DataField="IsApply" HeaderText="${ISI.TaskSubType.IsApply}"
-                    SortExpression="IsApply" />
-                <asp:CheckBoxField DataField="IsPrint" HeaderText="${ISI.TaskSubType.IsPrint}"
-                    SortExpression="IsPrint" />
-                <asp:CheckBoxField DataField="IsRemoveForm" HeaderText="${ISI.TaskSubType.IsRemoveForm}"
-                    SortExpression="IsRemoveForm" />
-                <asp:CheckBoxField DataField="IsAttachment" HeaderText="${ISI.TaskSubType.IsAttachment}"
-                    SortExpression="IsAttachment" />
-                <asp:TemplateField HeaderText="${ISI.TaskSubType.Process}"></asp:TemplateField>
+                <asp:TemplateField HeaderText="${ISI.TaskSubType.Parent}" SortExpression="Parent.Code">
+                    <ItemTemplate>
+                        <%# DataBinder.Eval(Container.DataItem, "Parent.Name")%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:CheckBoxField DataField="IsAssignUp" HeaderText="${ISI.TaskSubType.IsAssignUp}"
+                    SortExpression="IsAssignUp" />
+                <asp:TemplateField HeaderText="${ISI.TaskSubType.AssignUpLevelCount}">
+                    <ItemTemplate>
+                        <%# DataBinder.Eval(Container.DataItem, "AssignUpLevelCount")%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:CheckBoxField DataField="IsStartUp" HeaderText="${ISI.TaskSubType.IsStartUp}"
+                    SortExpression="IsStartUp" />
+                <asp:TemplateField HeaderText="${ISI.TaskSubType.StartUpLevelCount}">
+                    <ItemTemplate>
+                        <%# DataBinder.Eval(Container.DataItem, "StartUpLevelCount")%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:CheckBoxField DataField="IsCloseUp" HeaderText="${ISI.TaskSubType.IsCloseUp}"
+                    SortExpression="IsCloseUp" />
+                <asp:TemplateField HeaderText="${ISI.TaskSubType.CloseUpLevelCount}">
+                    <ItemTemplate>
+                        <%# DataBinder.Eval(Container.DataItem, "CloseUpLevelCount")%>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="${ISI.TaskSubType.Process}">
+                </asp:TemplateField>
                 <asp:TemplateField HeaderText="${Common.GridView.Action}">
                     <ItemTemplate>
                         <asp:LinkButton ID="lbtnEdit" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "Code")+"||"+DataBinder.Eval(Container.DataItem, "Desc") %>'

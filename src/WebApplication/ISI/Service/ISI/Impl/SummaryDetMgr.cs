@@ -26,7 +26,6 @@ namespace com.Sconit.ISI.Service.Impl
         {
             DetachedCriteria criteria = DetachedCriteria.For(typeof(SummaryDet));
             criteria.Add(Expression.Eq("SummaryCode", summaryCode));
-            criteria.AddOrder(Order.Asc("Seq"));
             criteria.AddOrder(Order.Asc("Id"));
             var summaryDetList = this.criteriaMgrE.FindAll<SummaryDet>(criteria);
             return summaryDetList;
@@ -44,8 +43,7 @@ namespace com.Sconit.ISI.Service.Impl
             subCriteria.SetProjection(Projections.ProjectionList().Add(Projections.GroupProperty("Code")));
 
             criteria.Add(Subqueries.PropertyIn("SummaryCode", subCriteria));
-            criteria.AddOrder(Order.Asc("Seq"));
-            criteria.AddOrder(Order.Asc("Id"));
+
             var summaryDetList = this.criteriaMgrE.FindAll<SummaryDet>(criteria);
             return summaryDetList;
         }

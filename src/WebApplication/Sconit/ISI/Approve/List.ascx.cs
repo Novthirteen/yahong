@@ -68,7 +68,6 @@ public partial class ISI_Approve_List : ListModuleBase
         DateTime? startTime = (DateTime?)Param[5];
         DateTime? endTime = (DateTime?)Param[6];
         IList<string> statusList = (IList<string>)Param[7];
-        object isSummary = Param[8];
 
         #region DetachedCriteria
         DetachedCriteria selectCriteria = DetachedCriteria.For(typeof(Checkup));
@@ -117,17 +116,6 @@ public partial class ISI_Approve_List : ListModuleBase
         {
             selectCriteria.Add(Expression.In("Status", new string[] { ISIConstants.CODE_MASTER_ISI_CHECKUP_STATUS_SUBMIT, ISIConstants.CODE_MASTER_ISI_CHECKUP_STATUS_APPROVAL, ISIConstants.CODE_MASTER_ISI_CHECKUP_STATUS_CLOSE }));
 
-        }
-        if (isSummary != null)
-        {
-            if (bool.Parse(isSummary.ToString()))
-            {
-                selectCriteria.Add(Expression.Eq("CheckupProject.Code", ISIConstants.CODE_MASTER_SUMMARY_CHECKUPPROJECT));
-            }
-            else
-            {
-                selectCriteria.Add(Expression.Not(Expression.Eq("CheckupProject.Code", ISIConstants.CODE_MASTER_SUMMARY_CHECKUPPROJECT)));
-            }
         }
 
         #endregion
@@ -188,17 +176,16 @@ public partial class ISI_Approve_List : ListModuleBase
     public void Export()
     {
         this.IsExport = true;
-        GV_List.Columns[3].Visible = false;
+        GV_List.Columns[2].Visible = false;
         this.ExportXLS(GV_List, "考核" + DateTime.Now.ToString("yyyy年MM月dd日HH：mm") + ".xls");
     }
 
     protected void GV_List_DataBound(object sender, EventArgs e)
     {
-
-        GV_MergeTableCell(GV_List, new int[] { 0, 1 }, false);
+        GV_MergeTableCell(GV_List, new int[] { 0 }, false);
         if (!this.IsExport)
         {
-            GV_MergeTableCell(GV_List, 2, 7);
+            GV_MergeTableCell(GV_List, 1, 6);
         }
     }
 
@@ -289,47 +276,32 @@ public partial class ISI_Approve_List : ListModuleBase
             Checkup checkup = (Checkup)e.Row.DataItem;
             Label lblStatus = ((Label)(e.Row.FindControl("lblStatus")));
             lblStatus.Text = this.TheLanguageMgr.TranslateMessage("ISI.Status." + checkup.Status, this.CurrentUser);
-            e.Row.Cells[5].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
+            e.Row.Cells[4].Style.Add("style", "word-break:break-all;word-wrap:break-word;white-space: normal;");
             if (string.IsNullOrEmpty(checkup.CheckupUser))
             {
-                e.Row.Cells[6].FindControl("tbAmount").Visible = false;
-                e.Row.Cells[7].FindControl("tbAuditInstructions").Visible = false;
+                e.Row.Cells[5].FindControl("tbAmount").Visible = false;
+                e.Row.Cells[6].FindControl("tbAuditInstructions").Visible = false;
                 decimal? amount = checkup.Amount;
                 if (amount.HasValue && amount != 0)
                 {
-                    e.Row.Cells[2].Text = amount.Value.ToString("0.##");
                     if (amount.Value > 0)
                     {
-                        if (this.IsExport)
-                        {
-                            e.Row.Cells[4].Text = "奖";
-                        }
-                        else
-                        {
-                            e.Row.Cells[2].Text += "&nbsp;奖";
-                        }
+                        e.Row.Cells[1].Text = "+" + amount.Value.ToString("0.##") + "&nbsp;奖";
                     }
                     else
                     {
-                        if (this.IsExport)
-                        {
-                            e.Row.Cells[4].Text = "罚";
-                        }
-                        else
-                        {
-                            e.Row.Cells[2].Text += "&nbsp;罚";
-                        }
+                        e.Row.Cells[1].Text = amount.Value.ToString("0.##") + "&nbsp;罚";
                     }
 
                     if ((checkup.Type == ISIConstants.CODE_MASTER_ISI_CHECKUPPROJECT_TYPE_EMPLOYEE && ((amountLimitEmployee.Length > 0 && amount.Value < amountLimitEmployee[0]) || (amountLimitEmployee.Length > 1 && amount.Value > amountLimitEmployee[1])))
                         || (checkup.Type == ISIConstants.CODE_MASTER_ISI_CHECKUPPROJECT_TYPE_CADRE && ((amountLimitCadre.Length > 0 && amount.Value < amountLimitCadre[0]) || (amountLimitCadre.Length > 1 && amount.Value > amountLimitCadre[1]))))
                     {
-                        e.Row.Cells[2].ForeColor = System.Drawing.Color.Red;
+                        e.Row.Cells[1].ForeColor = System.Drawing.Color.Red;
                     }
                 }
                 else
                 {
-                    e.Row.Cells[2].Text = amount.Value.ToString("0.##");
+                    e.Row.Cells[1].Text = amount.Value.ToString("0.##");
                 }
             }
             else if (!this.IsExport)
@@ -338,49 +310,49 @@ public partial class ISI_Approve_List : ListModuleBase
                 {
                     if (checkup.Amount.Value != 0)
                     {
-                        ((TextBox)e.Row.Cells[6].FindControl("tbAmount")).Text = checkup.Amount.Value.ToString("0.##");
+                        ((TextBox)e.Row.Cells[5].FindControl("tbAmount")).Text = checkup.Amount.Value.ToString("0.##");
                     }
                     else
                     {
-                        ((TextBox)e.Row.Cells[6].FindControl("tbAmount")).Text = string.Empty;
+                        ((TextBox)e.Row.Cells[5].FindControl("tbAmount")).Text = string.Empty;
                     }
                 }
 
-                ((Label)(e.Row.Cells[5].FindControl("lblContent"))).Text = "<span style='color:#0000E5;'>" + checkup.SubmitUserNm + "(" + checkup.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + (!string.IsNullOrEmpty(checkup.Content) ? checkup.Content.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>") : string.Empty);
+                ((Label)(e.Row.Cells[4].FindControl("lblContent"))).Text = "<span style='color:#0000E5;'>" + checkup.SubmitUserNm + "(" + checkup.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: " + checkup.Content;
                 if (checkup.ApprovalDate.HasValue)
                 {
-                    ((Label)(e.Row.Cells[6].FindControl("lblAuditInstructions"))).Text = "<span style='color:#0000E5;'>" + checkup.ApprovalUserNm + "(" + checkup.ApprovalDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: <br>";
+                    ((Label)(e.Row.Cells[5].FindControl("lblAuditInstructions"))).Text = "<span style='color:#0000E5;'>" + checkup.ApprovalUserNm + "(" + checkup.ApprovalDate.Value.ToString("yyyy-MM-dd HH:mm") + ")</span>: <br>";
                 }
             }
 
             if (this.IsExport)
             {
-                e.Row.Cells[2].Attributes.Add("style", "vnd.ms-excel.numberformat:@");
+                e.Row.Cells[1].Attributes.Add("style", "vnd.ms-excel.numberformat:@");
                 if (!string.IsNullOrEmpty(checkup.CheckupUser))
                 {
                     LinkButton lbtnEdit = (LinkButton)e.Row.Cells[1].FindControl("lbtnEdit");
                     lbtnEdit.Visible = false;
-                    e.Row.Cells[2].Text = checkup.CheckupDate.ToString("yyyy-MM-dd HH:ss");
+                    e.Row.Cells[1].Text = checkup.CheckupDate.ToString("yyyy-MM-dd HH:ss");
 
-                    e.Row.Cells[5].FindControl("lblContent").Visible = false;
+                    e.Row.Cells[4].FindControl("lblContent").Visible = false;
                     if (checkup.SubmitDate.HasValue)
                     {
-                        e.Row.Cells[5].Text = checkup.SubmitUserNm + "(" + checkup.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm") + "): " + (!string.IsNullOrEmpty(checkup.Content) ? checkup.Content.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>") : string.Empty);
+                        e.Row.Cells[4].Text = checkup.SubmitUserNm + "(" + checkup.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm") + "): " + checkup.Content;
                     }
-                    e.Row.Cells[6].FindControl("tbAmount").Visible = false;
-                    e.Row.Cells[6].Text = checkup.Amount.HasValue ? checkup.Amount.Value.ToString("0.##") : string.Empty;
-                    e.Row.Cells[7].FindControl("tbAuditInstructions").Visible = false;
+                    e.Row.Cells[5].FindControl("tbAmount").Visible = false;
+                    e.Row.Cells[5].Text = checkup.Amount.HasValue ? checkup.Amount.Value.ToString("0.##") : string.Empty;
+                    e.Row.Cells[6].FindControl("tbAuditInstructions").Visible = false;
                     if (checkup.ApprovalDate.HasValue)
                     {
-                        e.Row.Cells[7].Text = checkup.ApprovalUserNm + "(" + checkup.ApprovalDate.Value.ToString("yyyy-MM-dd HH:mm") + "): " + (!string.IsNullOrEmpty(checkup.AuditInstructions) ? checkup.AuditInstructions.Replace(ISIConstants.TEXT_SEPRATOR, "<br/>").Replace(ISIConstants.TEXT_SEPRATOR2, "<br/>") : string.Empty);
+                        e.Row.Cells[6].Text = checkup.ApprovalUserNm + "(" + checkup.ApprovalDate.Value.ToString("yyyy-MM-dd HH:mm") + "): " + checkup.AuditInstructions;
                     }
                 }
             }
 
             if (!this.IsExport && !this.CurrentUser.HasPermission(ISIConstants.PERMISSION_PAGE_ISI_CHECKUP_VALUE_APPROVECHECKUP))
             {
-                ((TextBox)e.Row.Cells[6].FindControl("tbAmount")).ReadOnly = true;
-                ((TextBox)e.Row.Cells[7].FindControl("tbAuditInstructions")).ReadOnly = true;
+                ((TextBox)e.Row.Cells[5].FindControl("tbAmount")).ReadOnly = true;
+                ((TextBox)e.Row.Cells[6].FindControl("tbAuditInstructions")).ReadOnly = true;
             }
         }
     }

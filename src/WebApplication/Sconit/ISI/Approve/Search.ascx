@@ -83,17 +83,15 @@
                     <asp:Button ID="btnSearch" runat="server" Text="${Common.Button.Search}" OnClick="btnSearch_Click"
                         CssClass="query" />
                     <cc1:Button ID="btnApprove" runat="server" Text="${ISI.Button.Approve}" OnClick="btnApprove_Click"
-                        CssClass="add" FunctionId="ApproveCheckup" ValidationGroup="vgApprove" OnClientClick="return confirm('${ISI.Approve.Button.Approve.Confirm}')" />
+                        CssClass="add" FunctionId="ApproveCheckup" ValidationGroup="vgApprove" />
                     <cc1:Button ID="btnPublish" runat="server" Text="${ISI.Button.Publish}" OnClick="btnPublish_Click"
-                        CssClass="add" FunctionId="PublishCheckup"  OnClientClick="return confirm('${ISI.Approve.Button.Publish.Confirm}')" />
+                        CssClass="add" FunctionId="PublishCheckup" />
                     <cc1:Button ID="btnClose" runat="server" Text="${Common.Button.Close}" OnClick="btnClose_Click"
-                        CssClass="add" FunctionId="CloseCheckup"  OnClientClick="return confirm('${ISI.Approve.Button.Close.Confirm}')" />
+                        CssClass="add" FunctionId="CloseCheckup" />
                     <cc1:Button ID="btnCloseRemind" runat="server" Text="${ISI.Button.CloseRemind}" OnClick="btnCloseRemind_Click"
-                        CssClass="add" FunctionId="CloseRemindCheckup"  OnClientClick="return confirm('${ISI.Approve.Button.CloseRemind.Confirm}')" />
+                        CssClass="add" FunctionId="CloseRemindCheckup" />
                     <cc1:Button ID="btnExport" runat="server" Text="${Common.Button.Export}" OnClick="btnExport_Click"
-                        CssClass="query" FunctionId="ExportCheckup"  />
-                     <cc1:Button ID="btnExportSummary" runat="server" Text="${ISI.Button.ExportSummary}" OnClick="btnExportSummary_Click"
-                        CssClass="query" FunctionId="ExportSummary" />
+                        CssClass="query" FunctionId="ExportCheckup" />
                 </div>
             </td>
         </tr>

@@ -12,8 +12,8 @@
                 <cc1:CodeMstrDropDownList ID="ddlDept" Code="ISIDepartment" runat="server" IncludeBlankOption="true"
                     DefaultSelectedValue="" />
                 <uc3:textbox ID="tbDept2" runat="server" Visible="true" DescField="Code" MustMatch="true"
-                    ValueField="Name" ServicePath="TaskSubTypeMgr.service" ServiceMethod="GetCostCenter"
-                    Width="260" />
+                    ValueField="Name" ServicePath="TaskSubTypeMgr.service" ServiceMethod="GetAllTaskSubType"
+                    Width="260" ServiceParameter="bool:true"/>
             </td>
             <td align="right">
                 <asp:Literal ID="lblPosition" runat="server" Text="${ISI.Reports.Task.Position}:" />

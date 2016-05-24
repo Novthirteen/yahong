@@ -18,7 +18,6 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly string CODE_PREFIX_RESPONSE = "REP";
         public static readonly string CODE_PREFIX_PROJECT = "PRJ";
         public static readonly string CODE_PREFIX_PROJECT_ISSUE = "PIS";
-        public static readonly string CODE_PREFIX_RESMATRIX = "RES";
         /// <summary>
         /// 工程更改
         /// </summary>
@@ -37,7 +36,6 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly string ISI_TASK_TYPE_PROJECT = "Project";
         public static readonly string ISI_TASK_TYPE_AUDIT = "Audit";
         public static readonly string ISI_TASK_TYPE_PROJECT_ISSUE = "PrjIss";
-        public static readonly string ISI_TASK_TYPE_RESMATRIX = "ResMatrix";
         /// <summary>
         /// 工程更改
         /// </summary>
@@ -46,7 +44,7 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly IList<string> TaskTypeList = new List<string>() { ISIConstants.ISI_TASK_TYPE_PLAN, ISIConstants.ISI_TASK_TYPE_ISSUE, ISIConstants.ISI_TASK_TYPE_IMPROVE,
                                                        ISIConstants.ISI_TASK_TYPE_CHANGE,ISIConstants.ISI_TASK_TYPE_PRIVACY,ISIConstants.ISI_TASK_TYPE_RESPONSE,
                                                         ISIConstants.ISI_TASK_TYPE_PROJECT,ISIConstants.ISI_TASK_TYPE_AUDIT,ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE,
-                                                        ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE,ISIConstants.ISI_TASK_TYPE_WORKFLOW,ISIConstants.ISI_TASK_TYPE_RESMATRIX};
+                                                        ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE,ISIConstants.ISI_TASK_TYPE_WORKFLOW};
 
         public static readonly IDictionary<string, string> TaskTypeDic
                                 = new Dictionary<string, string>() { { CODE_PREFIX_PLAN, ISI_TASK_TYPE_PLAN },
@@ -59,8 +57,7 @@ namespace com.Sconit.ISI.Entity.Util
                                                                      { CODE_PREFIX_PROJECT, ISI_TASK_TYPE_PROJECT },
                                                                      { CODE_PREFIX_PROJECT_ISSUE, ISI_TASK_TYPE_PROJECT_ISSUE },
                                                                      { CODE_PREFIX_ENGINEERING_CHANGE, ISI_TASK_TYPE_ENGINEERING_CHANGE},
-                                                                     { CODE_PREFIX_ENGINEERING_WORKFLOW,ISIConstants.ISI_TASK_TYPE_WORKFLOW},
-                                                                     { CODE_PREFIX_RESMATRIX,ISIConstants.ISI_TASK_TYPE_RESMATRIX}};
+                                                                     { CODE_PREFIX_ENGINEERING_WORKFLOW,ISIConstants.ISI_TASK_TYPE_WORKFLOW}};
 
 
         public static readonly string ISI_LEVEL_SEPRATOR = "|";
@@ -84,10 +81,6 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly string ISI_LEVEL_STATUS = "Status";
 
         public static readonly string ISI_LEVEL_APPROVE = "Approve";
-
-        public static readonly string ISI_LEVEL_APPROVE2 = "Approve2";
-
-        public static readonly string ISI_LEVEL_APPROVEUP = "ApproveUp";
 
         public static readonly string ISI_LEVEL_HELP = "Help";
 
@@ -120,7 +113,6 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly string CODE_MASTER_ISI_TASK_VALUE_ASSIGN = "ISIAssign";
         public static readonly string CODE_MASTER_ISI_TASK_VALUE_CLOSE = "ISIClose";
         public static readonly string CODE_MASTER_WF_TASK_VALUE_WFADMIN = "WFAdmin";
-        public static readonly string CODE_MASTER_WFS_TASK_VALUE_BUDGETADMIN = "BudgetAdmin";
 
         public static readonly string PERMISSION_PAGE_ISI_VALUE_ADDATTACHMENT = "AddAttachment";
         public static readonly string PERMISSION_PAGE_ISI_VALUE_DELETEATTACHMENT = "DeleteAttachment";
@@ -277,11 +269,6 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly string CODE_MASTER_SUMMARY_STATUS_VALUE_INAPPROVE = "In-Approve";
         public static readonly string CODE_MASTER_SUMMARY_STATUS_VALUE_APPROVAL = "Approval";
         public static readonly string CODE_MASTER_SUMMARY_STATUS_VALUE_CLOSE = "Close";
-
-        public static readonly string CODE_MASTER_USER_ISIPOSITION_PLATFORMMANAGER = "平台经理";
-        public static readonly string CODE_MASTER_USER_ISIPOSITION_OWNERSOFENTERPRISES = "企业负责人";
-
-
         #endregion
 
         #region 工作流
@@ -314,30 +301,6 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly string APPLY_AMOUNT2 = "Amount2";
         public static readonly string APPLY_SHIPFROM = "ShipFrom";
         public static readonly string APPLY_SHIPTO = "ShipTo";
-        public static readonly string APPLY_STRING = "String";
-
-        public static readonly string CODE_MASTER_WFS_FORMTYPE = "FormType";
-        /// <summary>
-        /// 标准预算
-        /// </summary>
-        public static readonly string CODE_MASTER_WFS_FORMTYPE_1 = "FormType1";
-        /// <summary>
-        /// 外出、出差
-        /// </summary>
-        public static readonly string CODE_MASTER_WFS_FORMTYPE_2 = "FormType2";
-        /// <summary>
-        /// 加班、事假、年假、探亲假
-        /// </summary>
-        public static readonly string CODE_MASTER_WFS_FORMTYPE_3 = "FormType3";
-        /// <summary>
-        /// 邮费清单
-        /// </summary>
-        public static readonly string CODE_MASTER_WFS_FORMTYPE_4 = "FormType4";
-        /// <summary>
-        /// 办公用品
-        /// </summary>
-        public static readonly string CODE_MASTER_WFS_FORMTYPE_5 = "FormType5";
-
 
         /// <summary>
         /// 默认间隔
@@ -376,48 +339,19 @@ namespace com.Sconit.ISI.Entity.Util
         public static readonly int CODE_MASTER_WFS_LEVEL_ULTIMATE = 900000;
         public static readonly int CODE_MASTER_WFS_LEVEL_COMPLETE = 900000000;
 
+
         //工时单位
         public static readonly string WORKHOUR_UOM = "H";
-
-        public static readonly string CODE_MASTER_WFS_ACCOUNT = "WFSAccount";
-        public static readonly string CODE_MASTER_WFS_ACCOUNT_LEVEL1 = "Level1";
-        public static readonly string CODE_MASTER_WFS_ACCOUNT_LEVEL2 = "Level2";
-
-
-        public static readonly string CODE_MASTER_WFS_VehicleType = "VehicleType";
-        #endregion
-
-        public static readonly string PERMISSION_PAGE_VALUE_ISISTATISTICS = "ISIStatistics";
-        public static readonly string PERMISSION_PAGE_VALUE_PRODUCTIONINOUT = "ProductionInOutRep";
-        public static readonly string PERMISSION_PAGE_VALUE_SPCLOG = "SPCLogRep";
-        public static readonly string PERMISSION_PAGE_VALUE_CHECKLISTORDERLOG = "CheckListOrderRep";
-
-        #region PSI款项
-        public static readonly string PERMISSION_PAGE_VALUE_VIEWPSIBILL = "ViewPSIBill";
-        public static readonly string PERMISSION_PAGE_VALUE_REMINDPSIBILL = "RemindPSIBill";
-        public static readonly string PERMISSION_PAGE_VALUE_REMINDPSIBILL2 = "RemindPSIBill2";
-
-        public static readonly string CODE_MASTER_PSIBILLDETAIL_TYPE_SO = "SO";
-        public static readonly string CODE_MASTER_PSIBILLDETAIL_TYPE_PO = "PO";
-
-        public static readonly string CODE_MASTER_PSIBILLDETAIL_PHASE_1 = "1";
-        public static readonly string CODE_MASTER_PSIBILLDETAIL_PHASE_2 = "2";
-        public static readonly string CODE_MASTER_PSIBILLDETAIL_PHASE_3 = "3";
-        public static readonly string CODE_MASTER_PSIBILLDETAIL_PHASE_4 = "4";
-
-        public static readonly string CODE_MASTER_PSI_BILL_STATUS = "PSIBillStatus";
-        public static readonly string CODE_MASTER_PSI_BILL_STATUS_CREATE = "Create";
-        public static readonly string CODE_MASTER_PSI_BILL_STATUS_INPROCESS = "In-Process";
-        public static readonly string CODE_MASTER_PSI_BILL_STATUS_SOCOMPLETE = "SOComplete";
-        public static readonly string CODE_MASTER_PSI_BILL_STATUS_POCOMPLETE = "POComplete";
-        public static readonly string CODE_MASTER_PSI_BILL_STATUS_CLOSE = "Close";
-
-        public static readonly string CODE_MASTER_PSI_BILL_TYPE = "PSIBillType";
 
         #endregion
 
         #region 责任方阵
         public static readonly string PERMISSION_PAGE_VALUE_RESMATRIXCHANGELOG = "ResMatrixChangeLogRep";
+        #endregion
+
+        #region 新增异常报表
+        public static readonly string PERMISSION_PAGE_VALUE_PRODUCTIONINOUT = "ProductionInOutRep";
+        public static readonly string PERMISSION_PAGE_VALUE_SPCLOG = "SPCLogRep";
         #endregion
     }
 }

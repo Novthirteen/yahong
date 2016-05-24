@@ -8,7 +8,6 @@ namespace com.Sconit.ISI.Service
 {
     public interface ISmtpMgr
     {
-        bool IsTestSystem();
         void AsyncSend(string subject, string body, string mailTo, string replyTo, MailPriority priority);
         void AsyncSend2(string subject, string body, string mailTo, string replyTo, MailPriority priority, IList<string> files);
         void Send(string PermissionCode, string subject, string body, string replyTo, IList<string> files);

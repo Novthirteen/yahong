@@ -26,6 +26,21 @@ namespace com.Sconit.Service.MasterData.Impl
 
         public IList<CodeMaster> GetCachedCodeMaster(string code)
         {
+            return this.GetCachedCodeMasterAsc(code);
+        }
+
+        public IList<CodeMaster> GetCachedCodeMasterAsc(string code)
+        {
+            return this.GetCachedCodeMaster(code, Order.Asc("Seq"));
+        }
+
+        public IList<CodeMaster> GetCachedCodeMasterDesc(string code)
+        {
+            return this.GetCachedCodeMaster(code, Order.Desc("Seq"));
+        }
+
+        public IList<CodeMaster> GetCachedCodeMaster(string code, Order order)
+        {
             if (cachedCodeMaster.ContainsKey(code))
             {
                 return cachedCodeMaster[code];

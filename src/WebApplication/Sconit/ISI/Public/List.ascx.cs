@@ -324,17 +324,17 @@ public partial class ISI_Public_List : ListModuleBase
             {
                 e.Row.Cells[4].ToolTip = task.AssignDate.Value.ToString("yyyy-MM-dd HH:mm");
             }
-            if (task.AttachmentCount.HasValue && task.AttachmentCount.Value > 0)
-            {
-                LinkButton lbtnDownLoad = (LinkButton)e.Row.FindControl("lbtnDownLoad");
-                lbtnDownLoad.Text = "<br><span style='color:#0000E5;'>${ISI.Status.Attachment}：" + ISIUtil.GetStrLength(task.FileName, 16) + "&#40;" + task.AttachmentCount.Value + "&#41;</span>";
-                lbtnDownLoad.Visible = true;
+            //if (task.AttachmentCount.HasValue && task.AttachmentCount.Value > 0)
+            //{
+            //    LinkButton lbtnDownLoad = (LinkButton)e.Row.FindControl("lbtnDownLoad");
+            //    lbtnDownLoad.Text = "<br><span style='color:#0000E5;'>${ISI.Status.Attachment}：" + ISIUtil.GetStrLength(task.FileName, 16) + "&#40;" + task.AttachmentCount.Value + "&#41;</span>";
+            //    lbtnDownLoad.Visible = true;
 
-                var attachmentList = this.TheAttachmentDetailMgr.GetAttachment(task.TaskCode, 0, 10);
-                lbtnDownLoad.Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
-                lbtnDownLoad.Attributes.Add("onmouseout", "this.style.backgroundColor=e");
-                lbtnDownLoad.Attributes.Add("title", GetAttachments(attachmentList));
-            }
+            //    var attachmentList = this.TheAttachmentDetailMgr.GetAttachment(task.TaskCode, 0, 10);
+            //    lbtnDownLoad.Attributes.Add("onmouseover", "e=this.style.backgroundColor; this.style.backgroundColor=this.style.borderColor");
+            //    lbtnDownLoad.Attributes.Add("onmouseout", "this.style.backgroundColor=e");
+            //    lbtnDownLoad.Attributes.Add("title", GetAttachments(attachmentList));
+            //}
         }
     }
 

@@ -13,9 +13,7 @@
     <property name="Status" column="Status" type="String" length="10" />
     <property name="Priority" column="Priority" type="String" length="50" />
     <many-to-one name="TaskSubType" column="TaskSubType" class="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" cascade="none" />
-    <property name="CostCenterCode" column="CostCenter" type="String" length="50" />
-    <property name="CostCenterDesc" column="CostCenterDesc" type="String" length="50" />
-    <property name="Dept" column="Dept" type="String" length="50" />
+    <many-to-one name="CostCenter" column="CostCenter" class="com.Sconit.ISI.Entity.TaskSubType, com.Sconit.ISI" cascade="none" />
     <many-to-one name="FailureMode" column="FailureMode" class="com.Sconit.ISI.Entity.FailureMode, com.Sconit.ISI" cascade="none" />
     <property name="BackYards" column="BackYards" type="String" length="50" />
     <property name="Flag" column="Flag" type="String" length="10" />
@@ -102,25 +100,6 @@
     <property name="IsCountersignSerial" column="IsCountersignSerial" type="Boolean"  />
     <property name="Qty" column="Qty" type="Decimal" />
     <property name="Template" column="Template" type="String" length="50"  />
-    <property name="SupplierCode" column="SupplierCode" type="String" length="50"  />
-    <property name="SupplierName" column="SupplierName" type="String" length="255"  />
-    <property name="Amount" column="Amount" type="Decimal" />
-    <property name="FormType" column="FormType" type="String" length="50"   />
-    <property name="Account1" column="Account1" type="String" length="50" />
-    <property name="Account1Desc" column="Account1Desc" type="String" length="50" />
-    <property name="Account2" column="Account2" type="String" length="50" />
-    <property name="Account2Desc" column="Account2Desc" type="String" length="50" />
-    <property name="NoTaxAmount" column="NoTaxAmount" type="Decimal"  />
-    <property name="Taxes" column="Taxes" type="Decimal"  />
-    <property name="TotalAmount" column="TotalAmount" type="Decimal"  />
-    <property name="PayeeCode" column="PayeeCode" type="String" length="50" />
-    <property name="PayeeName" column="PayeeName" type="String" length="50" />
-    <property name="TravelType" column="TravelType" type="String" length="50" />
-    <property name="Voucher" column="Voucher" type="Int32"  />
-    <property name="CurrentApprovalUser" column="CurrentApprovalUser" type="String" length="500" />
-    <property name="CurrentApprovalUserNm" column="CurrentApprovalUserNm" type="String" length="500" />
-    <property name="FirstUser" column="FirstUser" type="String" length="50" />
-    <property name="FirstUserNm" column="FirstUserNm" type="String" length="255" />    
     <bag name="TaskDetails" table="ISI_TaskDet" inverse="true" lazy="true" order-by="CreateDate desc">
       <key column="TaskCode" />
       <one-to-many class="com.Sconit.ISI.Entity.TaskDetail, com.Sconit.ISI" />

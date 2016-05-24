@@ -44,7 +44,7 @@
                 </asp:TemplateField>
             </Columns>
         </cc1:GridView>
-        <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="50">
+        <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="10">
         </cc1:GridPager>
         <script language="javascript" type="text/javascript">
             $(document).ready(function () {

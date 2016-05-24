@@ -8,7 +8,7 @@ namespace com.Sconit.ISI.Service
     public interface IWFDetailMgr : IWFDetailBaseMgr
     {
         #region Customized Methods
-        void CreateWFDetail(string taskCode, string status, string content, DateTime now, User user);
+
         void CreateWFDetail(string taskCode, string status, DateTime now, User user);
         void CreateWFDetail(string taskCode, string status, int? level, int? preLevel, DateTime now, User user);
 

@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using com.Sconit.Web;
+using com.Sconit.Entity.MasterData;
+using com.Sconit.Entity.ISI;
+using com.Sconit.Service.Ext.MasterData;
+using com.Sconit.Service.ISI;
+
+public partial class ISI_Scheduling_New : NewModuleBase
+{
+    private Scheduling scheduling;
+    public event EventHandler CreateEvent; 
+    public event EventHandler BackEvent;
+
+    public void PageCleanup()
+    {
+        ((TextBox)(this.FV_Scheduling.FindControl("tbId"))).Text = string.Empty;
+        ((TextBox)(this.FV_Scheduling.FindControl("tbDesc"))).Text = string.Empty;
+        //((TextBox)(this.FV_Scheduling.FindControl("tbTaskSubType"))).Text = string.Empty;
+        ((TextBox)(this.FV_Scheduling.FindControl("tbShift"))).Text = string.Empty;
+        ((TextBox)(this.FV_Scheduling.FindControl("tbStartUser"))).Text = string.Empty;
+        ((TextBox)(this.FV_Scheduling.FindControl("tbIsSpecial"))).Text = string.Empty;
+        ((TextBox)(this.FV_Scheduling.FindControl("tbStartDate"))).Text = string.Empty;
+        ((TextBox)(this.FV_Scheduling.FindControl("tbEndDate"))).Text = string.Empty;
+    }
+
+    protected void ODS_Scheduling_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
+    {
+        scheduling = (Scheduling)e.InputParameters[0];
+        Scheduling checkScheduling = TheSchedulingMgr.LoadScheduling(scheduling.Id);
+        if (checkScheduling!= null)
+        {
+            ShowErrorMessage("Common.Business.Error.EntityExist");
+            e.Cancel = true;
+        }
+    }
+
+    protected void ODS_Scheduling_Inserted(object sender, ObjectDataSourceStatusEventArgs e)
+    {
+        if (CreateEvent != null)
+        {
+            CreateEvent(scheduling.Id, e);
+            ShowSuccessMessage("ISI.Scheduling.Insert.Successfully");
+        }
+    }
+
+    protected void btnBack_Click(object sender, EventArgs e)
+    {
+        if (BackEvent != null)
+        {
+            BackEvent(this, e);
+        }
+    }
+}

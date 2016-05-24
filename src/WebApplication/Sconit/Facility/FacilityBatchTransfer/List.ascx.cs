@@ -17,7 +17,7 @@ using com.Sconit.Entity;
 using com.Sconit.Facility.Entity;
 using System.Collections.Generic;
 using NHibernate.Expression;
-public partial class Facility_FacilityBatchTransfer_List : ModuleBase
+public partial class Facility_FacilityBatchTransfer_List : ListModuleBase
 {
     public EventHandler EditEvent;
     public EventHandler TransferEvent;

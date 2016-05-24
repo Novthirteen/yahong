@@ -26,33 +26,18 @@
                         </td>
                     </tr>
                     <tr>
+
+                        <td class="td01">
+                            <asp:Literal ID="lblIsTrace" runat="server" Text="${ISI.TaskSubType.IsTrace}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:CheckBox ID="cbIsTrace" runat="server" Checked='<%# Bind("IsTrace") %>' />
+                        </td>
                         <td class="td01">
                             <asp:Literal ID="lblIsCostCenter" runat="server" Text="${ISI.TaskSubType.IsCostCenter}:" />
                         </td>
                         <td class="td02">
                             <asp:CheckBox ID="cbIsCostCenter" runat="server" Checked='<%# Bind("IsCostCenter") %>' />
-                        </td>
-                        <td class="td01">
-                            <asp:Literal ID="lblFormType" runat="server" Text="${ISI.TaskSubType.FormType}:" />
-                        </td>
-                        <td class="td02">
-                            <cc1:CodeMstrDropDownList ID="ddlFormType" Code="FormType" runat="server" IncludeBlankOption="true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="td01">
-                            <asp:Literal ID="lblIsBudget" runat="server" Text="${ISI.TaskSubType.IsBudget}:" />
-                        </td>
-                        <td class="td02">
-                            <asp:CheckBox ID="cbIsBudget" runat="server" Checked='<%# Bind("IsBudget") %>' />
-                        </td>
-                        <td class="td01">
-                            <asp:Literal ID="lblIsAmount" runat="server" Text="${ISI.TaskSubType.IsAmount}:" />
-                        </td>
-                        <td class="td02">
-                            <asp:CheckBox ID="cbIsAmount" runat="server" Checked='<%# Bind("IsAmount") %>' />
-                            <asp:Literal ID="lblIsAmountDetail" runat="server" Text="${ISI.TaskSubType.IsAmountDetail}:" />
-                            <asp:CheckBox ID="cbIsAmountDetail" runat="server" Checked='<%# Bind("IsAmountDetail") %>' />
                         </td>
                     </tr>
                     <tr>
@@ -67,43 +52,6 @@
                         </td>
                         <td class="td02">
                             <asp:CheckBox ID="cbIsPrint" runat="server" Checked='<%# Bind("IsPrint") %>' />
-                            <asp:Literal ID="lblTemplate" runat="server" Text="${Common.Business.Template}:" />
-                            <cc1:CodeMstrDropDownList ID="ddlTemplate" Code="ISITemplate" runat="server">
-                            </cc1:CodeMstrDropDownList>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="td01">
-                            <asp:Literal ID="lblIsTrace" runat="server" Text="${ISI.TaskSubType.IsTrace}:" />
-                        </td>
-                        <td class="td02">
-                            <asp:CheckBox ID="cbIsTrace" runat="server" Checked='<%# Bind("IsTrace") %>' />
-                        </td>
-                        <td class="td01">
-                            <asp:Literal ID="ltlTaskSubType" runat="server" Text="${ISI.TaskSubType.CostCenter}:" />
-                        </td>
-                        <td class="td02">
-                            <uc3:textbox ID="tbCostCenter" runat="server" DescField="Name" MustMatch="true"
-                                ValueField="Code" ServicePath="TaskSubTypeMgr.service" ServiceMethod="GetCostCenter"
-                                Width="260" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="td01">
-                            <asp:Label ID="ltlAccount1" runat="server" Text="${ISI.TaskSubType.Account1}:" />
-                        </td>
-                        <td class="td02">
-                            <uc3:textbox ID="tbAccount1" runat="server" Visible="true" DescField="Account1Desc" MustMatch="true"
-                                ValueField="Account1" ServicePath="BudgetDetMgr.service" ServiceMethod="GetAccount1"
-                                ServiceParameter="string:#tbCostCenter" />
-                        </td>
-                        <td class="td01">
-                            <asp:Label ID="ltlAccount2" runat="server" Text="${ISI.TaskSubType.Account2}:" />
-                        </td>
-                        <td class="td02">
-                            <uc3:textbox ID="tbAccount2" runat="server" Visible="true" DescField="Account2Desc" MustMatch="true"
-                                ValueField="Account2" ServicePath="BudgetDetMgr.service" ServiceMethod="GetAccount2"
-                                ServiceParameter="string:#tbCostCenter,string:#tbAccount1" />
                         </td>
                     </tr>
                     <tr>
@@ -118,8 +66,6 @@
                         </td>
                         <td class="td02">
                             <asp:CheckBox ID="cbIsCtrl" runat="server" Checked='<%# Bind("IsCtrl") %>' />
-                            <asp:Literal ID="lblIsRemind" runat="server" Text="${ISI.TaskSubType.IsRemind}:" />
-                            <asp:CheckBox ID="cbIsRemind" runat="server" Checked='<%# Bind("IsRemind") %>' />
                         </td>
                     </tr>
                 </table>
@@ -174,16 +120,7 @@
                     <asp:CheckBox ID="cbIsCtrl" runat="server" Checked='<%# Bind("IsCtrl") %>' />
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField HeaderText="${ISI.TaskSubType.ProcessDefinition.IsAccountCtrl}" HeaderStyle-Wrap="false">
-                <ItemTemplate>
-                    <asp:CheckBox ID="cbIsAccountCtrl" runat="server" Checked='<%# Bind("IsAccountCtrl") %>' />
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField HeaderText="${ISI.TaskSubType.ProcessDefinition.IsRemind}" HeaderStyle-Wrap="false">
-                <ItemTemplate>
-                    <asp:CheckBox ID="cbIsRemind" runat="server" Checked='<%# Bind("IsRemind") %>' />
-                </ItemTemplate>
-            </asp:TemplateField>
+
             <asp:TemplateField HeaderText="${ISI.TaskSubType.ProcessDefinition.Apply}/${ISI.TaskSubType.ProcessDefinition.UOM}" HeaderStyle-Wrap="false">
                 <ItemTemplate>
                     <div>
@@ -196,10 +133,9 @@
                     </div>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField HeaderText="${ISI.TaskSubType.ProcessDefinition.GreaterQty}" HeaderStyle-Wrap="false">
+            <asp:TemplateField HeaderText="${ISI.TaskSubType.ProcessDefinition.Qty}" HeaderStyle-Wrap="false">
                 <ItemTemplate>
                     <div>
-                        <asp:Literal ID="lblAmount" runat="server" Text="${ISI.TaskSubType.ProcessDefinition.Amount}:" />
                         <asp:TextBox ID="tbApplyQty" runat="server" TabIndex="1" Width="80" />
                         <asp:RegularExpressionValidator ID="revApplyQty" ControlToValidate="tbApplyQty" runat="server"
                             ValidationGroup="vgAdd" ErrorMessage="${Common.Validator.Valid.Number}" ValidationExpression="^[0-9]+(.[0-9]{1,8})?$"
@@ -209,7 +145,6 @@
                             Type="Double" ValidationGroup="vgAdd" />
                     </div>
                     <div>
-                        <asp:Literal ID="lblQty" runat="server" Text="${ISI.TaskSubType.ProcessDefinition.Qty}:" />
                         <asp:TextBox ID="tbQty" runat="server" TabIndex="1" Width="80" />
                         <asp:RegularExpressionValidator ID="revQty" ControlToValidate="tbQty" runat="server"
                             ValidationGroup="vgAdd" ErrorMessage="${Common.Validator.Valid.Number}" ValidationExpression="^[0-9]+(.[0-9]{1,8})?$"

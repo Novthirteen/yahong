@@ -24,7 +24,7 @@
 <fieldset>
     <div class="GridView">
         <asp:GridView ID="GV_List" runat="server" OnRowDataBound="GV_List_RowDataBound" AutoGenerateColumns="false"
-            RowStyle-CssClass="abc" OnDataBound="GV_List_DataBound"   >
+            RowStyle-CssClass="abc" OnDataBound="GV_List_DataBound">
             <Columns>
                 <asp:TemplateField>
                     <HeaderTemplate>

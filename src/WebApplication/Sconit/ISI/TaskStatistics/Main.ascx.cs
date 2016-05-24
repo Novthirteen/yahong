@@ -255,9 +255,6 @@ public partial class ISI_TaskStatistics_Main : com.Sconit.Web.MainModuleBase
         sql.Append("                ( t.StartDate is not null and t.StartDate <= @EndDate and ( t.CompleteDate is null or t.CompleteDate > @EndDate or t.CompleteDate < t.StartDate ) ) ");
         sql.Append("            ) ");
         //sql.Append("  and  SubmitDate >= @StartDate  and SubmitDate <= @EndDate ");
-        //排除取消
-        sql.Append("  and  (CancelDate is null or (CancelDate is not null and CancelDate > @EndDate ) ) ");
-
         sql.Append("  and  SubmitUser is not null and SubmitUser !='' and AssignDate is not null ");
         sql.Append("  and  isnull(SchedulingStartUser,AssignStartUser) is not null and isnull(SchedulingStartUser,AssignStartUser) !='' ");
         if (!string.IsNullOrEmpty(this.tbTaskSubType.Text.Trim()))

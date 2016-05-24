@@ -28,7 +28,6 @@ public partial class ISI_Summary_Search : SearchModuleBase
     {
         if (!IsPostBack)
         {
-            btnExport.Visible = this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_SUMMARY_VALUE_SUMMARYADMIN) || this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_SUMMARY_VALUE_SUMMARYAPPROVE);
             GenerateTree();
             tbDate.Text = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
         }
@@ -41,26 +40,14 @@ public partial class ISI_Summary_Search : SearchModuleBase
         {
             this.astvMyTree.RootNode.AppendChild(new ASTreeViewLinkNode(this.TheLanguageMgr.TranslateMessage("ISI.Status." + status.Value, CurrentUser), status.Value, string.Empty));
         }
-        /*
-        this.astvMyTree.RootNode.ChildNodes[0].CheckedState = ASTreeViewCheckboxState.Checked;
+        //        this.astvMyTree.RootNode.ChildNodes[0].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[1].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[3].CheckedState = ASTreeViewCheckboxState.Checked;
         this.astvMyTree.RootNode.ChildNodes[4].CheckedState = ASTreeViewCheckboxState.Checked;
-        this.astvMyTree.InitialDropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[0].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser);
-        this.astvMyTree.DropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[0].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser);
-         * */
+        this.astvMyTree.InitialDropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser);
+        this.astvMyTree.DropdownText = this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[1].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[3].NodeValue, CurrentUser) + "," + this.TheLanguageMgr.TranslateMessage("ISI.Status." + this.astvMyTree.RootNode.ChildNodes[4].NodeValue, CurrentUser);
     }
-    protected void btnExport_Click(object sender, EventArgs e)
-    {
-        string ym = this.tbDate.Text.Trim();
-        if (!string.IsNullOrEmpty(ym))
-        {
-            var date = DateTime.Parse(ym);
-            var evaluationList = this.TheEvaluationMgr.GetEvaluation(date, false);
-            this.TheSummaryMgr.SummaryRemind4(date, evaluationList, this.CurrentUser);
-            this.ShowSuccessMessage("ISI.Summary.ExportSummary.Successfully", ym);
-        }
-    }
+
     protected void btnSearch_Click(object sender, EventArgs e)
     {
         DoSearch();
@@ -117,8 +104,8 @@ public partial class ISI_Summary_Search : SearchModuleBase
 
             if (!this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_SUMMARY_VALUE_SUMMARYADMIN) && !this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_SUMMARY_VALUE_SUMMARYAPPROVE))
             {
-                selectCriteria.Add(Expression.Or(Expression.Eq("CreateUser", CurrentUser.Code), Expression.Or(Expression.Eq("SubmitUser", CurrentUser.Code), Expression.Not(Expression.Eq("Status", ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE)))));
-                selectCountCriteria.Add(Expression.Or(Expression.Eq("CreateUser", CurrentUser.Code), Expression.Or(Expression.Eq("SubmitUser", CurrentUser.Code), Expression.Not(Expression.Eq("Status", ISIConstants.CODE_MASTER_SUMMARY_STATUS_VALUE_CREATE)))));
+                selectCriteria.Add(Expression.Or(Expression.Eq("CreateUser", CurrentUser.Code), Expression.Eq("SubmitUser", CurrentUser.Code)));
+                selectCountCriteria.Add(Expression.Or(Expression.Eq("CreateUser", CurrentUser.Code), Expression.Eq("SubmitUser", CurrentUser.Code)));
             }
 
             if (statusList != null && statusList.Count > 0)
@@ -131,8 +118,8 @@ public partial class ISI_Summary_Search : SearchModuleBase
 
             if (user != string.Empty)
             {
-                selectCriteria.Add(Expression.Eq("UserCode", user));
-                selectCountCriteria.Add(Expression.Eq("UserCode", user));
+                selectCriteria.Add(Expression.Eq("User", user));
+                selectCountCriteria.Add(Expression.Eq("User", user));
             }
             if (date != string.Empty)
             {

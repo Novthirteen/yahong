@@ -16,17 +16,6 @@ using com.Sconit.Utility;
 
 public partial class ISI_Status_List : ListModuleBase
 {
-    public bool IsToDoList
-    {
-        get
-        {
-            return ViewState["IsToDoList"] != null ? (bool)ViewState["IsToDoList"] : false;
-        }
-        set
-        {
-            ViewState["IsToDoList"] = value;
-        }
-    }
     public string Type
     {
         get
@@ -57,7 +46,7 @@ public partial class ISI_Status_List : ListModuleBase
     {
         get
         {
-            return ViewState["Monday"] != null ? (DateTime)ViewState["Monday"] : ISIUtil.GetMondayDate();
+            return (DateTime)ViewState["Monday"];
         }
         set
         {
@@ -71,7 +60,7 @@ public partial class ISI_Status_List : ListModuleBase
     {
         get
         {
-            return ViewState["LastMonday"] != null ? (DateTime)ViewState["LastMonday"] : Monday.AddDays(-7);
+            return (DateTime)ViewState["LastMonday"];
         }
         set
         {
@@ -85,7 +74,7 @@ public partial class ISI_Status_List : ListModuleBase
     {
         get
         {
-            return ViewState["LastLastMonday"] != null ? (DateTime)ViewState["LastLastMonday"] : LastMonday.AddDays(-7);
+            return (DateTime)ViewState["LastLastMonday"];
         }
         set
         {
@@ -204,11 +193,8 @@ public partial class ISI_Status_List : ListModuleBase
     public EventHandler EditEvent;
 
     public EventHandler NewEvent;
+
     public override void UpdateView()
-    {
-        UpdateView(string.Empty);
-    }
-    public void UpdateView(string taskCode)
     {
         if (this.Type == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE)
         {
@@ -231,7 +217,6 @@ public partial class ISI_Status_List : ListModuleBase
 
         //this.GV_List.FindPager().CurrentPageIndex = 1;
         this.GV_List.Execute();
-        this.SetAnchor(taskCode);
     }
 
     protected void lbtnEdit_Click(object sender, EventArgs e)
@@ -307,20 +292,14 @@ public partial class ISI_Status_List : ListModuleBase
     {
         var gridView = (com.Sconit.Control.GridView)sender;
         IList<string> taskCodeApplyList = new List<string>();
-        IList<string> taskCodeFormTypeList = new List<string>();
         IList<string> taskCodeList = new List<string>();
         foreach (GridViewRow row in gridView.Rows)
         {
             HiddenField hfIsApply = (HiddenField)row.FindControl("hfIsApply");
-            HiddenField hfFormType = (HiddenField)row.FindControl("hfFormType");
             LinkButton lbtnEdit = (LinkButton)row.FindControl("lbtnEdit");
             if (hfIsApply != null && bool.Parse(hfIsApply.Value))
             {
                 taskCodeApplyList.Add(lbtnEdit.CommandArgument);
-            }
-            if (!string.IsNullOrEmpty(hfFormType.Value))
-            {
-                taskCodeFormTypeList.Add(lbtnEdit.CommandArgument);
             }
             taskCodeList.Add(lbtnEdit.CommandArgument);
         }
@@ -342,24 +321,6 @@ public partial class ISI_Status_List : ListModuleBase
             gridView.Columns[4].Visible = false;
             gridView.Columns[7].Visible = false;
         }
-        else
-        {
-            gridView.Columns[0].HeaderStyle.Width = new Unit(0, UnitType.Percentage);
-            gridView.Columns[0].ItemStyle.Width = new Unit(0, UnitType.Percentage);
-            gridView.Columns[1].HeaderStyle.Width = new Unit(22, UnitType.Percentage);
-            gridView.Columns[1].ItemStyle.Width = new Unit(22, UnitType.Percentage);
-            gridView.Columns[5].HeaderStyle.Width = new Unit(0, UnitType.Percentage);
-            gridView.Columns[5].ItemStyle.Width = new Unit(0, UnitType.Percentage);
-            gridView.Columns[6].HeaderStyle.Width = new Unit(22, UnitType.Percentage);
-            gridView.Columns[6].ItemStyle.Width = new Unit(22, UnitType.Percentage);
-            gridView.Columns[8].HeaderStyle.Width = new Unit(15, UnitType.Percentage);
-            gridView.Columns[8].ItemStyle.Width = new Unit(15, UnitType.Percentage);
-
-            gridView.Columns[2].Visible = true;
-            gridView.Columns[3].Visible = true;
-            gridView.Columns[4].Visible = true;
-            gridView.Columns[7].Visible = true;
-        }
 
         IDictionary<string, IList<object>> taskStatusDic = null;
         IDictionary<string, IList<object>> commentDic = null;
@@ -377,27 +338,16 @@ public partial class ISI_Status_List : ListModuleBase
         }
 
         IList<TaskApply> taskApplyList = null;
-        IList<Cost> costList = null;
         if (taskCodeApplyList.Count > 0)
         {
             taskApplyList = this.TheTaskApplyMgr.GetTaskApply(taskCodeApplyList);
         }
-        if (taskCodeFormTypeList.Count > 0)
-        {
-            costList = this.TheCostMgr.GetCost(taskCodeFormTypeList);
-        }
-        if (taskApplyList != null && taskApplyList.Count > 0
-                        || taskStatusDic != null && taskStatusDic.Count > 0
-                        || commentDic != null && commentDic.Count > 0
-                        || attachmentDetailDic != null && attachmentDetailDic.Count > 0
-                        || costList != null && costList.Count > 0)
+
+        if (taskApplyList != null && taskApplyList.Count > 0 || taskStatusDic != null && taskStatusDic.Count > 0 || commentDic != null && commentDic.Count > 0 || attachmentDetailDic != null && attachmentDetailDic.Count > 0)
         {
             foreach (GridViewRow row in gridView.Rows)
             {
-                //var statusDiv = (System.Web.UI.HtmlControls.HtmlGenericControl)(row.FindControl("statusDiv"));
-                //var spanComplete = (System.Web.UI.HtmlControls.HtmlGenericControl)(row.FindControl("spanComplete"));
-                //var spanApprove = (System.Web.UI.HtmlControls.HtmlGenericControl)(row.FindControl("spanApprove"));
-
+                StringBuilder descBufer = new StringBuilder();
                 LinkButton lbtnEdit = (LinkButton)row.FindControl("lbtnEdit");
 
                 if (attachmentDetailDic != null && attachmentDetailDic.Count > 0 && attachmentDetailDic.Keys.Contains(lbtnEdit.CommandArgument))
@@ -408,12 +358,7 @@ public partial class ISI_Status_List : ListModuleBase
                 if (taskStatusDic != null && taskStatusDic.Count > 0 && taskStatusDic.Keys.Contains(lbtnEdit.CommandArgument))
                 {
                     Label lblStatusDesc = (Label)row.FindControl("lblStatusDesc");
-                    //GetStatusDesc(taskStatusDic[lbtnEdit.CommandArgument], lblStatusDesc, statusDiv, spanComplete, spanApprove);
                     GetStatusDesc(taskStatusDic[lbtnEdit.CommandArgument], lblStatusDesc);
-                }
-                else
-                {
-                    //this.SetCount(statusDiv, spanComplete, spanApprove, 0, 0);
                 }
 
                 if (commentDic != null && commentDic.Count > 0 && commentDic.Keys.Contains(lbtnEdit.CommandArgument))
@@ -427,7 +372,6 @@ public partial class ISI_Status_List : ListModuleBase
                     var thisRowTaskApplyList = taskApplyList.Where(t => t.TaskCode == lbtnEdit.CommandArgument).ToList();
                     if (thisRowTaskApplyList != null && thisRowTaskApplyList.Count > 0)
                     {
-                        StringBuilder descBufer = new StringBuilder();
                         this.TheTaskApplyMgr.OutputApply(descBufer, thisRowTaskApplyList, this.CurrentUser.UserLanguage);
                         Label lblDesc = (Label)row.FindControl("lblDesc");
                         if (lblDesc.Text.Length > 0)
@@ -435,84 +379,6 @@ public partial class ISI_Status_List : ListModuleBase
                             lblDesc.Text += ISIConstants.EMAIL_SEPRATOR;
                         }
                         lblDesc.Text += descBufer.ToString();
-                    }
-                }
-
-
-                //输出表单明细
-                if (costList != null && costList.Count > 0)
-                {
-                    HiddenField hfFormType = (HiddenField)row.FindControl("hfFormType");
-                    if (!string.IsNullOrEmpty(hfFormType.Value))
-                    {
-                        var thisRowCostList = costList.Where(t => t.TaskCode == lbtnEdit.CommandArgument).ToList();
-                        if (thisRowCostList != null && thisRowCostList.Count > 0)
-                        {
-                            StringBuilder descBufer = new StringBuilder();
-                            Label lblDesc = (Label)row.FindControl("lblDesc");
-                            foreach (var cost in thisRowCostList)
-                            {
-                                descBufer.Append(ISIConstants.EMAIL_SEPRATOR);
-                                Append(descBufer, "WFS.Cost.UserName", cost.User);
-                                Append(descBufer, "WFS.Cost.Desc", cost.Desc1);
-                                if (hfFormType.Value == ISIConstants.CODE_MASTER_WFS_FORMTYPE_1)
-                                {
-                                    Append(descBufer, "WFS.Cost.ExtNo", cost.ExtNo);
-                                    AppendAmount(descBufer, "WFS.Cost.NoTaxAmount", cost.NoTaxAmount);
-                                    AppendAmount(descBufer, "WFS.Cost.Taxes", cost.Taxes);
-                                    AppendAmount(descBufer, "WFS.Cost.TotalAmount", cost.TotalAmount);
-                                }
-                                else if (hfFormType.Value == ISIConstants.CODE_MASTER_WFS_FORMTYPE_5)
-                                {
-                                    //品名
-                                    descBufer.Append(cost.Item);
-                                    if (cost.Qty.HasValue)
-                                    {
-                                        descBufer.Append(cost.Qty.Value.ToString("    0.########"));
-                                    }
-                                    if (!String.IsNullOrEmpty(cost.Uom))
-                                    {
-                                        descBufer.Append(cost.Uom);
-                                    }
-                                }
-                                else if (hfFormType.Value == ISIConstants.CODE_MASTER_WFS_FORMTYPE_4)
-                                {
-                                    Append(descBufer, "WFS.Cost.ApplicationDate", cost.EndDate);
-                                    Append(descBufer, "WFS.Cost.StartAddr", cost.StartAddr);
-                                    Append(descBufer, "WFS.Cost.EndAddr", cost.EndAddr);
-                                }
-                                else
-                                {
-                                    if (hfFormType.Value == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2)
-                                    {
-                                        Append(descBufer, "WFS.Cost.StartDate", cost.StartDate);
-                                        Append(descBufer, "WFS.Cost.EndDate", cost.EndDate);
-                                        Append(descBufer, "WFS.Cost.StartAddr", cost.StartAddr);
-                                        Append(descBufer, "WFS.Cost.EndAddr", cost.EndAddr);
-                                        Append(descBufer, "WFS.Cost.Vehicle", cost.Vehicle);
-
-                                        AppendAmount(descBufer, "WFS.Cost.Allowance", cost.Allowance);
-                                        AppendAmount(descBufer, "WFS.Cost.Fare", cost.Fare);
-                                        AppendAmount(descBufer, "WFS.Cost.Quarterage", cost.Quarterage);
-                                        AppendAmount(descBufer, "WFS.Cost.Haulage", cost.Haulage);
-                                        Append(descBufer, "WFS.Cost.ExtNo", cost.ExtNo);
-                                        AppendAmount(descBufer, "WFS.Cost.NoTaxAmount", cost.NoTaxAmount);
-                                        AppendAmount(descBufer, "WFS.Cost.Taxes", cost.Taxes);
-                                        AppendAmount(descBufer, "WFS.Cost.TotalAmount", cost.TotalAmount);
-                                    }
-                                    else if (hfFormType.Value == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3)
-                                    {
-                                        Append(descBufer, "WFS.Cost.StartDate", cost.StartDate);
-                                        Append(descBufer, "WFS.Cost.EndDate", cost.EndDate);
-                                    }
-                                }
-                            }
-
-                            if (descBufer.Length > 0)
-                            {
-                                lblDesc.Text += descBufer.ToString();
-                            }
-                        }
                     }
                 }
             }
@@ -548,11 +414,44 @@ public partial class ISI_Status_List : ListModuleBase
             {
                 lblStartedUser.Text += "<hr>";
             }
+            string lastApprovalUser = string.Empty;
 
-            lblStartedUser.Text += ISIUtil.GetUserName(task.ApprovalUserNm, this.CurrentUser.Name, task.Level, task.ApprovalLevel, task.CurrentApprovalUserNm, "blue", "fuchsia");//.Replace(", ", "<br/>");
+            if (task.InDisputeDate.HasValue && task.InApproveDate.HasValue && task.InDisputeDate.Value > task.InApproveDate.Value)
+            {
+                lastApprovalUser = task.InDisputeUserNm.Trim();
+            }
+            else if (task.InDisputeDate.HasValue && !task.InApproveDate.HasValue)
+            {
+                lastApprovalUser = task.InDisputeUserNm.Trim();
+            }
+            else if (task.InApproveDate.HasValue)
+            {
+                lastApprovalUser = task.InApproveUserNm.Trim();
+            }
+
+            lblStartedUser.Text += ISIUtil.GetUserName(task.ApprovalUserNm, this.CurrentUser.Name, task.Level, task.ApprovalLevel, lastApprovalUser, "blue", "fuchsia");//.Replace(", ", "<br/>");
         }
     }
-
+    /// <summary> 
+    /// 计算本周的周一日期 
+    /// </summary> 
+    /// <returns></returns> 
+    public static DateTime GetMondayDate()
+    {
+        return DateTime.Parse(GetMondayDate(DateTime.Now).ToString("yyyy-MM-dd 00:00:00"));
+    }
+    /// <summary> 
+    /// 计算某日起始日期（礼拜一的日期） 
+    /// </summary> 
+    /// <param name="someDate">该周中任意一天</param> 
+    /// <returns>返回礼拜一日期，后面的具体时、分、秒和传入值相等</returns> 
+    public static DateTime GetMondayDate(DateTime someDate)
+    {
+        int i = someDate.DayOfWeek - DayOfWeek.Monday;
+        if (i == -1) i = 6;// i值 > = 0 ，因为枚举原因，Sunday排在最前，此时Sunday-Monday=-1，必须+7=6。 
+        TimeSpan ts = new TimeSpan(i, 0, 0, 0);
+        return someDate.Subtract(ts);
+    }
     protected void GV_List_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.Header)
@@ -600,7 +499,7 @@ public partial class ISI_Status_List : ListModuleBase
             Label lblTaskSubTypeCode = ((Label)(e.Row.FindControl("lblTaskSubTypeCode")));
             if (!string.IsNullOrEmpty(task.TaskSubTypeCode))
             {
-                lblTaskSubTypeCode.Text = "&#91;" + task.TaskSubTypeCode + "&#93;" + (!string.IsNullOrEmpty(task.FailureModeDesc) ? "<br>" + ISIUtil.SetHighlight(task.FailureModeDesc, this.IsHighlight, this.Desc) : string.Empty);
+                lblTaskSubTypeCode.Text = "&#91;" + task.TaskSubTypeCode + "&#93;";
                 lblTaskSubTypeCode.ToolTip = task.TaskSubTypeDesc;
             }
             Label lblStatus = ((Label)(e.Row.FindControl("lblStatus")));
@@ -712,31 +611,10 @@ public partial class ISI_Status_List : ListModuleBase
 
             ((LinkButton)e.Row.FindControl("lbtnEdit")).Text = ISIUtil.SetHighlight(task.TaskCode, this.IsHighlight, this.Desc);
             StringBuilder desc = new StringBuilder();
-            if (!string.IsNullOrEmpty(task.SupplierCode))
-            {
-                desc.Append("<span style='color:#0000E5;'>" + "${Common.Business.Supplier}" + "</span>&#58;&nbsp;");
-                desc.Append(ISIUtil.SetHighlight(task.SupplierDesc, this.IsHighlight, this.Desc));
-            }
-            /*
-            if (task.Type == ISIConstants.ISI_TASK_TYPE_IMPROVE && task.Amount.HasValue)
-            {
-                if (desc.Length > 0)
-                {
-                    desc.Append("<br/>");
-                }
-                desc.Append("<span style='color:#0000E5;'>" + "${ISI.TSK.ImpAmount}" + "</span>&#58;&nbsp;");
-                desc.Append(task.Amount.Value.ToString("0.########"));
-            }
-             */
             if (!string.IsNullOrEmpty(task.Desc1))
             {
-                if (desc.Length > 0)
-                {
-                    desc.Append("<br/>");
-                }
                 desc.Append(ISIUtil.SetHighlight(task.Desc1, this.IsHighlight, this.Desc));
             }
-
             if (!string.IsNullOrEmpty(task.Desc2))
             {
                 desc.Append((!string.IsNullOrEmpty(task.Desc1) ? "<br/>" : string.Empty) + "<span style='color:#0000E5;'>" + "${ISI.Status.Desc2}" + "</span>&#58;&nbsp;" + ISIUtil.SetHighlight(task.Desc2, this.IsHighlight, this.Desc));
@@ -763,26 +641,6 @@ public partial class ISI_Status_List : ListModuleBase
             {
                 descBufer.Append(ISIUtil.GetHide(task.TaskCode, desc.ToString()));
             }
-            Append(descBufer, "ISI.Status.CostCenter", task.CostCenter);
-            Append(descBufer, "ISI.Status.Account1", task.Account1Name);
-            Append(descBufer, "ISI.Status.Account2", task.Account2Name);
-            Append(descBufer, "WFS.Cost.Voucher", task.Voucher);
-            Append(descBufer, "ISI.Status.Payee", task.Payee);
-            Append(descBufer, "ISI.Status.Amount", task.Amount, StringHelper.MoneyCn(task.Amount));
-            Append(descBufer, "ISI.Status.Taxes", task.Taxes, StringHelper.MoneyCn(task.Taxes));
-            Append(descBufer, "ISI.Status.TotalAmount", task.TotalAmount, StringHelper.MoneyCn(task.TotalAmount));
-            if (task.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2 || task.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3)
-            {
-                AppendQty(descBufer, "ISI.Status.Hours", task.Qty);
-            }
-            else
-            {
-                AppendQty(descBufer, "ISI.Status.Qty", task.Qty);
-            }
-            if(!string.IsNullOrEmpty(task.BackYards))
-            {
-                Append(descBufer, "ISI.TSK.BackYards", task.BackYards);
-            }
             lblDesc.Text = descBufer.ToString();
 
             StringBuilder expectedResultsBufer = new StringBuilder();
@@ -801,13 +659,13 @@ public partial class ISI_Status_List : ListModuleBase
             }
             ((Label)e.Row.FindControl("lblExpectedResults")).Text = expectedResultsBufer.ToString();
 
-            //Label lblStatusDesc = (Label)e.Row.FindControl("lblStatusDesc");
-            /*
+            Label lblStatusDesc = (Label)e.Row.FindControl("lblStatusDesc");
+
             if (task.StatusDate.HasValue)
             {
                 lblStatusDesc.Text = "<span style='color:#0000E5;'>" + task.StatusDate.Value.ToString("yyyy-MM-dd HH:mm") + "</span>";
             }
-            */
+
             if (task.SubmitDate.HasValue)
             {
                 e.Row.Cells[3].ToolTip = task.SubmitDate.Value.ToString("yyyy-MM-dd HH:mm");
@@ -857,20 +715,10 @@ public partial class ISI_Status_List : ListModuleBase
                     }
 
                     tbEndDate.ReadOnly = false;
-                    //tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
+                    tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
 
                     tbStartDate.ReadOnly = false;
-                    //tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    if (tbEndDate.Visible && tbStartDate.Visible)
-                    {
-                        tbStartDate.Attributes.Add("onclick", "var " + tbEndDate.ClientID + "=$dp.$('" + tbEndDate.ClientID + "');WdatePicker({startDate:'%y-%M-%d 08:00:00',qsEnabled:true,quickSel:['%y-01-01 08:00:00','%y-02-01 08:00:00','%y-%M-01 08:00:00','%y-%M-15 08:00:00'],dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\\'" + tbEndDate.ClientID + "\\')}' })");
-                        tbEndDate.Attributes.Add("onclick", "WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',qsEnabled:true,quickSel:['%y-%M-15 16:30:00','%y-%M-%ld 16:30:00','%y-{%M+1}-%ld 16:30:00','%y-12-%ld 16:30:00','{%y+1}-01-%ld 16:30:00'],dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\\'" + tbStartDate.ClientID + "\\')}'})");
-                    }
-                    else
-                    {
-                        tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                        tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    }
+                    tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
                 }
 
                 Label lblSubmitUserNm = (Label)e.Row.FindControl("lblSubmitUserNm");
@@ -891,25 +739,15 @@ public partial class ISI_Status_List : ListModuleBase
                     spanCancel.InnerHtml = "<span class='link' id='lnkCancel" + task.TaskCode + "' name='lnkCancel" + task.TaskCode + "' onclick=\"javascript:CancelTask('" + task.TaskCode + "'," + e.Row.RowIndex + ");\">${Common.Button.Cancel}</span>";
 
                     tbEndDate.ReadOnly = false;
-                    //tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
+                    tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
 
                     tbStartDate.ReadOnly = false;
-                    //tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    if (tbEndDate.Visible && tbStartDate.Visible)
-                    {
-                        tbStartDate.Attributes.Add("onclick", "var " + tbEndDate.ClientID + "=$dp.$('" + tbEndDate.ClientID + "');WdatePicker({startDate:'%y-%M-%d 08:00:00',qsEnabled:true,quickSel:['%y-01-01 08:00:00','%y-02-01 08:00:00','%y-%M-01 08:00:00','%y-%M-15 08:00:00'],dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\\'" + tbEndDate.ClientID + "\\')}' })");
-                        tbEndDate.Attributes.Add("onclick", "WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',qsEnabled:true,quickSel:['%y-%M-15 16:30:00','%y-%M-%ld 16:30:00','%y-{%M+1}-%ld 16:30:00','%y-12-%ld 16:30:00','{%y+1}-01-%ld 16:30:00'],dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\\'" + tbStartDate.ClientID + "\\')}'})");
-                    }
-                    else
-                    {
-                        tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                        tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    }
+                    tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
                 }
                 if (task.IsWF && task.Level != ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
                 {
-                    //审批人     
-                    isAssign = task.IsAssignUser && (isWFAdmin || ISIUtil.Contains(task.DeptUser, this.CurrentUser.Code) || ISIUtil.Contains(task.CostCenterUser, this.CurrentUser.Code));
+                    //审批人                    
+                    isAssign = task.IsAssignUser && (isWFAdmin || ISIUtil.Contains(task.CostCenterUser, this.CurrentUser.Code));
                 }
                 else
                 {
@@ -921,24 +759,13 @@ public partial class ISI_Status_List : ListModuleBase
                 {
                     var spanApprove = (System.Web.UI.HtmlControls.HtmlGenericControl)(e.Row.FindControl("spanApprove"));
                     spanApprove.Attributes["style"] = "";
-                    if (!wfPermission.IsAccountCtrl)
+                    if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
                     {
-                        if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
-                        {
-                            spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 7 + ");\">${ISI.Button.Approve}</span>";
-                        }
-                        else
-                        {
-                            if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_SUBMIT)
-                            {
-                                spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 1 + ");\">${ISI.Button.Approve}</span>";
-                            }
-                            else
-                            {
-                                spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 9 + ");\">${ISI.Button.Approve}</span>";
-                            }
-                        }
-
+                        spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 7 + ");\">${ISI.Button.Approve}</span>";
+                    }
+                    else
+                    {
+                        spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 9 + ");\">${ISI.Button.Approve}</span>";
                     }
 
                     LinkButton lbtnEdit2 = (LinkButton)e.Row.FindControl("lbtnEdit2");
@@ -967,20 +794,10 @@ public partial class ISI_Status_List : ListModuleBase
                     spanAssign.InnerHtml = "<span class='link' id='lnkAssign" + task.TaskCode + "' name='lnkAssign" + task.TaskCode + "' onclick=\"javascript:AssignTask('" + task.TaskCode + "'," + e.Row.RowIndex + ",'" + task.TaskCode + " " + this.TheLanguageMgr.TranslateMessage("Common.Button.Confirm.Assign.For", this.CurrentUser, assignStartUserNm) + "');\">${Common.Button.Assign}</span>";
 
                     tbEndDate.ReadOnly = false;
-                    //tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
+                    tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
 
                     tbStartDate.ReadOnly = false;
-                    //tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    if (tbEndDate.Visible && tbStartDate.Visible)
-                    {
-                        tbStartDate.Attributes.Add("onclick", "var " + tbEndDate.ClientID + "=$dp.$('" + tbEndDate.ClientID + "');WdatePicker({startDate:'%y-%M-%d 08:00:00',qsEnabled:true,quickSel:['%y-01-01 08:00:00','%y-02-01 08:00:00','%y-%M-01 08:00:00','%y-%M-15 08:00:00'],dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\\'" + tbEndDate.ClientID + "\\')}' })");
-                        tbEndDate.Attributes.Add("onclick", "WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',qsEnabled:true,quickSel:['%y-%M-15 16:30:00','%y-%M-%ld 16:30:00','%y-{%M+1}-%ld 16:30:00','%y-12-%ld 16:30:00','{%y+1}-01-%ld 16:30:00'],dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\\'" + tbStartDate.ClientID + "\\')}'})");
-                    }
-                    else
-                    {
-                        tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                        tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    }
+                    tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
                 }
             }
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)
@@ -1002,16 +819,13 @@ public partial class ISI_Status_List : ListModuleBase
                     {
                         var spanApprove = (System.Web.UI.HtmlControls.HtmlGenericControl)(e.Row.FindControl("spanApprove"));
                         spanApprove.Attributes["style"] = "";
-                        if (!wfPermission.IsAccountCtrl)
+                        if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
                         {
-                            if (task.Level.Value == ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE)
-                            {
-                                spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 7 + ");\">${ISI.Button.Approve}</span>";
-                            }
-                            else
-                            {
-                                spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 9 + ");\">${ISI.Button.Approve}</span>";
-                            }
+                            spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 7 + ");\">${ISI.Button.Approve}</span>";
+                        }
+                        else
+                        {
+                            spanApprove.InnerHtml += "<span class='link' id='lnkApprove" + task.TaskCode + "' name='lnkApprove" + task.TaskCode + "' onclick=\"javascript:ShowApprove('" + task.TaskCode + "','" + task.Subject + "'," + e.Row.RowIndex + "," + task.CurrentStatusCount1 + "," + task.StatusCount1 + "," + 9 + ");\">${ISI.Button.Approve}</span>";
                         }
                     }
 
@@ -1032,7 +846,7 @@ public partial class ISI_Status_List : ListModuleBase
 
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN)
             {
-                if (this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isAssigner, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code))
+                if (this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code))
                 {
                     //LinkButton lbtnStart = (LinkButton)e.Row.FindControl("lbtnStart");
                     //lbtnStart.OnClientClick = "return confirm('" + task.TaskCode + " ${ISI.TSK.Confirm.Start}')";
@@ -1043,31 +857,21 @@ public partial class ISI_Status_List : ListModuleBase
 
                 if (isISIAdmin || isTaskFlowAdmin
                          || task.CreateUser == this.CurrentUser.Code
-                         || task.SubmitUser == this.CurrentUser.Code
-                         || (task.Type == ISIConstants.ISI_TASK_TYPE_IMPROVE && task.CreateUser != this.CurrentUser.Code && (ISIUtil.Contains(task.TaskSubTypeAssignUser, this.CurrentUser.Code) || ISIUtil.Contains(task.AssignUpUser, this.CurrentUser.Code))))
+                         || task.SubmitUser == this.CurrentUser.Code)
                 {
                     var spanCancel = (System.Web.UI.HtmlControls.HtmlGenericControl)(e.Row.FindControl("spanCancel"));
                     spanCancel.Visible = true;
                     spanCancel.InnerHtml = "<span class='link' id='lnkCancel" + task.TaskCode + "' name='lnkCancel" + task.TaskCode + "' onclick=\"javascript:CancelTask('" + task.TaskCode + "'," + e.Row.RowIndex + ");\">${Common.Button.Cancel}</span>";
+
                 }
 
                 if (this.TheTaskMgr.HasAssignPermission(task.CreateUser, task.SubmitUser, task.Status, task.Type, isISIAdmin, isTaskFlowAdmin, isAssigner, this.CurrentUser.Code, task.ECUser, task.TaskSubTypeAssignUser, task.AssignUpUser, task.IsAutoAssign, task.IsWF))
                 {
                     tbEndDate.ReadOnly = false;
-                    //tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
+                    tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
 
                     tbStartDate.ReadOnly = false;
-                    //tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    if (tbEndDate.Visible && tbStartDate.Visible)
-                    {
-                        tbStartDate.Attributes.Add("onclick", "var " + tbEndDate.ClientID + "=$dp.$('" + tbEndDate.ClientID + "');WdatePicker({startDate:'%y-%M-%d 08:00:00',qsEnabled:true,quickSel:['%y-01-01 08:00:00','%y-02-01 08:00:00','%y-%M-01 08:00:00','%y-%M-15 08:00:00'],dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\\'" + tbEndDate.ClientID + "\\')}' })");
-                        tbEndDate.Attributes.Add("onclick", "WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',qsEnabled:true,quickSel:['%y-%M-15 16:30:00','%y-%M-%ld 16:30:00','%y-{%M+1}-%ld 16:30:00','%y-12-%ld 16:30:00','{%y+1}-01-%ld 16:30:00'],dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\\'" + tbStartDate.ClientID + "\\')}'})");
-                    }
-                    else
-                    {
-                        tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                        tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                    }
+                    tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
                 }
             }
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE)
@@ -1093,16 +897,16 @@ public partial class ISI_Status_List : ListModuleBase
                 }
             }
 
-            if (this.TheTaskMgr.HasPermissionByClose(task.Status, task.Type, task.IsWF, task.CreateUser, task.SubmitUser, task.AssignUser, task.AssignUpUser, task.CloseUpUser, isAssigner, isISIAdmin, isCloser, this.CurrentUser.Code))
+            if (this.TheTaskMgr.HasPermissionByClose(task.Status, task.Type, task.IsWF, task.CreateUser, task.SubmitUser, isISIAdmin, isCloser, this.CurrentUser.Code))
             {
                 var spanOpen = (System.Web.UI.HtmlControls.HtmlGenericControl)(e.Row.FindControl("spanOpen"));
                 spanOpen.InnerHtml = "<span class='link' id='lnkOpen" + task.TaskCode + "' name='lnkOpen" + task.TaskCode + "' onclick=\"javascript:OpenTask('" + task.TaskCode + "'," + e.Row.RowIndex + ");\">${ISI.TSK.Button.Open}</span>";
                 spanOpen.Visible = true;
             }
 
-            if ((task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN && this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isAssigner, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code))
+            if ((task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN && (this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code)))
                        || (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS
-                                        && (this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isAssigner, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code)
+                                        && (this.TheTaskMgr.HasPermissionByProcess(task.Status, task.StartedUser, task.StartUpUser, task.CreateUser, task.SubmitUser, isISIAdmin, isTaskFlowAdmin, this.CurrentUser.Code)
                                             || this.TheTaskMgr.HasAssignPermission(task.CreateUser, task.SubmitUser, task.Status, task.Type, isISIAdmin, isTaskFlowAdmin, isAssigner, this.CurrentUser.Code, task.ECUser, task.TaskSubTypeAssignUser, task.AssignUpUser, task.IsAutoAssign, task.IsWF)))
                             || (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_COMPLETE
                                         && (this.TheTaskMgr.HasPermissionByComplete(task.Status, task.Type, task.CreateUser, task.SubmitUser, task.StartedUser,
@@ -1124,20 +928,10 @@ public partial class ISI_Status_List : ListModuleBase
                     if (this.TheTaskMgr.HasAssignPermission(task.CreateUser, task.SubmitUser, task.Status, task.Type, isISIAdmin, isTaskFlowAdmin, isAssigner, this.CurrentUser.Code, task.ECUser, task.TaskSubTypeAssignUser, task.AssignUpUser, task.IsAutoAssign, task.IsWF))
                     {
                         tbEndDate.ReadOnly = false;
-                        //tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
+                        tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
 
                         tbStartDate.ReadOnly = false;
-                        //tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                        if (tbStartDate.Visible && tbEndDate.Visible)
-                        {
-                            tbStartDate.Attributes.Add("onclick", "var " + tbEndDate.ClientID + "=$dp.$('" + tbEndDate.ClientID + "');WdatePicker({startDate:'%y-%M-%d 08:00:00',qsEnabled:true,quickSel:['%y-01-01 08:00:00','%y-02-01 08:00:00','%y-%M-01 08:00:00','%y-%M-15 08:00:00'],dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\\'" + tbEndDate.ClientID + "\\')}' })");
-                            tbEndDate.Attributes.Add("onclick", "WdatePicker({doubleCalendar:true,startDate:'%y-%M-%d 16:30:00',qsEnabled:true,quickSel:['%y-%M-15 16:30:00','%y-%M-%ld 16:30:00','%y-{%M+1}-%ld 16:30:00','%y-12-%ld 16:30:00','{%y+1}-01-%ld 16:30:00'],dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\\'" + tbStartDate.ClientID + "\\')}'})");
-                        }
-                        else
-                        {
-                            tbEndDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                            tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
-                        }
+                        tbStartDate.Attributes["onclick"] = "WdatePicker({dateFmt:'yyyy-MM-dd'})";
                     }
                 }
             }
@@ -1161,59 +955,6 @@ public partial class ISI_Status_List : ListModuleBase
         }
     }
 
-    private void Append(StringBuilder descBufer, string title, decimal? obj, string money)
-    {
-        Append(descBufer, title, obj, money, "C");
-    }
-
-    private void AppendQty(StringBuilder descBufer, string title, decimal? obj)
-    {
-        Append(descBufer, title, obj, string.Empty, "0.########");
-    }
-    private void Append(StringBuilder descBufer, string title, decimal? obj, string money, string format)
-    {
-        if (obj.HasValue && obj.Value != 0)
-        {
-            descBufer.Append((descBufer.Length > 0 ? "<br>" : string.Empty));
-            descBufer.Append("<span style='color:#0000E5;'>");
-            descBufer.Append("${" + title + "}");
-            descBufer.Append("</span>&#58;&nbsp;");
-            descBufer.Append(obj.Value.ToString(format) + (!string.IsNullOrEmpty(money) ? " " + money : string.Empty));
-        }
-    }
-    private void Append(StringBuilder descBufer, string title, DateTime? obj)
-    {
-        if (obj.HasValue)
-        {
-            this.Append(descBufer, title, obj.Value.ToString("yyyy-MM-dd"));
-        }
-    }
-
-    private void Append(StringBuilder descBufer, string title, int? obj)
-    {
-        if (obj.HasValue && obj.Value != 0)
-        {
-            this.Append(descBufer, title, obj.Value.ToString());
-        }
-    }
-    private void AppendAmount(StringBuilder descBufer, string title, decimal? obj)
-    {
-        if (obj.HasValue && obj.Value != 0)
-        {
-            Append(descBufer, title, obj, StringHelper.MoneyCn(obj), "C");
-        }
-    }
-    private void Append(StringBuilder descBufer, string title, string obj)
-    {
-        if (!string.IsNullOrEmpty(obj))
-        {
-            descBufer.Append((descBufer.Length > 0 ? "<br>" : string.Empty));
-            descBufer.Append("<span style='color:#0000E5;'>");
-            descBufer.Append("${" + title + "}");
-            descBufer.Append("</span>&#58;&nbsp;");
-            descBufer.Append(obj);
-        }
-    }
     private void GetAttachmentDesc(IList<object> ojbectList, GridViewRow row)
     {
 
@@ -1453,28 +1194,6 @@ public partial class ISI_Status_List : ListModuleBase
 
     }*/
 
-    private void SetCount(System.Web.UI.HtmlControls.HtmlGenericControl statusDiv,
-                                        System.Web.UI.HtmlControls.HtmlGenericControl spanComplete,
-                                        System.Web.UI.HtmlControls.HtmlGenericControl spanApprove,
-                                        int currentStatusCount, int statusCount)
-    {
-        if (statusDiv != null && statusDiv.InnerHtml.Length > 0)
-        {
-            statusDiv.InnerHtml.Replace("##########", currentStatusCount.ToString());
-            statusDiv.InnerHtml.Replace("%%%%%%%%%%", currentStatusCount.ToString());
-        }
-        if (spanComplete != null && spanComplete.InnerHtml.Length > 0)
-        {
-            spanComplete.InnerHtml.Replace("##########", currentStatusCount.ToString());
-            spanComplete.InnerHtml.Replace("%%%%%%%%%%", currentStatusCount.ToString());
-        }
-        if (spanApprove != null && spanApprove.InnerHtml.Length > 0)
-        {
-            spanApprove.InnerHtml.Replace("##########", currentStatusCount.ToString());
-            spanApprove.InnerHtml.Replace("%%%%%%%%%%", currentStatusCount.ToString());
-        }
-    }
-
     private void GetStatusDesc(IList<object> ojbectList, Label lblStatusDesc)
     {
         StringBuilder html = new StringBuilder();
@@ -1483,7 +1202,6 @@ public partial class ISI_Status_List : ListModuleBase
             IList<IList<TaskStatus>> taskStatusListList = (IList<IList<TaskStatus>>)ojbectList[0];
             int currentStatusCount = (int)ojbectList[1];
             int statusCount = (int)ojbectList[2];
-
             IList<TaskStatus> allStatus = (IList<TaskStatus>)ojbectList[3];
             if (taskStatusListList != null && taskStatusListList.Count > 0)
             {
@@ -1726,15 +1444,7 @@ public partial class ISI_Status_List : ListModuleBase
         Page.ClientScript.RegisterStartupScript(GetType(), "js", " <script language='JavaScript'>this.location.href='#hideImg'</script>");
 
     }
-    private void SetAnchor(string taskCode)
-    {
-        if (!string.IsNullOrEmpty(taskCode))
-        {
-            //Response.Write("<script language='JavaScript'>this.location.href='#" + displayIndex + "'</script>");
-            Page.ClientScript.RegisterStartupScript(GetType(), "js", " <script language='JavaScript'>this.location.href='#" + taskCode + "'</script>");
-            return;
-        }
-    }
+
     protected void lbtnReject_Click(object sender, EventArgs e)
     {
         string[] arg = ((LinkButton)sender).CommandArgument.Split(new char[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1868,14 +1578,6 @@ public partial class ISI_Status_List : ListModuleBase
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (this.IsToDoList)
-        {
-            gp.ToolTip = "${ToDoList.GridView.NoRecordFound}";
-        }
-        else
-        {
-            gp.ToolTip = string.Empty;
-        }
         if (!IsPostBack)
         {
             //ddlFlag.Items.Remove(ListItem.FromString(ISIConstants.CODE_MASTER_ISI_FLAG_DI1));
@@ -1884,7 +1586,7 @@ public partial class ISI_Status_List : ListModuleBase
             FileExtensions = this.TheEntityPreferenceMgr.LoadEntityPreference(ISIConstants.ISI_FILEEXTENSION).Value;
             ContentLength = int.Parse(this.TheEntityPreferenceMgr.LoadEntityPreference(ISIConstants.ISI_CONTENTLENGTH).Value);
 
-            Monday = ISIUtil.GetMondayDate();
+            Monday = GetMondayDate();
             LastMonday = Monday.AddDays(-7);
             LastLastMonday = LastMonday.AddDays(-7);
         }

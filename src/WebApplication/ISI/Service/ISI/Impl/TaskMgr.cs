@@ -58,8 +58,6 @@ namespace com.Sconit.ISI.Service.Impl
         public ISchedulingMgrE schedulingMgrE { get; set; }
         public IEntityPreferenceMgrE entityPreferenceMgrE { get; set; }
 
-      
-
         private static log4net.ILog log = log4net.LogManager.GetLogger("Log.ISI");
 
         #endregion
@@ -74,7 +72,7 @@ namespace com.Sconit.ISI.Service.Impl
         /// <param name="currentUser"></param>
         /// <returns></returns>
         [Transaction(TransactionMode.Unspecified)]
-        public bool HasPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isAssigner, bool isCloser, string currentUser)
+        public bool HasPermission(TaskMstr task, bool isISIAdmin, bool isTaskFlowAdmin, bool isCloser, string currentUser)
         {
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CREATE || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_RETURN)
             {
@@ -92,7 +90,7 @@ namespace com.Sconit.ISI.Service.Impl
                 //手工分派的执行人
                 //排班表的执行人
                 //执行上报人
-                return HasPermissionByProcess(task.Status, task.StartedUser, taskSubType.StartUpUser, task.CreateUser, task.SubmitUser, isAssigner, isISIAdmin, isTaskFlowAdmin, currentUser);
+                return HasPermissionByProcess(task.Status, task.StartedUser, taskSubType.StartUpUser, task.CreateUser, task.SubmitUser, isISIAdmin, isTaskFlowAdmin, currentUser);
             }
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN)
             {
@@ -119,7 +117,7 @@ namespace com.Sconit.ISI.Service.Impl
             if (task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CLOSE
                             || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL)
             {
-                return HasPermissionByClose(task.Status, task.Type, task.IsWF, task.CreateUser, task.SubmitUser, taskSubType.AssignUser, taskSubType.AssignUpUser, taskSubType.CloseUpUser, isAssigner, isISIAdmin, isCloser, currentUser);
+                return HasPermissionByClose(task.Status, task.Type, task.IsWF, task.CreateUser, task.SubmitUser, isISIAdmin, isCloser, currentUser);
             }
 
             return false;
@@ -186,7 +184,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             if (!level.HasValue || !preLevel.HasValue || level == preLevel)
             {
-                return new WFPermission() { IsApprove = false, IsCtrl = false, IsAccountCtrl = false };
+                return new WFPermission() { IsApprove = false, IsCtrl = false };
             }
             else
             {
@@ -213,30 +211,22 @@ namespace com.Sconit.ISI.Service.Impl
                 //and p.UserCode ='" + currentUser + "'
                 if (processInstanceList != null && processInstanceList.Count > 0 && (processInstanceList.Where(p => p.UserCode == currentUser).Count() > 0 || isWFAdmin))
                 {
-                    return new WFPermission() { IsApprove = processInstanceList.Where(p => p.IsApprove).Count() > 0, IsCtrl = processInstanceList.Where(p => p.IsCtrl || string.IsNullOrEmpty(p.UserCode)).Count() > 0, Desc1 = processInstanceList[0].Desc1, IsAccountCtrl = processInstanceList.Where(p => p.IsAccountCtrl).Count() > 0 };
+                    return new WFPermission() { IsApprove = processInstanceList.Where(p => p.IsApprove).Count() > 0, IsCtrl = processInstanceList.Where(p => p.IsCtrl || string.IsNullOrEmpty(p.UserCode)).Count() > 0, Desc1 = processInstanceList[0].Desc1 };
                 }
             }
-            return new WFPermission() { IsApprove = false, IsCtrl = false, IsAccountCtrl = false };
+            return new WFPermission() { IsApprove = false, IsCtrl = false };
         }
 
         [Transaction(TransactionMode.Unspecified)]
-        public bool HasPermissionByClose(string status, string type, bool isWF, string createUser, string submitUser, string assignUser, string assignUpUser, string closeUpUser, bool isAssigner, bool isISIAdmin, bool isCloser, string currentUser)
+        public bool HasPermissionByClose(string status, string type, bool isWF, string createUser, string submitUser, bool isISIAdmin, bool isCloser, string currentUser)
         {
             if (!isWF && (status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CLOSE
                     || status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CANCEL))
             {
-                //开启权限
-                if (status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_CLOSE)
-                {
-                    return true;
-                }
                 if (isISIAdmin
                             || createUser == currentUser
                             || submitUser == currentUser
-                            || (type != ISIConstants.ISI_TASK_TYPE_PRIVACY && (isCloser || isAssigner))
-                            || ISIUtil.Contains(assignUser, currentUser)
-                            || ISIUtil.Contains(assignUpUser, currentUser)
-                            || ISIUtil.Contains(closeUpUser, currentUser))
+                            || (type != ISIConstants.ISI_TASK_TYPE_PRIVACY && isCloser))
                 {
                     return true;
                 }
@@ -264,10 +254,8 @@ namespace com.Sconit.ISI.Service.Impl
 
                 //项目、项目问题由分派人、分派上报人和关闭上报人关闭
                 //工程更改 由工程更改负责人、分派人、分派上报人和关闭上报人关闭
-                //改进由创建人、提交人、分派人、分派上报人和关闭上报人关闭
                 if (type == ISIConstants.ISI_TASK_TYPE_PROJECT || type == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE
-                        || type == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE
-                        || type == ISIConstants.ISI_TASK_TYPE_IMPROVE)
+                        || type == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
                 {
                     if (ISIUtil.Contains(assignUser, currentUser)
                             || ISIUtil.Contains(assignUpUser, currentUser)
@@ -276,11 +264,6 @@ namespace com.Sconit.ISI.Service.Impl
                         return true;
                     }
                     else if (type == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE && ISIUtil.Contains(ecUser, currentUser))
-                    {
-                        return true;
-                    }
-                    else if (type == ISIConstants.ISI_TASK_TYPE_IMPROVE
-                                            && (createUser == currentUser || submitUser == currentUser))
                     {
                         return true;
                     }
@@ -358,18 +341,16 @@ namespace com.Sconit.ISI.Service.Impl
         }
 
         [Transaction(TransactionMode.Unspecified)]
-        public bool HasPermissionByProcess(string status, string startedUser, string startUpUser, string createUser, string submitUser, bool isAssigner, bool isISIAdmin, bool isTaskFlowAdmin, string currentUser)
+        public bool HasPermissionByProcess(string status, string startedUser, string startUpUser, string createUser, string submitUser, bool isISIAdmin, bool isTaskFlowAdmin, string currentUser)
         {
             //手工分派的执行人
             //排班表的执行人
             //执行上报人
             if (status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN || status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS)
             {
-                if (isISIAdmin || isTaskFlowAdmin || isAssigner || ISIUtil.Contains(startedUser, currentUser) || ISIUtil.Contains(startUpUser, currentUser))
-                {
-                    return true;
-                }
-                if (status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS && (createUser == currentUser || submitUser == currentUser))
+                if (isISIAdmin || isTaskFlowAdmin) return true;
+
+                if (ISIUtil.Contains(startedUser, currentUser) || ISIUtil.Contains(startUpUser, currentUser) || createUser == currentUser || submitUser == currentUser)
                 {
                     return true;
                 }
@@ -791,6 +772,7 @@ namespace com.Sconit.ISI.Service.Impl
             task.LastModifyUserNm = user.Name.Trim();
             this.wfDetailMgrE.CreateWFDetail(task.Code, task.Status, task.Level, task.PreLevel, nowDate, user);
 
+
             taskMstrMgrE.UpdateTaskMstr(task);
 
             if (!task.IsCompleteNoRemind)
@@ -831,10 +813,8 @@ namespace com.Sconit.ISI.Service.Impl
             }
 
             DateTime nowDate = DateTime.Now;
-            if (!task.IsWF)
-            {
-                task.Flag = ISIConstants.CODE_MASTER_ISI_FLAG_DI2;
-            }
+
+            task.Flag = ISIConstants.CODE_MASTER_ISI_FLAG_DI2;
 
             task.Status = ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS;
             task.StartDate = nowDate;
@@ -1191,25 +1171,25 @@ namespace com.Sconit.ISI.Service.Impl
         }
 
         [Transaction(TransactionMode.Requires)]
-        public int BatchReplaceTask(IList<TaskMstr> taskList, string srcUserCode, string targetUserCode, User user)
+        public int BatchReplaceTask(IList<TaskMstr> taskList, string oldUserCode, string newUserCode, User user)
         {
             int count = 0;
             DateTime now = DateTime.Now;
-            User oldUser = this.userMgrE.CheckAndLoadUser(srcUserCode);
-            User newUser = this.userMgrE.CheckAndLoadUser(targetUserCode);
+            User oldUser = this.userMgrE.CheckAndLoadUser(oldUserCode);
+            User newUser = this.userMgrE.CheckAndLoadUser(newUserCode);
             foreach (var task in taskList)
             {
                 if (!string.IsNullOrEmpty(task.StartedUser))
                 {
                     string assignStartUser = task.StartedUser;
 
-                    int p1 = assignStartUser.IndexOf(srcUserCode);
+                    int p1 = assignStartUser.IndexOf(oldUserCode);
                     if (p1 != -1)
                     {
                         bool isContainsNewUser = false;
                         for (int i = 1; i <= 4; i++)
                         {
-                            if (assignStartUser.Contains(ISIUtil.FormatUser(targetUserCode, i)))
+                            if (assignStartUser.Contains(ISIUtil.FormatUser(newUserCode, i)))
                             {
                                 isContainsNewUser = true;
                                 break;
@@ -1221,7 +1201,7 @@ namespace com.Sconit.ISI.Service.Impl
                             //已经包含了目标用户
                             if (isContainsNewUser)
                             {
-                                string newAssignStartUser = assignStartUser.Replace(ISIUtil.FormatUser(srcUserCode, i), ISIUtil.FormatUser(string.Empty, i));
+                                string newAssignStartUser = assignStartUser.Replace(ISIUtil.FormatUser(oldUserCode, i), ISIUtil.FormatUser(string.Empty, i));
                                 newAssignStartUser = newAssignStartUser.Replace("|,", "|").Replace(",|", "|").Replace(",,", ",");
                                 if (newAssignStartUser != assignStartUser)
                                 {
@@ -1239,15 +1219,12 @@ namespace com.Sconit.ISI.Service.Impl
                                     task.LastModifyUserNm = user.Name.Trim();
                                     this.taskMstrMgrE.UpdateTaskMstr(task);
                                     count++;
-
-                                    wfDetailMgrE.CreateWFDetail(task.Code, task.Status, "删除执行人 " + oldUser.CodeName, now, user);
-
                                     break;
                                 }
                             }
-                            else if (assignStartUser.Contains(ISIUtil.FormatUser(srcUserCode, i)))
+                            else if (assignStartUser.Contains(ISIUtil.FormatUser(oldUserCode, i)))
                             {
-                                string newAssignStartUser = assignStartUser.Replace(ISIUtil.FormatUser(srcUserCode, i), ISIUtil.FormatUser(targetUserCode, i));
+                                string newAssignStartUser = assignStartUser.Replace(ISIUtil.FormatUser(oldUserCode, i), ISIUtil.FormatUser(newUserCode, i));
                                 if (newAssignStartUser != assignStartUser)
                                 {
                                     task.AssignStartUser = newAssignStartUser;
@@ -1264,9 +1241,6 @@ namespace com.Sconit.ISI.Service.Impl
                                     task.LastModifyUserNm = user.Name.Trim();
                                     this.taskMstrMgrE.UpdateTaskMstr(task);
                                     count++;
-
-                                    wfDetailMgrE.CreateWFDetail(task.Code, task.Status, "将执行人 " + oldUser.CodeName + " 替换为 " + newUser.CodeName, now, user);
-
                                     break;
                                 }
                             }
@@ -1370,9 +1344,9 @@ namespace com.Sconit.ISI.Service.Impl
                     }
                 }
 
-             
 
                 //暂不删除附件
+
 
                 //this.wfDetailMgrE.CreateWFDetail(code, task.Status, ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_DELETE, DateTime.Now, user);
 
@@ -1413,15 +1387,13 @@ namespace com.Sconit.ISI.Service.Impl
                         || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INAPPROVE
                         || task.Status == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INDISPUTE)
             {
-                DateTime now = DateTime.Now;
-                if (task.IsWF)
+                if (task.IsWF && task.Status != wfsStatus)
                 {
-                    //if (task.Status != wfsStatus)
-                    //{
+                    DateTime now = DateTime.Now;
                     workflowMgrE.ProcessNew(task, wfsStatus, approveDesc, color, countersignList, isiAdmin, now, isEmail, user);
                     if (task.IsUpdate)
                     {
-                        if (task.Level == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE && task.IsTrace)
+                        if (task.Level == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE && wfsStatus == ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE)
                         {
                             //自动分派
                             HandleAssign(task, now, user);
@@ -1446,11 +1418,6 @@ namespace com.Sconit.ISI.Service.Impl
                         throw new BusinessErrorException("ISI.WF.Error.Approveed", task.Code, task.Status);
                     }
                 }
-                else
-                {
-                    workflowMgrE.CreateApprove(task.Code, approveDesc, task.Flag, color, now, user);
-                }
-                //}
             }
             else
             {
@@ -1527,23 +1494,11 @@ namespace com.Sconit.ISI.Service.Impl
                     if (!isProcess)
                     {
                         string assignUser = string.Empty;
-                        bool isRemind = false;
-                        //部门领导审批
-                        //task.Dept
                         if (task.TaskSubType.IsAssignUser && !string.IsNullOrEmpty(user.CostCenter))
                         {
-                            object[] costCenter = hqlMgrE.FindAll<object[]>("select tst.AssignUser,tst.IsRemind from TaskSubType tst where tst.Code='" + user.CostCenter + "'").FirstOrDefault();
-                            assignUser = costCenter[0].ToString();
-                            //isRemind = costCenter[1] != null ? bool.Parse(costCenter[1].ToString()) : false;
-                            isRemind = task.TaskSubType.IsRemind;
+                            assignUser = hqlMgrE.FindAll<string>("select tst.AssignUser from TaskSubType tst where tst.Code='" + user.CostCenter + "'").FirstOrDefault();
                         }
-                        //成本中心领导审批
-                        string costCenterUser = string.Empty;
-                        if (task.TaskSubType.IsCostCenter)
-                        {
-                            costCenterUser = this.taskSubTypeMgrE.GetCostCenter(task.Code, (task.TaskSubType.IsAssignUser ? string.Empty : user.CostCenter));
-                        }
-                        workflowMgrE.StartProcessInstance(task, assignUser, costCenterUser, isRemind, now, user);
+                        workflowMgrE.StartProcessInstance(task, assignUser, now, user);
                     }
                     if (task.Level > ISIConstants.CODE_MASTER_WFS_LEVEL3)
                     {
@@ -1554,8 +1509,6 @@ namespace com.Sconit.ISI.Service.Impl
                     }
                     if (task.Level == ISIConstants.CODE_MASTER_WFS_LEVEL_COMPLETE)
                     {
-                        task.Flag = ISIConstants.CODE_MASTER_ISI_FLAG_DI4;
-                        task.Color = string.Empty;
                         task.Status = ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_APPROVE;
                         task.PreLevel = ISIConstants.CODE_MASTER_WFS_LEVEL_ULTIMATE;
                         task.ApproveDate = now;
@@ -1593,8 +1546,7 @@ namespace com.Sconit.ISI.Service.Impl
                     {
                         if (task.Type != ISIConstants.ISI_TASK_TYPE_PRIVACY
                                     && user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_TASKFLOWADMIN)
-                                    && user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ASSIGN))
-                            return task;
+                                    && user.HasPermission(ISIConstants.CODE_MASTER_ISI_TASK_VALUE_ASSIGN)) return task;
 
                         userSubList = userSubscriptionMgrE.SubmitUserSub(task, user);
 
@@ -1744,70 +1696,54 @@ namespace com.Sconit.ISI.Service.Impl
         {
             if (string.IsNullOrEmpty(task.AssignStartUser))
             {
-                if (task.TaskSubType != null && task.TaskSubType.IsAutoAssign)
-                {
-                    string startUser = string.Empty;
-                    string startUserNm = string.Empty;
-                    task.AssignStartUser = task.TaskSubType.StartUser;
-                    if (!string.IsNullOrEmpty(task.AssignStartUser))
-                    {
-                        startUser = ISIConstants.ISI_USER_SEPRATOR + ISIUtil.EditUser(task.AssignStartUser);
-                        startUserNm = ISIConstants.ISI_USER_SEPRATOR + this.userSubscriptionMgrE.GetUserName(task.AssignStartUser);
-                    }
-                    task.AssignStartUser = ISIConstants.ISI_LEVEL_SEPRATOR + task.SubmitUser + startUser + ISIConstants.ISI_LEVEL_SEPRATOR;
-                    task.AssignStartUserNm = task.SubmitUserNm + startUserNm;
-                }
-                else
-                {
-                    IList<SchedulingView> schedulingViewList = schedulingMgrE.GetScheduling2(now.Date, now.Date, task.TaskSubType.Code, string.Empty);
+                IList<SchedulingView> schedulingViewList = schedulingMgrE.GetScheduling2(now.Date, now.Date, task.TaskSubType.Code, string.Empty);
 
-                    if (schedulingViewList != null && schedulingViewList.Count > 0)
+                if (schedulingViewList != null && schedulingViewList.Count > 0)
+                {
+                    SchedulingView schedulingView = schedulingViewList.Where(s => s.StartTime <= now && now <= s.EndTime).FirstOrDefault();
+                    if (schedulingView != null)
                     {
-                        SchedulingView schedulingView = schedulingViewList.Where(s => s.StartTime <= now && now <= s.EndTime).FirstOrDefault();
-                        if (schedulingView != null)
+                        if (schedulingView.Id.HasValue)
                         {
-                            if (schedulingView.Id.HasValue)
-                            {
-                                //排班表有执行人
-                                task.Scheduling = schedulingView.Id;
-                                task.SchedulingStartUser = schedulingView.StartUser;
-                                task.SchedulingShift = schedulingView.ShiftCode;
-                                task.SchedulingShiftTime = schedulingView.StartTime.ToString("yyyy-MM-dd HH:mm") + " " + schedulingView.EndTime.ToString("yyyy-MM-dd HH:mm");
-                            }
-                            else
-                            {
-                                task.Scheduling = null;
-
-                                task.AssignStartUser = schedulingView.StartUser;
-                                if (schedulingView.IsAutoAssign && !ISIUtil.Contains(task.AssignStartUser, task.SubmitUser))
-                                {
-                                    string startUser = string.Empty;
-                                    string startUserNm = string.Empty;
-                                    if (!string.IsNullOrEmpty(task.AssignStartUser))
-                                    {
-                                        startUser = ISIConstants.ISI_USER_SEPRATOR + ISIUtil.EditUser(task.AssignStartUser);
-                                        startUserNm = ISIConstants.ISI_USER_SEPRATOR + this.userSubscriptionMgrE.GetUserName(task.AssignStartUser);
-                                    }
-                                    task.AssignStartUser = ISIConstants.ISI_LEVEL_SEPRATOR + task.SubmitUser + startUser + ISIConstants.ISI_LEVEL_SEPRATOR;
-                                    task.AssignStartUserNm = task.SubmitUserNm + startUserNm;
-                                }
-                                else if (!string.IsNullOrEmpty(task.AssignStartUser) && string.IsNullOrEmpty(task.AssignStartUserNm))
-                                {
-                                    task.AssignStartUserNm = this.userSubscriptionMgrE.GetUserName(schedulingView.StartUser);
-                                }
-                                task.SchedulingShift = schedulingView.ShiftCode;
-                                task.SchedulingShiftTime = schedulingView.StartTime.ToString("yyyy-MM-dd HH:mm") + " " + schedulingView.EndTime.ToString("yyyy-MM-dd HH:mm");
-                            }
+                            //排班表有执行人
+                            task.Scheduling = schedulingView.Id;
+                            task.SchedulingStartUser = schedulingView.StartUser;
+                            task.SchedulingShift = schedulingView.ShiftCode;
+                            task.SchedulingShiftTime = schedulingView.StartTime.ToString("yyyy-MM-dd HH:mm") + " " + schedulingView.EndTime.ToString("yyyy-MM-dd HH:mm");
                         }
                         else
                         {
-                            ClearScheduling(task);
+                            task.Scheduling = null;
+
+                            task.AssignStartUser = schedulingView.StartUser;
+                            if (schedulingView.IsAutoAssign && !ISIUtil.Contains(task.AssignStartUser, task.SubmitUser))
+                            {
+                                string startUser = string.Empty;
+                                string startUserNm = string.Empty;
+                                if (!string.IsNullOrEmpty(task.AssignStartUser))
+                                {
+                                    startUser = ISIConstants.ISI_USER_SEPRATOR + ISIUtil.EditUser(task.AssignStartUser);
+                                    startUserNm = ISIConstants.ISI_USER_SEPRATOR + this.userSubscriptionMgrE.GetUserName(task.AssignStartUser);
+                                }
+                                task.AssignStartUser = ISIConstants.ISI_LEVEL_SEPRATOR + task.SubmitUser + startUser + ISIConstants.ISI_LEVEL_SEPRATOR;
+                                task.AssignStartUserNm = task.SubmitUserNm + startUserNm;
+                            }
+                            else if (!string.IsNullOrEmpty(task.AssignStartUser) && string.IsNullOrEmpty(task.AssignStartUserNm))
+                            {
+                                task.AssignStartUserNm = this.userSubscriptionMgrE.GetUserName(schedulingView.StartUser);
+                            }
+                            task.SchedulingShift = schedulingView.ShiftCode;
+                            task.SchedulingShiftTime = schedulingView.StartTime.ToString("yyyy-MM-dd HH:mm") + " " + schedulingView.EndTime.ToString("yyyy-MM-dd HH:mm");
                         }
                     }
                     else
                     {
                         ClearScheduling(task);
                     }
+                }
+                else
+                {
+                    ClearScheduling(task);
                 }
 
                 if (!string.IsNullOrEmpty(task.SchedulingStartUser) || !string.IsNullOrEmpty(task.AssignStartUser))
@@ -1870,16 +1806,13 @@ namespace com.Sconit.ISI.Service.Impl
             {
                 if (!string.IsNullOrEmpty(task.AssignUser))
                 {
-                    if (ISIUtil.Contains(task.TaskSubType.AssignUser, task.AssignUser))
+                    if (users.Length != 0)
                     {
-                        if (users.Length != 0)
-                        {
-                            users.Append(ISIConstants.ISI_USER_SEPRATOR);
-                        }
-                        users.Append(task.AssignUser);
+                        users.Append(ISIConstants.ISI_USER_SEPRATOR);
                     }
+                    users.Append(task.AssignUser);
                 }
-                else if (task.TaskSubType != null && !string.IsNullOrEmpty(task.TaskSubType.AssignUser))
+                else if (!string.IsNullOrEmpty(task.TaskSubType.AssignUser))
                 {
                     if (users.Length != 0)
                     {
@@ -1902,17 +1835,14 @@ namespace com.Sconit.ISI.Service.Impl
                 var commentList = commentDetailMgrE.GetComment(task.Code);
                 if (commentList != null && commentList.Count > 0)
                 {
-                    task.CommentDetail = commentList[0];
-                    commentList = commentList.Where(c => c.LastModifyDate >= DateTime.Now.AddMonths(-1)).ToList();
-                    if (commentList != null && commentList.Count > 0)
+                    string commentUsers = string.Join(";", commentList.Select(t => t.CreateUser).Distinct().ToArray<string>());
+                    if (users.Length != 0)
                     {
-                        string commentUsers = string.Join(";", commentList.Select(t => t.CreateUser).Distinct().ToArray<string>());
-                        if (users.Length != 0)
-                        {
-                            users.Append(ISIConstants.ISI_USER_SEPRATOR);
-                        }
-                        users.Append(commentUsers);
+                        users.Append(ISIConstants.ISI_USER_SEPRATOR);
                     }
+                    users.Append(commentUsers);
+
+                    task.CommentDetail = commentList[0];
                 }
             }
             #endregion
@@ -2022,7 +1952,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             try
             {
-                string mailTo = userSubscriptionMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_VALUE_PLANREMIND });
+                string mailTo = this.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_VALUE_PLANREMIND });
                 string subject = "工作计划更新提醒";
                 StringBuilder body = new StringBuilder();
 
@@ -2033,7 +1963,7 @@ namespace com.Sconit.ISI.Service.Impl
                 body.Append(ISIConstants.EMAIL_SEPRATOR);
                 body.Append("<span style='font-size:15px;'>周五部门经理登陆ISI上报和更新，同时要对自己部门员工的工作计划进行分派和评论。</span>");
 
-                userSubscriptionMgrE.Remind(subject, body, mailTo);
+                Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {
@@ -2046,7 +1976,7 @@ namespace com.Sconit.ISI.Service.Impl
         {
             try
             {
-                string mailTo = userSubscriptionMgrE.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_VALUE_5SREMIND });
+                string mailTo = this.FindEmailByPermission(new string[] { ISIConstants.PERMISSION_PAGE_ISI_VALUE_5SREMIND });
 
                 string subject = "定期每周五5S大检查";
                 StringBuilder body = new StringBuilder();
@@ -2057,7 +1987,7 @@ namespace com.Sconit.ISI.Service.Impl
                 body.Append("定期每周五7:45分将对办公区域进行5S大检查,请各位员工按照5S标准,");
                 body.Append("做好各自区域的5S工作,特别是下班后办公椅的归位，也请相关部门注意一些无人区域的清理。");
 
-                userSubscriptionMgrE.Remind(subject, body, mailTo);
+                Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {
@@ -2067,7 +1997,37 @@ namespace com.Sconit.ISI.Service.Impl
         //不建议使用
         public string FindEmail()
         {
-            return this.userSubscriptionMgrE.FindEmail(null);
+            return FindEmail(null);
+        }
+
+        public string FindEmail(string[] userCodes)
+        {
+            StringBuilder hql = new StringBuilder();
+            hql.Append("select u.Email from User u where u.IsActive = 1 and u.Email is not null and u.Email != :Empty ");
+            IDictionary<string, object> param = new Dictionary<string, object>();
+            param.Add("Empty", string.Empty);
+            if (userCodes != null && userCodes.Length > 0)
+            {
+                hql.Append(" and u.Code in (:UserCodeArray)");
+                param.Add("UserCodeArray", userCodes);
+            }
+            IList<object> emails = hqlMgrE.FindAll<object>(hql.ToString(), param);
+
+            if (emails == null || emails.Count == 0) return string.Empty;
+            StringBuilder toEmail = new StringBuilder();
+            foreach (object emailObj in emails)
+            {
+                string email = (string)emailObj;
+                if (ISIUtil.IsValidEmail(email))
+                {
+                    if (toEmail.Length != 0)
+                    {
+                        toEmail.Append(";");
+                    }
+                    toEmail.Append(email);
+                }
+            }
+            return toEmail.ToString();
         }
         //不建议使用
         [Transaction(TransactionMode.Requires)]
@@ -2078,15 +2038,38 @@ namespace com.Sconit.ISI.Service.Impl
                 string mailTo = this.FindEmail();
                 //mailTo="tiansu@yfgm.com.cn";
                 if (string.IsNullOrEmpty(mailTo)) return;
-                this.userSubscriptionMgrE.Remind(subject, body, mailTo);
+                this.Remind(subject, body, mailTo);
             }
             catch (Exception e)
             {
-                log.Error(subject + "   " + e.Message, e);
+                log.Error(e.Message, e);
             }
         }
 
+        [Transaction(TransactionMode.Requires)]
+        public void Remind(string subject, StringBuilder body, string mailTo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(mailTo)) return;
+                string companyName = entityPreferenceMgrE.LoadEntityPreference(BusinessConstants.ENTITY_PREFERENCE_CODE_COMPANYNAME).Value;
+                ISIUtil.AppendTestText(companyName, body, ISIConstants.EMAIL_SEPRATOR);
 
+                string webAddress = entityPreferenceMgrE.LoadEntityPreference(ISIConstants.ENTITY_PREFERENCE_WEBADDRESS).Value;
+                body.Append(ISIConstants.EMAIL_SEPRATOR);
+                body.Append(ISIConstants.EMAIL_SEPRATOR);
+                body.Append(ISIConstants.EMAIL_SEPRATOR);
+                body.Append("<span style='font-size:15px;'>" + companyName + "</span><br/>");
+                body.Append("<span style='font-size:15px;'><a href='http://" + webAddress + "'>http://" + webAddress + "</a></span>");
+                MailPriority mailPriority = MailPriority.Normal;
+                string replyTo = string.Empty;
+                smtpMgrE.AsyncSend(subject, body.ToString(), mailTo, replyTo, mailPriority);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message, e);
+            }
+        }
 
         [Transaction(TransactionMode.RequiresNew)]
         public void SendUp()
@@ -2287,6 +2270,7 @@ namespace com.Sconit.ISI.Service.Impl
             }
         }
 
+
         [Transaction(TransactionMode.Requires)]
         public void CreateCommentDetail(CommentDetail commentDetail, string userCode, string userName)
         {
@@ -2316,41 +2300,21 @@ namespace com.Sconit.ISI.Service.Impl
                 users.Append(ISIConstants.ISI_USER_SEPRATOR);
                 users.Append(task.StartUser);
             }*/
-            if (!string.IsNullOrEmpty(task.AssignUser))
-            {
-                if (ISIUtil.Contains(task.TaskSubType.AssignUser, task.AssignUser))
-                {
-                    users.Append(ISIConstants.ISI_USER_SEPRATOR);
-                    users.Append(task.AssignUser);
-                }
-            }
-            else if (task.TaskSubType != null && !string.IsNullOrEmpty(task.TaskSubType.AssignUser))
-            {
-                users.Append(ISIConstants.ISI_USER_SEPRATOR);
-                users.Append(task.TaskSubType.AssignUser);
-            }
-
             if (!string.IsNullOrEmpty(task.StartedUser))
             {
                 users.Append(ISIConstants.ISI_USER_SEPRATOR);
                 users.Append(task.StartedUser);
             }
-
-            var commentList = this.commentDetailMgrE.GetComment(task.Code);
-            if (commentList != null && commentList.Count > 0)
+            if (!string.IsNullOrEmpty(task.AssignUser))
             {
-                commentList = commentList.Where(c => c.LastModifyDate >= DateTime.Now.AddMonths(-1)).ToList();
-                if (commentList != null && commentList.Count > 0)
-                {
-                    string commentUsers = string.Join(";", commentList.Select(t => t.LastModifyUser).Distinct().ToArray<string>());
-                    if (users.Length != 0)
-                    {
-                        users.Append(ISIConstants.ISI_USER_SEPRATOR);
-                    }
-                    users.Append(commentUsers);
-                }
+                users.Append(ISIConstants.ISI_USER_SEPRATOR);
+                users.Append(task.AssignUser);
             }
-            /*
+            else if (!string.IsNullOrEmpty(task.TaskSubType.AssignUser))
+            {
+                users.Append(ISIConstants.ISI_USER_SEPRATOR);
+                users.Append(task.TaskSubType.AssignUser);
+            }
             var taskStatusList = this.taskStatusMgrE.GetTaskStatus(task.Code);
             if (taskStatusList != null && taskStatusList.Count > 0)
             {
@@ -2363,7 +2327,7 @@ namespace com.Sconit.ISI.Service.Impl
                 }
                 users.Append(statusUsers);
             }
-            */
+
             User operationUser = new User();
             operationUser.Code = userCode;
             operationUser.FirstName = userName;
@@ -2400,12 +2364,6 @@ namespace com.Sconit.ISI.Service.Impl
         [Transaction(TransactionMode.Requires)]
         public void CreateTask(TaskMstr taskMstr, User user)
         {
-            CreateTask(taskMstr, null, user);
-        }
-
-        [Transaction(TransactionMode.Requires)]
-        public void CreateTask(TaskMstr taskMstr, IList<Cost> costDetList, User user)
-        {
             DateTime dateTimeNow = DateTime.Now;
 
             #region 创建TaskMstr
@@ -2417,51 +2375,46 @@ namespace com.Sconit.ISI.Service.Impl
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(taskMstr.Type);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PLAN)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PLAN)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_PLAN);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_ISSUE)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_ISSUE)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_ISSUE);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_IMPROVE)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_IMPROVE)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_IMPROVE);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_CHANGE)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_CHANGE)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_CHANGE);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PRIVACY)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PRIVACY)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_PRIVACY);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_RESPONSE)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_RESPONSE)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_RESPONSE);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PROJECT)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PROJECT)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_PROJECT);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_PROJECT_ISSUE);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_AUDIT)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_AUDIT)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_AUDIT);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
+                if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_ENGINEERING_CHANGE);
                 }
-                else if (taskMstr.Type == ISIConstants.ISI_TASK_TYPE_RESMATRIX)
-                {
-                    taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_RESMATRIX);
-                }
-
                 if (string.IsNullOrEmpty(taskMstr.Code))
                 {
                     taskMstr.Code = numberControlMgrE.GenerateNumber(ISIConstants.CODE_PREFIX_ISI);
@@ -2493,7 +2446,6 @@ namespace com.Sconit.ISI.Service.Impl
 
             this.wfDetailMgrE.CreateWFDetail(taskMstr.Code, taskMstr.Status, taskMstr.Level, taskMstr.PreLevel, dateTimeNow, user);
 
-         
             if (taskMstr.IsAutoRelease)
             {
                 this.SubmitTask(taskMstr, user);
@@ -2841,7 +2793,7 @@ namespace com.Sconit.ISI.Service.Impl
             {
                 DateTime now = DateTime.Now;
                 StringBuilder sql = new StringBuilder();
-                sql.Append(@"select t.Code, t.Address as TaskAddress, t.Type, t.Subject, t.Desc1, t.Desc2, t.Status, ");
+                sql.Append(@"select t.Code, t.Address as TaskAddress, t.Type, Subject, Desc1, Desc2, Status, ");
                 sql.Append(@"       t.Priority, t.StartDate, t.BackYards, t.Flag, t.Color, ");
                 sql.Append(@"       t.PlanStartDate, t.PlanCompleteDate, t.ExpectedResults, t.UserName, t.Email, ");
                 sql.Append(@"       t.MobilePhone, t.Scheduling, t.SchedulingStartUser, t.SchedulingShift, t.SchedulingShiftTime, ");
@@ -2853,8 +2805,7 @@ namespace com.Sconit.ISI.Service.Impl
                 sql.Append(@"       t.SchedulingStartUser ");
                 sql.Append(@"from ISI_TaskMstr t join ISI_TaskSubType tst on t.TaskSubType=tst.Code  ");
                 sql.Append(@"where tst.IsActive=1 and tst.IsCompleteUp=1 ");
-                sql.Append(@"and t.Status = '" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS + "' ");
-                sql.Append(@"and t.Type != '" + ISIConstants.ISI_TASK_TYPE_RESMATRIX + "' ");
+                sql.Append(@"and t.Status in ('" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN + "','" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS + "') ");
                 sql.Append(@"and tst.AssignUser is not null and tst.AssignUser != '' ");
                 sql.Append(@"and DATEADD(MINUTE,isnull(tst.CompleteUpTime,0),t.PlanCompleteDate) <= getdate() ");
                 sql.Append(@"and not exists(select 1 from ISI_TaskDet td where td.TaskCode=t.Code and td.Level_='" + ISIConstants.ISI_LEVEL_COMPLETE + "')");
@@ -2866,7 +2817,7 @@ namespace com.Sconit.ISI.Service.Impl
 
                 if (taskList != null && taskList.Count > 0)
                 {
-                    string users = string.Join(";", taskList.Select(t => t.TaskSubTypeAssignUser + t.StartedUser).Distinct().ToArray<string>());
+                    string users = string.Join(";", taskList.Select(t => t.TaskSubTypeAssignUser).Distinct().ToArray<string>());
 
                     if (string.IsNullOrEmpty(users)) return;
 
@@ -2923,6 +2874,34 @@ namespace com.Sconit.ISI.Service.Impl
 
             string userNames = string.Join("、", users.Select(u => (string)u[1] + (string)u[2] + "[" + (string)u[0] + "]").ToArray<string>());
             return userNames;
+        }
+
+        [Transaction(TransactionMode.Unspecified)]
+        public string FindEmailByPermission(string[] permissionCodes)
+        {
+            if (permissionCodes == null || permissionCodes.Length == 0) return string.Empty;
+            IDictionary<string, object> param = new Dictionary<string, object>();
+            param.Add("PermissionCodes", permissionCodes);
+
+            StringBuilder userSql = new StringBuilder();
+            userSql.Append(@"select u.Email ");
+            userSql.Append(@"from User u ");
+            userSql.Append(@"where ");
+            userSql.Append(@"      u.Email != '' and u.Email is not null and u.IsActive = 1 ");
+            userSql.Append(@"and ");
+            userSql.Append(@"      (");
+            userSql.Append(@"          exists (select up.Permission.Code from UserPermission up where up.User.Code = u.Code and up.Permission.Code in (:PermissionCodes)) ");
+            userSql.Append(@"      or ");
+            userSql.Append(@"          exists (select rp.Permission.Code from RolePermission rp join rp.Role r,UserRole ur where r.Code = ur.Role.Code and ur.User.Code = u.Code and rp.Permission.Code in (:PermissionCodes))  ");
+            userSql.Append(@"      )");
+
+            userSql.Append(@"order by u.Code ");
+            IList<object> emails = this.hqlMgrE.FindAll<object>(userSql.ToString(), param);
+
+            if (emails == null || emails.Count == 0) return string.Empty;
+
+            string mailList = string.Join(";", emails.Select(u => (string)u).ToArray<string>());
+            return mailList;
         }
 
         [Transaction(TransactionMode.RequiresNew)]
@@ -2983,40 +2962,40 @@ namespace com.Sconit.ISI.Service.Impl
                     foreach (var taskSutType in taskSubTypeList)
                     {
                         var taskList = taskStatusViewList.Where(t => (string)t[1] == taskSutType.Code).Select(s => new TaskView
-                        {
-                            AssignUser = (string)s[0],
-                            TaskSubTypeCode = (string)s[1],
-                            TaskSubTypeDesc = (s[2] == null || String.IsNullOrEmpty((string)s[2])) ? string.Empty : (string)s[2],
-                            Code = (string)s[3],
-                            Subject = (s[4] == null || String.IsNullOrEmpty((string)s[4])) ? string.Empty : (string)s[4],
-                            Desc1 = (s[5] == null || String.IsNullOrEmpty((string)s[5])) ? string.Empty : (string)s[5],
-                            Desc2 = (s[6] == null || String.IsNullOrEmpty((string)s[6])) ? string.Empty : (string)s[6],
-                            AssignUserNm = (s[7] == null || String.IsNullOrEmpty((string)s[7])) ? string.Empty : (string)s[7],
-                            SubmitUserNm = (s[8] == null || String.IsNullOrEmpty((string)s[8])) ? string.Empty : (string)s[8],
-                            StartedUser = s[9] != null ? (string)s[9] : string.Empty,
-                            //SchedulingStartUser = s[9] != null ? (string)s[9] : string.Empty,
-                            //AssignStartUser = s[10] != null ? (string)s[10] : string.Empty,
-                            Flag = s[10] == null ? string.Empty : (string)s[10],
-                            Color = s[11] == null ? string.Empty : (string)s[11],
-                            StatusDesc = (s[12] == null || String.IsNullOrEmpty((string)s[12])) ? string.Empty : (string)s[12],
-                            StatusDate = s[13] != null ? (DateTime)s[13] : new System.Nullable<DateTime>(),
-                            CreateUserNm = s[14] != null ? (string)s[14] : string.Empty,
-                            CommentCreateUserNm = s[15] != null ? (string)s[15] : string.Empty,
-                            CommentCreateDate = s[16] != null ? (DateTime)s[16] : new System.Nullable<DateTime>(),
-                            Comment = s[17] != null ? (string)s[17] : string.Empty,
-                            ExpectedResults = !String.IsNullOrEmpty((string)s[18]) ? (string)s[18] : string.Empty,
-                            Priority = (string)s[19],
-                            AttachmentCount = (s[20] != null ? int.Parse(s[20].ToString()) : 0),
-                            Phase = (s[21] != null ? (string)s[21] : string.Empty),
-                            Seq = (s[22] != null ? (string)s[22] : string.Empty),
-                            Type = (string)s[23],
-                            PlanCompleteDate = s[24] != null ? (DateTime)s[24] : new System.Nullable<DateTime>(),
-                            Status = (string)s[25],
-                            CommentCount = (s[26] != null ? int.Parse(s[26].ToString()) : 0),
-                            RefTaskCount = (s[27] != null ? int.Parse(s[27].ToString()) : 0),
-                            StatusCount = (s[28] != null ? int.Parse(s[28].ToString()) : 0),
-                            TaskType = (string)s[29]
-                        }).ToList();
+                                                                                   {
+                                                                                       AssignUser = (string)s[0],
+                                                                                       TaskSubTypeCode = (string)s[1],
+                                                                                       TaskSubTypeDesc = (s[2] == null || String.IsNullOrEmpty((string)s[2])) ? string.Empty : (string)s[2],
+                                                                                       Code = (string)s[3],
+                                                                                       Subject = (s[4] == null || String.IsNullOrEmpty((string)s[4])) ? string.Empty : (string)s[4],
+                                                                                       Desc1 = (s[5] == null || String.IsNullOrEmpty((string)s[5])) ? string.Empty : (string)s[5],
+                                                                                       Desc2 = (s[6] == null || String.IsNullOrEmpty((string)s[6])) ? string.Empty : (string)s[6],
+                                                                                       AssignUserNm = (s[7] == null || String.IsNullOrEmpty((string)s[7])) ? string.Empty : (string)s[7],
+                                                                                       SubmitUserNm = (s[8] == null || String.IsNullOrEmpty((string)s[8])) ? string.Empty : (string)s[8],
+                                                                                       StartedUser = s[9] != null ? (string)s[9] : string.Empty,
+                                                                                       //SchedulingStartUser = s[9] != null ? (string)s[9] : string.Empty,
+                                                                                       //AssignStartUser = s[10] != null ? (string)s[10] : string.Empty,
+                                                                                       Flag = s[10] == null ? string.Empty : (string)s[10],
+                                                                                       Color = s[11] == null ? string.Empty : (string)s[11],
+                                                                                       StatusDesc = (s[12] == null || String.IsNullOrEmpty((string)s[12])) ? string.Empty : (string)s[12],
+                                                                                       StatusDate = s[13] != null ? (DateTime)s[13] : new System.Nullable<DateTime>(),
+                                                                                       CreateUserNm = s[14] != null ? (string)s[14] : string.Empty,
+                                                                                       CommentCreateUserNm = s[15] != null ? (string)s[15] : string.Empty,
+                                                                                       CommentCreateDate = s[16] != null ? (DateTime)s[16] : new System.Nullable<DateTime>(),
+                                                                                       Comment = s[17] != null ? (string)s[17] : string.Empty,
+                                                                                       ExpectedResults = !String.IsNullOrEmpty((string)s[18]) ? (string)s[18] : string.Empty,
+                                                                                       Priority = (string)s[19],
+                                                                                       AttachmentCount = (s[20] != null ? int.Parse(s[20].ToString()) : 0),
+                                                                                       Phase = (s[21] != null ? (string)s[21] : string.Empty),
+                                                                                       Seq = (s[22] != null ? (string)s[22] : string.Empty),
+                                                                                       Type = (string)s[23],
+                                                                                       PlanCompleteDate = s[24] != null ? (DateTime)s[24] : new System.Nullable<DateTime>(),
+                                                                                       Status = (string)s[25],
+                                                                                       CommentCount = (s[26] != null ? int.Parse(s[26].ToString()) : 0),
+                                                                                       RefTaskCount = (s[27] != null ? int.Parse(s[27].ToString()) : 0),
+                                                                                       StatusCount = (s[28] != null ? int.Parse(s[28].ToString()) : 0),
+                                                                                       TaskType = (string)s[29]
+                                                                                   }).ToList();
 
                         string[] userCodes = new string[] { };
                         StringBuilder assignUser = new StringBuilder();
@@ -3090,7 +3069,7 @@ namespace com.Sconit.ISI.Service.Impl
                                                         .FirstOrDefault()
                                                         .Value;
 
-                                ISIUtil.AppendTestText(smtpMgrE.IsTestSystem(), mailBody, ISIConstants.EMAIL_SEPRATOR);
+                                ISIUtil.AppendTestText(companyName, mailBody, ISIConstants.EMAIL_SEPRATOR);
 
                                 mailBody.Append("<span style='font-size:13px;'>尊敬的: " + userDic[userCode].Name + " 先生/女士</span><br /><br />");
                                 mailBody.Append("&nbsp;&nbsp;<span style='font-size:13px;'>您的 " + subject + "。</span><br />");
@@ -3132,7 +3111,7 @@ namespace com.Sconit.ISI.Service.Impl
             {
                 DateTime now = DateTime.Now;
                 StringBuilder sql = new StringBuilder();
-                sql.Append(@"select t.Code, t.Address as TaskAddress, t.Type, t.Subject, t.Desc1, t.Desc2, t.Status, ");
+                sql.Append(@"select t.Code, t.Address as TaskAddress, t.Type, Subject, Desc1, Desc2, Status, ");
                 sql.Append(@"       t.Priority, t.StartDate, t.BackYards, t.Flag, t.Color, ");
                 sql.Append(@"       t.PlanStartDate, t.PlanCompleteDate, t.ExpectedResults, t.UserName, t.Email, ");
                 sql.Append(@"       t.MobilePhone, t.Scheduling, t.SchedulingStartUser, t.SchedulingShift, t.SchedulingShiftTime, ");
@@ -3144,7 +3123,6 @@ namespace com.Sconit.ISI.Service.Impl
                 sql.Append(@"from ISI_TaskMstr t join ISI_TaskSubType tst on t.TaskSubType=tst.Code  ");
                 sql.Append(@"where tst.IsActive=1 and tst.IsStart=1 and tst.StartPercent is not null ");
                 sql.Append(@"and t.Status in ('" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN + "','" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_INPROCESS + "') ");
-                sql.Append(@"and t.Type != '" + ISIConstants.ISI_TASK_TYPE_RESMATRIX + "' ");
                 sql.Append(@"and DATEADD(MINUTE, datediff(MINUTE,t.PlanStartDate,t.PlanCompleteDate) * tst.StartPercent,t.PlanStartDate) <= getdate() ");
                 sql.Append(@"and not exists(select 1 from ISI_TaskDet td where td.TaskCode=t.Code and td.Level_ in ('" + ISIConstants.ISI_LEVEL_STARTPERCENT + "','" + ISIConstants.ISI_LEVEL_COMPLETE + "')) ");
                 sql.Append(@"order by t.CreateDate asc ");
@@ -3164,19 +3142,16 @@ namespace com.Sconit.ISI.Service.Impl
 
                     foreach (var task in taskList)
                     {
-                        if (!string.IsNullOrEmpty(task.StartedUser))
+                        string[] startedUser = task.StartedUser.Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
+                        var userSubList = new List<UserSub>();
+                        foreach (var u in startedUser)
                         {
-                            string[] startedUser = task.StartedUser.Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
-                            var userSubList = new List<UserSub>();
-                            foreach (var u in startedUser)
+                            if (userDic.Keys.Contains(u))
                             {
-                                if (userDic.Keys.Contains(u))
-                                {
-                                    userSubList.Add(userDic[u]);
-                                }
+                                userSubList.Add(userDic[u]);
                             }
-                            userSubscriptionMgrE.Remind(task, ISIConstants.ISI_LEVEL_STARTPERCENT, userSubList, userMgrE.GetMonitorUser());
                         }
+                        userSubscriptionMgrE.Remind(task, ISIConstants.ISI_LEVEL_STARTPERCENT, userSubList, userMgrE.GetMonitorUser());
                     }
                 }
             }
@@ -3195,7 +3170,7 @@ namespace com.Sconit.ISI.Service.Impl
             {
                 DateTime now = DateTime.Now;
                 StringBuilder sql = new StringBuilder();
-                sql.Append(@"select t.Code, t.Address as TaskAddress, t.Type, t.Subject, t.Desc1, t.Desc2, t.Status, ");
+                sql.Append(@"select t.Code, t.Address as TaskAddress, t.Type, Subject, Desc1, Desc2, Status, ");
                 sql.Append(@"       t.Priority, t.StartDate, t.BackYards, t.Flag, t.Color, ");
                 sql.Append(@"       t.PlanStartDate, t.PlanCompleteDate, t.ExpectedResults, t.UserName, t.Email, ");
                 sql.Append(@"       t.MobilePhone, t.Scheduling, t.SchedulingStartUser, t.SchedulingShift, t.SchedulingShiftTime, ");
@@ -3207,7 +3182,6 @@ namespace com.Sconit.ISI.Service.Impl
                 sql.Append(@"from ISI_TaskMstr t join ISI_TaskSubType tst on t.TaskSubType=tst.Code  ");
                 sql.Append(@"where tst.IsActive=1 and tst.IsOpen=1 and t.PlanStartDate is not null ");
                 sql.Append(@"and t.Status = '" + ISIConstants.CODE_MASTER_ISI_STATUS_VALUE_ASSIGN + "' ");
-                sql.Append(@"and t.Type != '" + ISIConstants.ISI_TASK_TYPE_RESMATRIX + "' ");
                 sql.Append(@"and DATEADD(MINUTE,-isnull(tst.OpenTime,0),t.PlanStartDate) <= getdate() ");
                 sql.Append(@"and not exists(select 1 from ISI_TaskDet td where td.TaskCode=t.Code and td.Level_ in ('" + ISIConstants.ISI_LEVEL_OPEN + "','" + ISIConstants.ISI_LEVEL_STARTPERCENT + "','" + ISIConstants.ISI_LEVEL_COMPLETE + "')) ");
                 sql.Append(@"order by t.CreateDate asc ");
@@ -3227,19 +3201,16 @@ namespace com.Sconit.ISI.Service.Impl
 
                     foreach (var task in taskList)
                     {
-                        if (!string.IsNullOrEmpty(task.StartedUser))
+                        string[] startedUser = task.StartedUser.Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
+                        var userSubList = new List<UserSub>();
+                        foreach (var u in startedUser)
                         {
-                            string[] startedUser = task.StartedUser.Split(ISIConstants.ISI_SEPRATOR, StringSplitOptions.RemoveEmptyEntries);
-                            var userSubList = new List<UserSub>();
-                            foreach (var u in startedUser)
+                            if (userDic.Keys.Contains(u))
                             {
-                                if (userDic.Keys.Contains(u))
-                                {
-                                    userSubList.Add(userDic[u]);
-                                }
+                                userSubList.Add(userDic[u]);
                             }
-                            userSubscriptionMgrE.Remind(task, ISIConstants.ISI_LEVEL_OPEN, userSubList, userMgrE.GetMonitorUser());
                         }
+                        userSubscriptionMgrE.Remind(task, ISIConstants.ISI_LEVEL_OPEN, userSubList, userMgrE.GetMonitorUser());
                     }
                 }
             }

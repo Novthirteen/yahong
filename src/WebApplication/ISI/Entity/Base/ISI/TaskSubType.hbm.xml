@@ -19,7 +19,7 @@
     <property name="IsAutoComplete" column="IsAutoComplete" type="Boolean"  />
     <property name="IsAutoStatus" column="IsAutoStatus" type="Boolean"  />
     <property name="IsAutoClose" column="IsAutoClose" type="Boolean"  />
-    <property name="IsAttachment" column="IsAttachment" type="Boolean"  />
+    <property name="IsAttachment" column="IsAttachment" type="Boolean"  />    
     <property name="IsPublic" column="IsPublic" type="Boolean"  />
     <property name="StartUser" column="StartUser" type="String" length="300" />
     <property name="IsAssignUp" column="IsAssignUp" type="Boolean"  />
@@ -53,23 +53,14 @@
     <property name="IsWF" column="IsWF" type="Boolean"   />
     <property name="IsTrace" column="IsTrace" type="Boolean"   />
     <property name="IsCostCenter" column="IsCostCenter" type="Boolean"   />
-    <property name="IsApply" column="IsApply" type="Boolean"   />
+    <property name="IsApply" column="IsApply" type="Boolean"   />    
     <property name="OpenTime" column="OpenTime" type="Decimal"  />
     <property name="RegisterNo" column="RegisterNo" type="String" length="50"  />
     <property name="IsAssignUser" column="IsAssignUser" type="Boolean"   />
     <property name="IsPrint" column="IsPrint" type="Boolean"  />
     <property name="ExtNo" column="ExtNo" type="String" length="255"  />
     <property name="ProcessNo" column="ProcessNo" type="String" length="50"  />
-    <property name="Template" column="Template" type="String" length="50"  />
-    <property name="IsRemind" column="IsRemind" type="Boolean"  />
-    <property name="IsCost" column="IsCost" type="Boolean"  />
-    <property name="FormType" column="FormType" type="String" length="50"   />
-    <property name="IsAmount" column="IsAmount" type="Boolean"  />
-    <property name="IsAmountDetail" column="IsAmountDetail" type="Boolean"  />
-    <property name="IsBudget" column="IsBudget" type="Boolean"  />
-    <property name="CostCenter" column="CostCenter" type="String" length="50" />
-    <property name="Account1" column="Account1" type="String" length="50" />
-    <property name="Account2" column="Account2" type="String" length="50" />
+    <property name="Template" column="Template" type="String" length="50"  />  
     <bag name="Schedulings" table="ISI_Scheduling" inverse="true" lazy="true" cascade="delete" >
       <key column="TaskSubType" />
       <one-to-many class="com.Sconit.ISI.Entity.Scheduling, com.Sconit.ISI" />

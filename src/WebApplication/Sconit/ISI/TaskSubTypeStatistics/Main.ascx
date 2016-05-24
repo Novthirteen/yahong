@@ -66,8 +66,6 @@
             </asp:TemplateField>
             <asp:BoundField DataField="Code" SortExpression="Code" HeaderText="${ISI.TaskSubTypeStatistics.Code}" HeaderStyle-Wrap="false" ItemStyle-Wrap="false" />
             <asp:BoundField DataField="Description" HeaderText="${ISI.TaskSubTypeStatistics.Description}" HeaderStyle-Wrap="false" />
-            <asp:BoundField DataField="Project" HeaderText="${ISI.TaskSubTypeStatistics.Project}" HeaderStyle-Wrap="false" />
-            <asp:BoundField DataField="Enc" HeaderText="${ISI.TaskSubTypeStatistics.Enc}" HeaderStyle-Wrap="false" />
             <asp:BoundField HeaderText="${ISI.TaskSubTypeStatistics.LastWeekTotalCount}" HeaderStyle-Wrap="false" DataFormatString="{0:#}"/>
             <asp:BoundField DataField="TotalCount" SortExpression="TotalCount" HeaderText="${ISI.TaskSubTypeStatistics.TotalCount}" HeaderStyle-Wrap="false" DataFormatString="{0:#}"/>
             <asp:BoundField DataField="CreateCount" SortExpression="CreateCount" HeaderText="${ISI.TaskSubTypeStatistics.CreateCount}" HeaderStyle-Wrap="false" DataFormatString="{0:#}"/>

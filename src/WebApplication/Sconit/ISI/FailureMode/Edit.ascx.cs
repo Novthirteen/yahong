@@ -62,7 +62,7 @@ public partial class ISI_FailureMode_Edit : EditModuleBase
 
         if (failureMode.TaskSubType != null)
         {
-            tbTaskSubType.Text = failureMode.TaskSubType;
+            tbTaskSubType.Text = failureMode.TaskSubType.Code;
         }
 
     }
@@ -95,7 +95,7 @@ public partial class ISI_FailureMode_Edit : EditModuleBase
             {
                 //TaskSubType taskSubType = new TaskSubType();
                 //taskSubType.Code = taskSubTypeCode;
-                failureMode.TaskSubType = taskSubTypeCode;// TheTaskSubTypeMgr.LoadTaskSubType(taskSubTypeCode);
+                failureMode.TaskSubType = TheTaskSubTypeMgr.LoadTaskSubType(taskSubTypeCode);
             }
             failureMode.LastModifyDate = DateTime.Now;
             failureMode.LastModifyUser = this.CurrentUser.Code;

@@ -21,24 +21,13 @@ namespace com.Sconit.ISI.Service.Impl
         [Transaction(TransactionMode.Requires)]
         public void CreateWFDetail(string taskCode, string status, DateTime now, User user)
         {
-            this.CreateWFDetail(taskCode, status, null, null, string.Empty, now, user);
+            this.CreateWFDetail(taskCode, status, null, null, now, user);
         }
-        [Transaction(TransactionMode.Requires)]
-        public void CreateWFDetail(string taskCode, string status, string content, DateTime now, User user)
-        {
-            this.CreateWFDetail(taskCode, status, null, null, content, now, user);
-        }
-
         [Transaction(TransactionMode.Requires)]
         public void CreateWFDetail(string taskCode, string status, int? level, int? preLevel, DateTime now, User user)
         {
-            this.CreateWFDetail(taskCode, status, level, preLevel, string.Empty, now, user);
-        }
-        [Transaction(TransactionMode.Requires)]
-        private void CreateWFDetail(string taskCode, string status, int? level, int? preLevel, string content, DateTime now, User user)
-        {
             WFDetail wf = new WFDetail();
-            wf.Content = content;
+
             wf.TaskCode = taskCode;
             wf.Status = status;
             wf.Level = level;

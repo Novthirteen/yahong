@@ -42,23 +42,20 @@
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="Date" HeaderText="${ISI.Summary.Date}"
-                    SortExpression="Date" DataFormatString="{0:yyyy-MM}" HeaderStyle-Wrap="false" />
+                    SortExpression="Date" DataFormatString="{0:yyyy-MM}" />
                 <asp:BoundField DataField="CreateDate" HeaderText="${Common.Business.CreateDate}"
-                    SortExpression="CreateDate" DataFormatString="{0:yyyy-MM-dd HH:mm}" HeaderStyle-Wrap="false" />
+                    SortExpression="CreateDate" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
                 <asp:BoundField DataField="CreateUserNm" HeaderText="${Common.Business.CreateUser}"
-                    SortExpression="CreateUser" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="Count" HeaderText="${ISI.Summary.Count}" SortExpression="Count" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="StandardQty" HeaderText="${ISI.Summary.StandardQty}" SortExpression="StandardQty" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="Qty" HeaderText="${ISI.Summary.Qty}" SortExpression="Qty" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="Excellent" HeaderText="${ISI.Summary.Excellent}" SortExpression="Excellent" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="Moderate" HeaderText="${ISI.Summary.Moderate}" SortExpression="Moderate" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="Poor" HeaderText="${ISI.Summary.Poor}" SortExpression="Poor" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="ApproveDesc" HeaderText="${ISI.Summary.ApproveDesc}" ItemStyle-Width="10%" SortExpression="ApproveDesc" HeaderStyle-Wrap="false" />
-                <asp:BoundField DataField="UltimatelyAmount" HeaderText="${ISI.Summary.UltimatelyAmount}" SortExpression="UltimatelyAmount" DataFormatString="{0:0.########}" HeaderStyle-Wrap="false" />
-                <asp:TemplateField HeaderText="${Common.GridView.Action}" HeaderStyle-Wrap="false">
+                    SortExpression="CreateUser" />
+                <asp:BoundField DataField="Count" HeaderText="${ISI.Summary.Count}" SortExpression="Count" />
+                <asp:BoundField DataField="StandardQty" HeaderText="${ISI.Summary.StandardQty}" SortExpression="StandardQty" />
+                <asp:BoundField DataField="Qty" HeaderText="${ISI.Summary.Qty}" SortExpression="Qty" />
+                <asp:BoundField DataField="ApproveDesc" HeaderText="${ISI.Summary.ApproveDesc}" SortExpression="ApproveDesc" />
+                <asp:BoundField DataField="UltimatelyAmount" HeaderText="${ISI.Summary.UltimatelyAmount}" SortExpression="UltimatelyAmount" DataFormatString="{0:0.########}" />
+                <asp:TemplateField HeaderText="${Common.GridView.Action}">
                     <ItemTemplate>
                         <asp:LinkButton ID="lbtnEdit" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "Code") %>'
-                            Text="${Common.Button.View}" OnClick="lbtnEdit_Click" />
+                            Text="${Common.Button.Edit}" OnClick="lbtnEdit_Click" />
                         <asp:LinkButton ID="lbtnCancel" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "Code") %>'
                             Text="${Common.Button.Cancel}" OnClick="lbtnCancel_Click" Visible="false" OnClientClick="return confirm('${Common.Button.Cancel.Confirm}')" />
                     </ItemTemplate>
@@ -67,10 +64,6 @@
         </cc1:GridView>
         <cc1:GridPager ID="gp" runat="server" GridViewID="GV_List" PageSize="100">
         </cc1:GridPager>
-        <script language="javascript" type="text/javascript">
-            $(document).ready(function () {
-                $('.GV').fixedtableheader();
-            });
-        </script>
     </div>
+
 </fieldset>

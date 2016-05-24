@@ -28,6 +28,7 @@
                             <asp:HiddenField ID="hfStatus" runat="server" Value='<%# Bind("Status") %>' />
                             <asp:HiddenField ID="hfOldChargePerson" runat="server" Value='<%# Bind("OldChargePerson") %>' />
                             <asp:HiddenField ID="hfChargeDate" runat="server" Value='<%# Bind("ChargeDate") %>' />
+                                                          <asp:HiddenField ID="ParentCategory" runat="server" Value='<%# Bind("ParentCategory") %>' />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />

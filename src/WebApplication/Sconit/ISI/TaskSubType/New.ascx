@@ -64,14 +64,6 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="lblIsCost" runat="server" Text="${ISI.TaskSubType.IsCost}:" />
-                        </td>
-                        <td class="td02">
-                            <asp:CheckBox ID="cbIsCost" runat="server" Checked='<%# Bind("IsCost") %>' />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="td01">
                             <asp:Literal ID="ltlIsAutoAssign" runat="server" Text="${ISI.TaskSubType.IsAutoAssign}:" />
                         </td>
                         <td class="td02">
@@ -110,6 +102,15 @@
                         </td>
                         <td class="td02">
                             <asp:CheckBox ID="ckIsAutoClose" runat="server" Checked='<%# Bind("IsAutoClose") %>' />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td01">
+                            <asp:Literal ID="lblTemplate" runat="server" Text="${Common.Business.Template}:" />
+                        </td>
+                        <td class="td02">
+                            <cc1:CodeMstrDropDownList ID="ddlTemplate" Code="ISITemplate" runat="server">
+                            </cc1:CodeMstrDropDownList>
                         </td>
                     </tr>
                     <tr>

@@ -13,7 +13,6 @@ using System.Xml.Linq;
 using com.Sconit.Entity;
 using com.Sconit.Utility;
 using com.Sconit.ISI.Entity;
-using com.Sconit.ISI.Entity.Util;
 
 public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
 {
@@ -49,21 +48,12 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
     public event EventHandler lblWikiClickEvent;
     public event EventHandler lblProcessClickEvent;
     public event EventHandler lblProcessInstanceClickEvent;
-    public event EventHandler lblResMatrixDetClickEvent;
     public void UpdateView(string taskCode)
     {
         lbMstr_Click(this, null);
         this.TaskCode = taskCode;
         var task = this.TheTaskMstrMgr.CheckAndLoadTaskMstr(this.TaskCode);
         UpdateAttachmentTitle(this.TaskCode, task.ExtNo, task.ProjectTask.ToString(), task.TaskSubType.Code);
-        if (task.Type == ISIConstants.ISI_TASK_TYPE_RESMATRIX)
-        {
-            this.tab_ResMatrixDet.Visible = true;
-        }
-        else
-        {
-            this.tab_ResMatrixDet.Visible = false;
-        }
     }
 
     public void UpdateAttachmentTitle(string taskCode, string extNo, string projectTaskId, string taskSubType)
@@ -112,7 +102,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
         this.tab_process.Attributes["class"] = "ajax__tab_inactive";
         this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
         this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-        this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
     }
 
     protected void lbRefTask_Click(object sender, EventArgs e)
@@ -129,7 +118,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_process.Attributes["class"] = "ajax__tab_inactive";
             this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
             this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
 
@@ -147,7 +135,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_processInstance.Attributes["class"] = "ajax__tab_inactive";
             this.tab_detail.Attributes["class"] = "ajax__tab_active";
             this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
 
@@ -165,7 +152,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_process.Attributes["class"] = "ajax__tab_inactive";
             this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
             this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
     /*
@@ -201,7 +187,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_process.Attributes["class"] = "ajax__tab_inactive";
             this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
             this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
 
@@ -219,7 +204,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_process.Attributes["class"] = "ajax__tab_inactive";
             this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
             this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
 
@@ -237,7 +221,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_process.Attributes["class"] = "ajax__tab_active";
             this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
             this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
 
@@ -255,26 +238,6 @@ public partial class ISI_TSK_TabNavigator : com.Sconit.Web.ModuleBase
             this.tab_process.Attributes["class"] = "ajax__tab_inactive";
             this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
             this.tab_wiki.Attributes["class"] = "ajax__tab_active";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_inactive";
         }
     }
-
-    protected void lbResMatrix_Click(object sender, EventArgs e)
-    {
-        if (lblResMatrixDetClickEvent != null)
-        {
-            lblResMatrixDetClickEvent(this, e);
-
-            this.tab_mstr.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_attachment.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_reftask.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_processInstance.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_status.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_process.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_detail.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_wiki.Attributes["class"] = "ajax__tab_inactive";
-            this.tab_ResMatrixDet.Attributes["class"] = "ajax__tab_active";
-        }
-    }
-
 }

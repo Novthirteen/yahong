@@ -97,6 +97,7 @@ public partial class ISI_TaskSubType_Edit : EditModuleBase
             ((Literal)this.FV_TaskSubType.FindControl("ltlAssignUser")).Text = "${ISI.TaskSubType.TeamLeader}:";
             ((Literal)this.FV_TaskSubType.FindControl("lblIsReport")).Text = "${ISI.TaskSubType.IsProjectReport}:";
         }
+        com.Sconit.Control.CodeMstrDropDownList ddlTemplate = (com.Sconit.Control.CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlTemplate"));
         Controls_TextBox tbParent = (Controls_TextBox)this.FV_TaskSubType.FindControl("tbParent");
         TextBox tbECUser = (TextBox)this.FV_TaskSubType.FindControl("tbECUser");
         TextBox tbAssignUser = (TextBox)this.FV_TaskSubType.FindControl("tbAssignUser");
@@ -112,6 +113,10 @@ public partial class ISI_TaskSubType_Edit : EditModuleBase
         if (taskSubType.Parent != null)
         {
             tbParent.Text = taskSubType.Parent.Code;
+        }
+        if (taskSubType.Template != null)
+        {
+            ddlTemplate.SelectedValue = taskSubType.Template;
         }
         ddlProjectType.SelectedValue = taskSubType.ProjectType;
         ddlColor.SelectedValue = taskSubType.Color;
@@ -236,19 +241,12 @@ public partial class ISI_TaskSubType_Edit : EditModuleBase
             taskSubType.IsWF = oldTaskSubType.IsWF;
             taskSubType.IsTrace = oldTaskSubType.IsTrace;
             taskSubType.IsCtrl = oldTaskSubType.IsCtrl;
-            taskSubType.IsRemind = oldTaskSubType.IsRemind;
             taskSubType.IsApply = oldTaskSubType.IsApply;
             taskSubType.IsPrint = oldTaskSubType.IsPrint;
-            taskSubType.Template = oldTaskSubType.Template;
             taskSubType.IsRemoveForm = oldTaskSubType.IsRemoveForm;
             taskSubType.ProcessNo = oldTaskSubType.ProcessNo;
-            taskSubType.CostCenter = oldTaskSubType.CostCenter;
             taskSubType.IsAttachment = oldTaskSubType.IsAttachment;
-            taskSubType.FormType = oldTaskSubType.FormType;
-            taskSubType.IsBudget = oldTaskSubType.IsBudget;
-            taskSubType.IsAmount = oldTaskSubType.IsAmount;
-            taskSubType.IsAmountDetail = oldTaskSubType.IsAmountDetail;
-            
+
             string parent = ((Controls_TextBox)(this.FV_TaskSubType.FindControl("tbParent"))).Text.Trim();
             if (!string.IsNullOrEmpty(parent))
             {
@@ -265,7 +263,16 @@ public partial class ISI_TaskSubType_Edit : EditModuleBase
 
             taskSubType.Org =
                 ((CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlOrg"))).SelectedValue;
-            
+            com.Sconit.Control.CodeMstrDropDownList ddlTemplate = (com.Sconit.Control.CodeMstrDropDownList)(this.FV_TaskSubType.FindControl("ddlTemplate"));
+            if (ddlTemplate.SelectedIndex != -1)
+            {
+                taskSubType.Template = ddlTemplate.SelectedValue;
+            }
+            else
+            {
+                taskSubType.Template = null;
+            }
+
             taskSubType.StartUser = ISIUtil.GetUser(taskSubType.StartUser);
             taskSubType.AssignUser = ISIUtil.GetUser(taskSubType.AssignUser);
             taskSubType.ECUser = ISIUtil.GetUser(taskSubType.ECUser);

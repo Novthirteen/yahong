@@ -77,7 +77,7 @@ public partial class Facility_FacilityMaster_New : NewModuleBase
         facilityMaster.CreateDate = DateTime.Now;
         facilityMaster.LastModifyDate = DateTime.Now;
         FacilityCategory facilityCategoty = TheFacilityCategoryMgr.LoadFacilityCategory(facilityMaster.Category);
-
+        facilityMaster.ParentCategory = facilityCategoty.ParentCategory;
         if (string.IsNullOrEmpty(facilityMaster.ChargeOrganization))
         {
             facilityMaster.ChargeOrganization = facilityCategoty.ChargeOrganization;

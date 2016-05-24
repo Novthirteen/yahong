@@ -287,6 +287,7 @@ public partial class ISI_TaskSubType_Form : com.Sconit.Web.MainModuleBase
         }
         else
         {
+            processApply.UOM = ((Controls_TextBox)row.FindControl("tbUOM")).Text;
             processApply.UOMDesc1 = ((TextBox)row.FindControl("tbUOMDesc1")).Text;
             processApply.UOMDesc2 = ((TextBox)row.FindControl("tbUOMDesc2")).Text;
 
@@ -296,8 +297,6 @@ public partial class ISI_TaskSubType_Form : com.Sconit.Web.MainModuleBase
             processApply.DescField = ((TextBox)row.FindControl("tbDescField")).Text;
             processApply.ValueField = ((TextBox)row.FindControl("tbValueField")).Text;
         }
-        processApply.UOM = ((Controls_TextBox)row.FindControl("tbUOM")).Text;
-        
         processApply.Apply = apply;
         processApply.Seq = int.Parse(((TextBox)row.FindControl("tbSeq")).Text);
         var fontSize = ((TextBox)row.FindControl("tbFontSize")).Text.Trim();

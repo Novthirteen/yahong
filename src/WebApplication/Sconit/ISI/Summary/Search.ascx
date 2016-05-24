@@ -25,8 +25,6 @@
             </td>
             <td class="td02">
                 <asp:TextBox ID="tbDate" runat="server" onClick="WdatePicker({dateFmt:'yyyy-MM'})" />
-                <asp:RequiredFieldValidator ID="rfvDate" runat="server" ErrorMessage="${Common.Business.Error.Required}"
-                        Display="Dynamic" ControlToValidate="tbDate" ValidationGroup="vgExport" />
                 <asp:CheckBox runat="server" ID="cbNoSubmit" Text="${ISI.Summary.NoSubmit}" />
             </td>
             <td class="td01">
@@ -43,13 +41,8 @@
             </td>
         </tr>
         <tr>
-            <td class="td01"></td>
-            <td class="td02">
-                <asp:Button ID="btnExport" runat="server" Text="${Common.Button.Export}"  OnClick="btnExport_Click"
-                        CssClass="add" ValidationGroup="vgExport" />
-            </td>
-            <td class="td01"></td>
-            <td class="td02">
+            <td colspan="3"></td>
+            <td>
                 <div class="buttons">
                     <asp:Button ID="btnSearch" runat="server" Text="${Common.Button.Search}" OnClick="btnSearch_Click"
                         CssClass="query" />

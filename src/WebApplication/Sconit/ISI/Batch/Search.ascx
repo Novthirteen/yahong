@@ -68,22 +68,23 @@
                     ValueField="Code" ServicePath="UserSubscriptionMgr.service" ServiceMethod="GetCacheAllUser" Width="250" />
             </td>
             <td align="right">
-                <asp:CheckBox runat="server" Text="${ISI.Status.FirstStartUser}" ID="ckFirst" Checked="true" />
+                <asp:Literal ID="lblStartUser" runat="server" Text="${ISI.Batch.StartUser}:" />
             </td>
             <td>
-                <uc3:textbox ID="tbStartUser" runat="server" Visible="true" DescField="Name" MustMatch="true" CssClass="inputRequired"
+                <uc3:textbox ID="tbStartUser" runat="server" Visible="true" DescField="Name" MustMatch="true" 
                     ValueField="Code" ServicePath="UserSubscriptionMgr.service" ServiceMethod="GetCacheAllUser" Width="250" />
                 <asp:RequiredFieldValidator ID="rfvStartUser" runat="server" ErrorMessage="${Common.Business.Error.Required}"
                     Display="Dynamic" ControlToValidate="tbStartUser" ValidationGroup="vgSearch" />
                 <asp:RequiredFieldValidator ID="rfvStartUser1" runat="server" ErrorMessage="${Common.Business.Error.Required}"
                     Display="Dynamic" ControlToValidate="tbStartUser" ValidationGroup="vgUpdate" />
+                <asp:CheckBox runat="server" Text="${ISI.Status.First}" ID="ckFirst" />
             </td>
             <td align="right">
                 <asp:Literal ID="lblUser" runat="server" Text="${ISI.Batch.User}:" />
             </td>
             <td>
                 <div class="buttons">
-                    <uc3:textbox ID="tbUser" runat="server" Visible="true" DescField="Name" MustMatch="true"
+                    <uc3:textbox ID="tbUser" runat="server" Visible="true" DescField="Name" MustMatch="true" 
                         ValueField="Code" ServicePath="UserSubscriptionMgr.service" ServiceMethod="GetCacheAllUser" Width="250" />
                     <asp:RequiredFieldValidator ID="rfvUser" runat="server" ErrorMessage="${Common.Business.Error.Required}"
                         Display="Dynamic" ControlToValidate="tbUser" ValidationGroup="vgUpdate" />
@@ -94,30 +95,30 @@
             <td align="right">
                 <asp:Literal ID="lblType" runat="server" Text="${ISI.Batch.OPType}:" />
             </td>
-            <td colspan="6">
-                <asp:RadioButtonList runat="server" ID="rblCreate" RepeatDirection="Horizontal" RepeatLayout="Flow">
+            <td colspan="6" >
+                <asp:RadioButtonList runat="server" ID="rblCreate" RepeatDirection="Horizontal" RepeatLayout="Flow" >
                     <asp:ListItem Text="${Common.Button.Nothing}" Value="" Selected="True" />
                     <asp:ListItem Text="${Common.Button.Delete}" Value="IsDelete" />
                     <asp:ListItem Text="${Common.Button.Submit}" Value="IsSubmit" />
                 </asp:RadioButtonList>
                 <asp:CheckBox runat="server" ID="cbIsCancel" Text="${Common.Button.Cancel}" />
                 <asp:CheckBox runat="server" ID="cbIsComplete" Text="${Common.Button.Complete}" />
-                <asp:RadioButtonList runat="server" ID="rblComplete" RepeatDirection="Horizontal" RepeatLayout="Flow">
+                <asp:RadioButtonList runat="server" ID="rblComplete" RepeatDirection="Horizontal" RepeatLayout="Flow" >
                     <asp:ListItem Text="${Common.Button.Nothing}" Value="" Selected="True" />
                     <asp:ListItem Text="${Common.Button.Reject}" Value="IsReject" />
                     <asp:ListItem Text="${Common.Button.Close}" Value="IsClose" />
                 </asp:RadioButtonList>
                 <asp:CheckBox runat="server" ID="cbIsOpen" Text="${Common.Button.Open}" />
-
+                   
             </td>
-            <td>
+            <td >
                 <div class="buttons">
                     <asp:Button ID="btnSearch" runat="server" Text="${Common.Button.Search}" OnClick="btnSearch_Click"
-                        CssClass="query" ValidationGroup="vgSearch" />
+                        CssClass="query" />
                     <asp:Button ID="btnReplace" runat="server" Text="${ISI.Batch.Button.Replace}" OnClick="btnReplace_Click"
                         CssClass="query" ValidationGroup="vgSearch" OnClientClick="return confirm('${Common.Button.Replace.Confirm}')" />
                     <asp:Button ID="btnBatch" runat="server" Text="${ISI.Batch.Button.Batch}" OnClick="btnBatch_Click"
-                        CssClass="button2" OnClientClick="return confirm('${Common.Button.Batch.Confirm}')" ValidationGroup="vgSearch"  />
+                        CssClass="button2" OnClientClick="return confirm('${Common.Button.Batch.Confirm}')" />
                     <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Text="${Common.Button.Delete}"
                         CssClass="delete" OnClientClick="return confirm('${Common.Button.Delete.Confirm}')" Visible="false" />
                     <asp:Button ID="btnCancel" runat="server" Text="${Common.Button.Cancel}" CssClass="button2"

@@ -55,10 +55,10 @@ public partial class Modules_ISI_ResMatrix_Main : MainModuleBase
             if (resMatrix.Operate != null)
             {
                 var sop = this.TheResSopMgr.LoadResSop(resMatrix.WorkShop, resMatrix.Operate.Value);
-                if (sop != null)
-                {
-                    e.Row.Cells[2].Text = sop.Operate + "[" + sop.OperateDesc + "]";
-                }
+				if(sop!=null)
+				{
+					e.Row.Cells[2].Text = sop.Operate + "[" + sop.OperateDesc + "]";
+				}
             }
 
             if (!string.IsNullOrEmpty(resMatrix.Role))
@@ -246,8 +246,7 @@ public partial class Modules_ISI_ResMatrix_Main : MainModuleBase
         sqlParam[1] = new SqlParameter("@HistoryDate", null);
 
         DataSet dataSetInv = TheSqlHelperMgr.GetDatasetByStoredProcedure("usp_Query_Res_GetResponsibility", sqlParam);
-        List<Res> responsibilityList = IListHelper.DataTableToList<Res>(dataSetInv.Tables[0])
-            .GroupBy(p => p.ResMatrixId).Select(p => p.First()).ToList();
+        List<Res> responsibilityList = IListHelper.DataTableToList<Res>(dataSetInv.Tables[0]);
         this.Gv_Batch.DataSource = responsibilityList;
         this.Gv_Batch.DataBind();
         this.fs.Visible = true;

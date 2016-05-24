@@ -23,17 +23,6 @@ using Geekees.Common.Controls;
 
 public partial class ISI_TaskSubType_Search : SearchModuleBase
 {
-    public string Action
-    {
-        get
-        {
-            return (string)ViewState["Action"];
-        }
-        set
-        {
-            ViewState["Action"] = value;
-        }
-    }
     public string ModuleType
     {
         get
@@ -54,7 +43,6 @@ public partial class ISI_TaskSubType_Search : SearchModuleBase
         if (!IsPostBack)
         {
             GenerateTree();
-            this.btnNew.Visible = this.ModuleType != ISIConstants.ISI_TASK_TYPE_WORKFLOW || this.Action != "View" && this.CurrentUser.HasPermission(ISIConstants.CODE_MASTER_WF_TASK_VALUE_WFADMIN);
         }
     }
 
@@ -137,35 +125,16 @@ public partial class ISI_TaskSubType_Search : SearchModuleBase
                 selectCriteria.Add(Subqueries.PropertyIn("Code", ISIUtil.GetProcessApplyCriteria(apply)));
                 selectCountCriteria.Add(Subqueries.PropertyIn("Code", ISIUtil.GetProcessApplyCriteria(apply)));
             }
-            if (cbIsActive.Checked)
-            {
-                selectCriteria.Add(Expression.Eq("IsActive", cbIsActive.Checked));
-                selectCountCriteria.Add(Expression.Eq("IsActive", cbIsActive.Checked));
-            }
+
             if (cbIsWF.Checked)
             {
                 selectCriteria.Add(Expression.Eq("IsWF", cbIsWF.Checked));
                 selectCountCriteria.Add(Expression.Eq("IsWF", cbIsWF.Checked));
             }
-            if (cbIsTrace.Checked)
-            {
-                selectCriteria.Add(Expression.Eq("IsTrace", cbIsTrace.Checked));
-                selectCountCriteria.Add(Expression.Eq("IsTrace", cbIsTrace.Checked));
-            }
-            if (cbIsCost.Checked)
-            {
-                selectCriteria.Add(Expression.Eq("IsCost", cbIsCost.Checked));
-                selectCountCriteria.Add(Expression.Eq("IsCost", cbIsCost.Checked));
-            }
             if (cbIsCostCenter.Checked)
             {
                 selectCriteria.Add(Expression.Eq("IsCostCenter", cbIsCostCenter.Checked));
                 selectCountCriteria.Add(Expression.Eq("IsCostCenter", cbIsCostCenter.Checked));
-            }
-            if (cbIsBudget.Checked)
-            {
-                selectCriteria.Add(Expression.Eq("IsBudget", cbIsBudget.Checked));
-                selectCountCriteria.Add(Expression.Eq("IsBudget", cbIsBudget.Checked));
             }
             if (cbIsAttachment.Checked)
             {
@@ -176,16 +145,6 @@ public partial class ISI_TaskSubType_Search : SearchModuleBase
             {
                 selectCriteria.Add(Expression.Eq("IsApply", cbIsApply.Checked));
                 selectCountCriteria.Add(Expression.Eq("IsApply", cbIsApply.Checked));
-            }
-            if (this.cbIsAmount.Checked)
-            {
-                selectCriteria.Add(Expression.Eq("IsAmount", cbIsAmount.Checked));
-                selectCountCriteria.Add(Expression.Eq("IsAmount", cbIsAmount.Checked));
-            }
-            if (this.cbIsAmountDetail.Checked)
-            {
-                selectCriteria.Add(Expression.Eq("IsAmountDetail", cbIsAmountDetail.Checked));
-                selectCountCriteria.Add(Expression.Eq("IsAmountDetail", cbIsAmountDetail.Checked));
             }
             if (this.cbIsPrint.Checked)
             {

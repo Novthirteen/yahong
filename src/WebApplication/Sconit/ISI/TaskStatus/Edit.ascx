@@ -53,7 +53,7 @@
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbStartDate" runat="server" Text='<%# Bind("StartDate") %>' CssClass="inputRequired"
-                                onClick="var ctl01_ucEdit_ucStatus_ucEdit_FV_TaskStatus_tbEndDate=$dp.$('ctl01_ucEdit_ucStatus_ucEdit_FV_TaskStatus_tbEndDate');WdatePicker({dateFmt:'yyyy-MM-dd',onpicked:function(){ctl01_ucEdit_ucStatus_ucEdit_FV_TaskStatus_tbEndDate.click();},maxDate:'#F{$dp.$D(\'ctl01_ucEdit_ucStatus_ucEdit_FV_TaskStatus_tbEndDate\')}' })" />
+                                onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
                             <asp:RequiredFieldValidator ID="rfvStartDate" runat="server" ErrorMessage="${Common.String.Empty}"
                                 Display="Dynamic" ControlToValidate="tbStartDate" ValidationGroup="vgSave" />
                         </td>
@@ -62,7 +62,7 @@
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbEndDate" runat="server" Text='<%# Bind("EndDate") %>' CssClass="inputRequired"
-                                onClick="WdatePicker({doubleCalendar:true,dateFmt:'yyyy-MM-dd',maxDate:'%y-%M-%d',minDate:'#F{$dp.$D(\'ctl01_ucEdit_ucStatus_ucEdit_FV_TaskStatus_tbStartDate\')}'})" />
+                                onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
                             <asp:RequiredFieldValidator ID="rfvEndDate" runat="server" ErrorMessage="${Common.String.Empty}"
                                 Display="Dynamic" ControlToValidate="tbEndDate" ValidationGroup="vgSave" />
                             <asp:CustomValidator ID="cvEndDate" runat="server" ControlToValidate="tbEndDate"
@@ -88,7 +88,7 @@
                         <td class="td02">
                             <asp:CheckBox ID="cbIsRemindCreateUser" runat="server" Checked='true' Text="${ISI.TaskStatus.IsRemindCreateUser}" />
                             <asp:CheckBox ID="cbIsRemindAssignUser" runat="server" Checked='false' Text="${ISI.TaskStatus.IsRemindAssignUser}" />
-                            <asp:CheckBox ID="cbIsRemindStartUser" runat="server" Checked='true' Text="${ISI.TaskStatus.IsRemindStartUser}" />
+                            <asp:CheckBox ID="cbIsRemindStartUser" runat="server" Checked='false' Text="${ISI.TaskStatus.IsRemindStartUser}" />
                             <asp:CheckBox ID="cbIsRemindCommentUser" runat="server" Checked='true' Text="${ISI.TaskStatus.IsRemindCommentUser}" />
                         </td>
                         <td class="td01">

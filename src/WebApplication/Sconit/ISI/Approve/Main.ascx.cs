@@ -94,7 +94,7 @@ public partial class ISI_Approve_Main : MainModuleBase
         this.ucEdit.Visible = false;
         this.ucSummary.Visible = false;
         this.ucSearch.Visible = true;
-        this.Search_Render(ucSearch.CollectParam(null), e);
+        this.Search_Render(ucSearch.CollectParam(), e);
         //this.ucList.Visible = true;
         //this.ucList.UpdateView();
 

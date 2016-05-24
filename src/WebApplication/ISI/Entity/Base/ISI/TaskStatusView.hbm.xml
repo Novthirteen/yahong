@@ -16,12 +16,29 @@
     <property name="FocusUser" column="FocusUser" type="String" length="500" />
     <property name="AssignDate" column="AssignDate" type="DateTime"  />
     <property name="StartDate" column="StartDate" type="DateTime"  />
-    <property name="CommentCount" column="CommentCount" type="Int32"  />
-    <property name="CurrentCommentCount" column="CurrentCommentCount" type="Int32"  />
-    <property name="CommentDate" column="CommentDate" type="DateTime"  />
+    <property name="Id" column="Id" type="Int32"  />
+    <property name="StatusUser" column="StatusUser" type="String" length="50" />
+    <property name="StatusUserNm" column="StatusUserNm" type="String" length="50" />
     <property name="StatusDate" column="StatusDate" type="DateTime"  />
+    <property name="StatusDesc" column="StatusDesc" type="String" length="1000" />
+    <property name="StatusStartDate" column="StatusStartDate" type="DateTime"  />
+    <property name="StatusEndDate" column="StatusEndDate" type="DateTime"  />
     <property name="StatusCount" column="StatusCount" type="Int32"  />
     <property name="CurrentStatusCount" column="CurrentStatusCount" type="Int32"  />
+    <property name="Comment" column="Comment" type="String" length="320" />
+    <property name="CommentCreateUserNm" column="CommentCreateUserNm" type="String" length="50" />
+    <property name="CommentCreateUser" column="CommentCreateUser" type="String" length="50" />
+    <property name="CommentCount" column="CommentCount" type="Int32"  />
+    <property name="CurrentCommentCount" column="CurrentCommentCount" type="Int32"  />
+    <property name="CommentCreateDate" column="CommentCreateDate" type="DateTime"  />
+    <!--property name="FileName" column="FileName" type="String" length="255" />
+    <property name="Path" column="Path" type="String" length="500" />
+    <property name="FileExtension" column="FileExtension" type="String" length="50" />
+    <property name="ContentType" column="ContentType" type="String" length="100" />
+    <property name="AttachmentCreateDate" column="AttachmentCreateDate" type="DateTime"  />
+    <property name="AttachmentCreateUserNm" column="AttachmentCreateUserNm" type="String" length="50" />
+    <property name="AttachmentCount" column="AttachmentCount" type="Int32"  />
+    <property name="CurrentAttachmentCount" column="CurrentAttachmentCount" type="Int32"  /-->
     <property name="RefTaskCount" column="RefTaskCount" type="Int32"  />
     <property name="TaskAddress" column="TaskAddress" type="String" length="100" />
     <property name="Seq" column="Seq" type="String" length="10" />
@@ -69,38 +86,15 @@
     <property name="ApprovalLevel" column="ApprovalLevel" type="String" length="500" />
     <property name="IsCountersignSerial" column="IsCountersignSerial" type="Boolean"  />
     <property name="CostCenterCode" column="CostCenterCode" type="String" length="50" />
-    <property name="CostCenterDesc" column="CostCenterDesc" type="String" length="50" />
+    <property name="CostCenterCodeDesc" column="CostCenterCodeDesc" type="String" length="50" />
+    <property name="CostCenterUser" column="CostCenterUser" type="String" length="50" />
     <property name="IsAssignUser" column="IsAssignUser" type="Boolean"  />
+    <property name="TraceType" column="TraceType" type="String" length="20" />
     <property name="InApproveUser" column="InApproveUser" type="String" length="50" />
     <property name="InApproveUserNm" column="InApproveUserNm" type="String" length="50" />
     <property name="InApproveDate" column="InApproveDate" type="DateTime"  />
     <property name="InDisputeUser" column="InDisputeUser" type="String" length="50" />
     <property name="InDisputeUserNm" column="InDisputeUserNm" type="String" length="50" />
     <property name="InDisputeDate" column="InDisputeDate" type="DateTime"  />
-    <property name="FailureMode" column="FailureMode" type="String" length="50" />
-    <property name="FailureModeDesc" column="FailureModeDesc" type="String" length="100" />
-    <property name="Amount" column="Amount" type="Decimal"  />
-    <property name="SupplierCode" column="SupplierCode" type="String" length="50"  />
-    <property name="SupplierName" column="SupplierName" type="String" length="255"  />
-    <property name="Qty" column="Qty" type="Decimal" />
-    <property name="FormType" column="FormType" type="String" length="50"   />
-    <property name="Account1" column="Account1" type="String" length="50" />
-    <property name="Account1Desc" column="Account1Desc" type="String" length="50" />
-    <property name="Account2" column="Account2" type="String" length="50" />
-    <property name="Account2Desc" column="Account2Desc" type="String" length="50" />
-    <property name="Taxes" column="Taxes" type="Decimal"  />
-    <property name="TotalAmount" column="TotalAmount" type="Decimal"  />
-    <property name="PayeeCode" column="PayeeCode" type="String" length="50" />
-    <property name="PayeeName" column="PayeeName" type="String" length="300" />
-    <property name="Voucher" column="Voucher" type="Int32"  />
-    <property name="CostCenterUser" column="CostCenterUser" type="String" length="300" />
-    <property name="DeptCode" column="DeptCode" type="String" length="50" />
-    <property name="DeptDesc" column="DeptDesc" type="String" length="50" />
-    <property name="DeptUser" column="DeptUser" type="String" length="300" />
-    <property name="IsCostCenter" column="IsCostCenter" type="Boolean"   />
-    <property name="CurrentApprovalUser" column="CurrentApprovalUser" type="String" length="500" />
-    <property name="CurrentApprovalUserNm" column="CurrentApprovalUserNm" type="String" length="500" />
-    <property name="FirstUser" column="FirstUser" type="String" length="50" />
-    <property name="FirstUserNm" column="FirstUserNm" type="String" length="255" />
   </class>
 </hibernate-mapping>

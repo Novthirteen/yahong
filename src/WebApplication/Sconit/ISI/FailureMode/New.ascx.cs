@@ -62,7 +62,7 @@ public partial class ISI_FailureMode_New : NewModuleBase
             {
                 //TaskSubType taskSubType = new TaskSubType();
                 //taskSubType.Code = taskSubTypeCode;
-                failureMode.TaskSubType = taskSubTypeCode;// TheTaskSubTypeMgr.LoadTaskSubType(taskSubTypeCode);
+                failureMode.TaskSubType = TheTaskSubTypeMgr.LoadTaskSubType(taskSubTypeCode);
             }
             DateTime now = DateTime.Now;
             failureMode.CreateDate = now;

@@ -138,6 +138,7 @@ public partial class ISI_TSK_New : NewModuleBase
         }
     }
 
+
     public bool CurrentIsApply
     {
         get
@@ -166,18 +167,7 @@ public partial class ISI_TSK_New : NewModuleBase
     {
         btnBack.Visible = true;
     }
-    protected void tbCostCenter_TextChanged(Object sender, EventArgs e)
-    {
-        try
-        {
-            ucCostList.CostCenter = tbCostCenter.Text;
-            ucCostList.InitPageParameter(ucCostList.TheCostList);
-        }
-        catch (BusinessErrorException ex)
-        {
-            this.ShowErrorMessage(ex);
-        }
-    }
+
     protected void tbTaskSubType_TextChanged(Object sender, EventArgs e)
     {
         try
@@ -192,70 +182,14 @@ public partial class ISI_TSK_New : NewModuleBase
                     {
                         tbCostCenter.Visible = taskSubType.IsCostCenter;
                         rtbCostCenter.Visible = !taskSubType.IsCostCenter;
-                        this.rfvCostCenter.Visible = taskSubType.IsCostCenter;
+
                         if (taskSubType != null)
                         {
-                            this.ucCostList.Visible = !string.IsNullOrEmpty(taskSubType.FormType);
-
-                            //税金和不含税金额
-                            this.trAmount.Visible = taskSubType.IsCostCenter || taskSubType.IsAmount || taskSubType.IsAmountDetail;// && !string.IsNullOrEmpty(taskSubType.FormType);
-
-                            //成本明细2和成本明细3 显示数量
-                            this.trQty.Visible = taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2 || taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3;
-
-                            //持续改进和启用成本控制，显示金额和附件张数
-                            this.isImp.Visible = this.ModuleType == ISIConstants.ISI_TASK_TYPE_IMPROVE || taskSubType.IsCostCenter;
-                            if (this.isImp.Visible && taskSubType.IsAmount)
-                            {
-                                tbAmount.CssClass = "inputRequired";
-                                rfvAmount.Visible = true;
-                            }
-                            else
-                            {
-                                tbAmount.CssClass = string.Empty;
-                                rfvAmount.Visible = false;
-                            }
-                            if (this.isImp.Visible && taskSubType.IsAmountDetail)
-                            {
-                                tbAmount.ReadOnly = true;
-                                tbTaxes.ReadOnly = true;
-                            }
-                            //出差类型和领款人
-                            this.trFormType2.Visible = taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2;
-
-                            if (taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_2 || taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_3)
-                            {
-                                this.lblQty.Text = "${ISI.TSK.Hours}:";
-                            }
-                            else
-                            {
-                                this.lblQty.Text = "${ISI.TSK.Qty}:";
-                            }
-
-                            //标准成本明细    显示供应商
-                            this.isIss.Visible = this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE
-                                                        || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ISSUE
-                                                        || taskSubType.FormType == ISIConstants.CODE_MASTER_WFS_FORMTYPE_1;
-
-                            if (!string.IsNullOrEmpty(taskSubType.FormType))
-                            {
-                                this.ucCostList.CostCenter = tbCostCenter.Text;
-                                this.ucCostList.TaskCode = string.Empty;
-                                this.ucCostList.IsCostCenter = taskSubType.IsCostCenter;
-                                this.ucCostList.FormType = taskSubType.FormType;
-                                this.ucCostList.IsAmountDetail = taskSubType.IsAmountDetail;
-                                this.ucCostList.PageAction = BusinessConstants.PAGE_NEW_ACTION;
-                                this.ucCostList.InitPageParameter();
-                            }
-
-
                             fsFlow.Visible = !taskSubType.IsWF;
-                            //this.tbPlanStartDate.Text = string.Empty;
+                            this.tbPlanStartDate.Text = string.Empty;
                             this.trWF.Visible = taskSubType.IsWF;
-                            this.trAccount.Visible = taskSubType.IsCostCenter;
                             this.tbCostCenter.Text = this.CurrentUser.CostCenter;
                             rtbCostCenter.Text = this.CurrentUser.CostCenter;
-                            //ltlCostCenter.Text = this.CurrentUser.CostCenter;
                             CurrentIsApply = taskSubType.IsApply;
                             //GenerateGynamic();
                             /*
@@ -264,19 +198,6 @@ public partial class ISI_TSK_New : NewModuleBase
                                 taskTable.Rows.RemoveAt(i);
                             }*/
                             this.cbIsAutoRelease.Visible = !taskSubType.IsAttachment;
-
-                            if (!string.IsNullOrEmpty(taskSubType.CostCenter))
-                            {
-                                this.tbCostCenter.Text = taskSubType.CostCenter;
-                            }
-                            if (!string.IsNullOrEmpty(taskSubType.Account1))
-                            {
-                                this.tbAccount1.Text = taskSubType.Account1;
-                            }
-                            if (!string.IsNullOrEmpty(taskSubType.Account2))
-                            {
-                                this.tbAccount2.Text = taskSubType.Account2;
-                            }
                         }
                     }
                     else
@@ -381,24 +302,10 @@ public partial class ISI_TSK_New : NewModuleBase
             }
         }
 
-        string tst = this.tbTaskSubType.Text.Trim();
-        if (string.IsNullOrEmpty(tst))
+        if (string.IsNullOrEmpty(this.tbTaskSubType.Text.Trim()) && !this.CurrentIsApply)
         {
             ProcessApplyList = null;
             return;
-        }
-        else
-        {
-            var tstList = this.TheHqlMgr.FindAll<bool>("select tst.IsApply from TaskSubType tst where tst.Code='" + tst + "'");
-            if (tstList != null && tstList.Count > 0)
-            {
-                this.CurrentIsApply = tstList[0];
-            }
-            if (tstList == null || tstList.Count == 0 || !CurrentIsApply)
-            {
-                ProcessApplyList = null;
-                return;
-            }
         }
 
         ProcessApplyList = this.TheProcessApplyMgr.GetProcessApply(this.tbTaskSubType.Text.Trim());
@@ -723,19 +630,11 @@ public partial class ISI_TSK_New : NewModuleBase
         tc2.Controls.Add(rv);
         */
     }
-
-    void Edit_Render(object sender, EventArgs e)
-    {
-        this.UpdateAmount(((object[])sender)[0].ToString());
-        this.UpdateTaxes(((object[])sender)[1].ToString());
-        this.UpdateTotalAmount(((object[])sender)[2].ToString());
-        this.UpdateQty(((object[])sender)[3].ToString());
-    }
     protected void Page_Load(object sender, EventArgs e)
     {
         this.tbTaskSubType.ServiceParameter = "string:" + this.ModuleType + ",string:" + this.CurrentUser.Code;
         this.tbTaskSubType.DataBind();
-        this.ucCostList.EditEvent += new System.EventHandler(this.Edit_Render);
+
         if (!IsPostBack)
         {
             this.lgd.InnerText = "${ISI.TSK.Add" + this.ModuleType + "}";
@@ -747,28 +646,19 @@ public partial class ISI_TSK_New : NewModuleBase
             this.fsFlow.Visible = this.ModuleType != ISIConstants.CODE_PREFIX_ENGINEERING_WORKFLOW;
             if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT || this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
             {
-                this.isPrj.Visible = true;
+                this.lblFailureMode.Text = "${ISI.TSK.Phase}|${ISI.TSK.Seq}:";
+                this.ddlPhase.Visible = true;
+                this.tbSeq.Visible = true;
+
                 if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE)
                 {
                     this.lblBackYards.Text = "${ISI.TSK.RefTask}:";
                     this.lblSubject.Text = "${ISI.TSK.PrjIss.Subject}:";
                     this.lblDesc1.Text = "${ISI.TSK.PrjIss.Desc1}:";
                     this.lblExpectedResults.Text = "${ISI.TSK.PrjIss.ExpectedResults}";
-                    this.isIss.Visible = true;
                 }
+                this.tbFailureMode.Visible = false;
                 this.ltlTaskSubType.Text = "${ISI.TSK.Project}:";
-            }
-            else
-            {
-                this.isPrj.Visible = false;
-                if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_IMPROVE)
-                {
-                    this.isImp.Visible = true;
-                }
-                else if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_ISSUE)
-                {
-                    this.isIss.Visible = true;
-                }
             }
 
             //if (this.ModuleType != ISIConstants.ISI_TASK_TYPE_WORKFLOW)
@@ -793,41 +683,10 @@ public partial class ISI_TSK_New : NewModuleBase
     public void PageCleanup()
     {
         tbTaskSubType.Text = string.Empty;
-        CurrentTaskSubType = string.Empty;
-        this.CurrentIsApply = false;
         PageCleanup1();
     }
-
-    public void UpdateAmount(string amount)
-    {
-        this.tbAmount.Text = amount;
-    }
-    public void UpdateTotalAmount(string totalAmount)
-    {
-        this.tbTotalAmount.Text = totalAmount;
-    }
-    public void UpdateQty(string qty)
-    {
-        this.tbQty.Text = qty;
-    }
-    public void UpdateTaxes(string taxes)
-    {
-        this.tbTaxes.Text = taxes;
-    }
-
     public void PageCleanup1()
     {
-        this.trAccount.Visible = false;
-        this.trFormType2.Visible = false;
-        this.trQty.Visible = false;
-        this.trWF.Visible = false;
-        this.workHoursTR2.Visible = false;
-        isImp.Visible = false;
-        trAmount.Visible = false;
-
-        this.ucCostList.PageCleanup();
-        this.ucCostList.Visible = false;
-
         ProcessApplyList = null;
         tbSubject.Text = !string.IsNullOrEmpty(this.Subject) ? this.Subject : string.Empty;
         tbDesc1.Text = !string.IsNullOrEmpty(this.Desc1) ? this.Desc1 : string.Empty;
@@ -837,21 +696,9 @@ public partial class ISI_TSK_New : NewModuleBase
         tbExtNo.Text = string.Empty;
         tbCostCenter.Text = this.CurrentUser.CostCenter;
         rtbCostCenter.Text = this.CurrentUser.CostCenter;
-        //ltlCostCenter.Text = this.CurrentUser.CostCenter;
         tbSeq.Text = string.Empty;
-        tbAmount.Text = string.Empty;
-        tbAmount.CssClass = string.Empty;
-        tbSupplier.Text = string.Empty;
-        tbPayeeCode.Text = string.Empty;
-        tbVoucher.Text = string.Empty;
         ddlPriority.SelectedIndex = 0;
-        ddlTravelType.SelectedIndex = 0;
         ddlPhase.SelectedIndex = 0;
-        tbAccount1.Text = string.Empty;
-        this.tbAccount2.Text = string.Empty;
-        this.tbQty.Text = string.Empty;
-        this.tbTotalAmount.Text = string.Empty;
-        this.tbVoucher.Text = string.Empty;
         //this.planAmountTR.Visible = false;
         //this.tbPlanAmount.Text = string.Empty;
         //this.workHoursTR.Visible = false;
@@ -872,133 +719,45 @@ public partial class ISI_TSK_New : NewModuleBase
             if (this.rfvTaskSubType.IsValid && this.rfvTaskAddress.IsValid)
             {
                 TaskMstr task = new TaskMstr();
-
-                task.TaskSubType = TheTaskSubTypeMgr.LoadTaskSubType(tbTaskSubType.Text.Trim());
-                if (task.TaskSubType == null)
-                {
-                    ShowWarningMessage("ISI.Error.TaskCodeNotExist");
-                    return;
-                }
-
-                if (task.TaskSubType.IsCostCenter && (!rfvAccount1.IsValid || !rfvAccount2.IsValid))
-                {
-                    return;
-                }
-
-                task.FormType = task.TaskSubType.FormType;
                 if (ddlPriority.SelectedIndex != -1)
                 {
                     task.Priority = ddlPriority.SelectedValue;
                 }
-                if (this.ddlTravelType.SelectedIndex != -1)
-                {
-                    task.TravelType = ddlTravelType.SelectedValue;
-                }
+
                 task.BackYards = this.tbBackYards.Text.Trim();
                 task.Desc1 = tbDesc1.Text.Trim().Trim((char[])ISIConstants.TEXT_SEPRATOR.ToCharArray());
                 task.Subject = tbSubject.Text.Trim().Trim((char[])ISIConstants.TEXT_SEPRATOR.ToCharArray());
+                task.TaskSubType = TheTaskSubTypeMgr.LoadTaskSubType(tbTaskSubType.Text.Trim());
 
                 if (this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT || this.ModuleType == ISIConstants.ISI_TASK_TYPE_PROJECT_ISSUE || this.ModuleType == ISIConstants.ISI_TASK_TYPE_ENGINEERING_CHANGE)
                 {
                     task.Phase = this.ddlPhase.SelectedValue;
                     task.Seq = this.tbSeq.Text;
                 }
-
-                //task.Phase = string.Empty;
-                //task.Seq = string.Empty;
-                if (!string.IsNullOrEmpty(this.tbSupplier.Text.Trim()))
-                {
-                    var supplier = this.TheSupplierMgr.LoadSupplier(tbSupplier.Text.Trim());
-                    if (supplier != null)
-                    {
-                        task.SupplierCode = supplier.Code;
-                        task.SupplierName = supplier.Name;
-                    }
-                }
-                if (!string.IsNullOrEmpty(this.tbPayeeCode.Text.Trim()))
-                {
-                    var user = this.TheUserMgr.LoadUser(tbPayeeCode.Text.Trim());
-                    task.PayeeCode = user.Code;
-                    task.PayeeName = user.Name;
-                }
-                if (!string.IsNullOrEmpty(this.tbVoucher.Text.Trim()))
-                {
-                    task.Voucher = int.Parse(this.tbVoucher.Text.Trim());
-                }
-                if (!string.IsNullOrEmpty(this.tbQty.Text.Trim()))
-                {
-                    task.Qty = decimal.Parse(this.tbQty.Text.Trim());
-                }
-                if (!string.IsNullOrEmpty(this.tbAmount.Text.Trim()))
-                {
-                    task.Amount = decimal.Parse(this.tbAmount.Text.Trim());
-                }
-                if (!string.IsNullOrEmpty(this.tbTaxes.Text.Trim()))
-                {
-                    task.Taxes = decimal.Parse(this.tbTaxes.Text.Trim());
-                }
-                if (task.Amount.HasValue || task.Taxes.HasValue)
-                {
-                    task.TotalAmount = (task.Amount.HasValue ? task.Amount.Value : 0) + (task.Taxes.HasValue ? task.Taxes.Value : 0);
-                }
-                else if (!string.IsNullOrEmpty(this.tbTotalAmount.Text.Trim()))
-                {
-                    task.TotalAmount = decimal.Parse(this.tbTotalAmount.Text.Trim());
-                }
                 else
                 {
-                    task.TotalAmount = null;
-                }
+                    //task.Phase = string.Empty;
+                    //task.Seq = string.Empty;
 
-                if (!string.IsNullOrEmpty(tbFailureMode.Text.Trim()))
-                {
-                    //FailureMode failureMode = new FailureMode();
-                    //failureMode.Code = tbFailureMode.Text.Trim();
-                    task.FailureMode = this.TheFailureModeMgr.LoadFailureMode(tbFailureMode.Text.Trim());
+                    if (!string.IsNullOrEmpty(tbFailureMode.Text.Trim()))
+                    {
+                        //FailureMode failureMode = new FailureMode();
+                        //failureMode.Code = tbFailureMode.Text.Trim();
+                        task.FailureMode = this.TheFailureModeMgr.LoadFailureMode(tbFailureMode.Text.Trim());
+                    }
                 }
 
                 TaskSubType costCenter = null;
                 if (!string.IsNullOrEmpty(this.tbCostCenter.Text.Trim()))
                 {
                     costCenter = TheTaskSubTypeMgr.LoadTaskSubType(tbCostCenter.Text.Trim());
-                    task.CostCenterCode = costCenter.Code;
-                    task.CostCenterDesc = costCenter.Desc;
                 }
                 else if (!string.IsNullOrEmpty(this.CurrentUser.CostCenter))
                 {
                     costCenter = TheTaskSubTypeMgr.LoadTaskSubType(this.CurrentUser.CostCenter);
-                    task.CostCenterCode = costCenter.Code;
-                    task.CostCenterDesc = costCenter.Desc;
                 }
-                else
-                {
-                    task.CostCenterCode = string.Empty;
-                    task.CostCenterDesc = string.Empty;
-                }
-                task.Dept = this.CurrentUser.CostCenter;
+                task.CostCenter = costCenter;
 
-                if (!string.IsNullOrEmpty(this.tbAccount1.Text.Trim()))
-                {
-                    var account1 = this.TheAccountMgr.LoadAccount(tbAccount1.Text.Trim());
-                    task.Account1 = account1.Code;
-                    task.Account1Desc = account1.Desc1;
-                }
-                else
-                {
-                    task.Account1 = null;
-                    task.Account1Desc = null;
-                }
-                if (!string.IsNullOrEmpty(this.tbAccount2.Text.Trim()))
-                {
-                    var account2 = this.TheAccountMgr.LoadAccount(tbAccount2.Text.Trim());
-                    task.Account2 = account2.Code;
-                    task.Account2Desc = account2.Desc1;
-                }
-                else
-                {
-                    task.Account2 = null;
-                    task.Account2Desc = null;
-                }
                 if (task.TaskSubType.IsApply && this.ProcessApplyList != null && this.ProcessApplyList != null)
                 {
                     IList<TaskApply> taskApplyList = new List<TaskApply>();
@@ -1180,19 +939,11 @@ public partial class ISI_TSK_New : NewModuleBase
                     }
                 }
 
-                if (this.ucCostList.Visible)
-                {
-                    if (this.ucCostList.TheCostList == null || this.ucCostList.TheCostList.Count == 0)
-                    {
-                        this.ShowErrorMessage("WFS.Cost.Warn.DetailEmpty");
-                        return;
-                    }
-                }
-                TheTaskMgr.CreateTask(task, this.ucCostList.TheCostList, this.CurrentUser);
-
+                TheTaskMgr.CreateTask(task, this.CurrentUser);
                 CreateEvent(task.Code, e);
 
                 ShowSuccessMessage("ISI.TSK.Add" + this.ModuleType + ".Successfully", task.Code);
+
             }
         }
     }
