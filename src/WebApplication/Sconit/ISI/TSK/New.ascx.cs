@@ -528,7 +528,7 @@ public partial class ISI_TSK_New : NewModuleBase
         tb.MustMatch = processApply.MustMatch.HasValue ? processApply.MustMatch.Value : false;
         tb.DescField = processApply.DescField;
         tb.ValueField = processApply.ValueField;
-        tb.SuggestPhLocaldata = new PlaceHolder();
+     //   tb.SuggestPhLocaldata = new PlaceHolder();
         tb.Visible = true;
         tb.SuggestTextBox = new TextBox();
         tb.SuggestTextBox.ID = "suggest" + id;
@@ -536,7 +536,7 @@ public partial class ISI_TSK_New : NewModuleBase
         tb.SuggestTextBox.CssClass = "suggestTextBox";
         tb.SuggestTextBox.Visible = true;
         tb.Width = 260;
-        tb.SuggestPhLocaldata.Controls.Add(tb.SuggestTextBox);
+     //   tb.SuggestPhLocaldata.Controls.Add(tb.SuggestTextBox);
         tb.DataBind();
 
         if (processApply.Required.HasValue && processApply.Required.Value)

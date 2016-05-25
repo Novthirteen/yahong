@@ -48,8 +48,8 @@ public partial class Facility_FacilityAllocate_New : NewModuleBase
         ((Controls_TextBox)(this.FV_FacilityAllocate.FindControl("tbItemCode"))).Text = string.Empty;
       
         ((CheckBox)(this.FV_FacilityAllocate.FindControl("cbIsActive"))).Checked = true;
-        ((TextBox)(this.FV_FacilityAllocate.FindControl("tbAssignStartUser"))).Text = string.Empty;
-        ((TextBox)(this.FV_FacilityAllocate.FindControl("tbWarnQty"))).Text = string.Empty;
+        ((TextBox)(this.FV_FacilityAllocate.FindControl("tbMouldCount"))).Text = "1";
+        ((TextBox)(this.FV_FacilityAllocate.FindControl("tbGroupName"))).Text = string.Empty;
     }
 
     protected void ODS_FacilityAllocate_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
@@ -59,7 +59,7 @@ public partial class Facility_FacilityAllocate_New : NewModuleBase
         string itemCode = ((Controls_TextBox)(this.FV_FacilityAllocate.FindControl("tbItemCode"))).Text;
         facilityAllocate.FacilityMaster = TheFacilityMasterMgr.LoadFacilityMaster(fcId);
         facilityAllocate.Item = TheItemMgr.LoadItem(itemCode);
-        facilityAllocate.NextWarnQty = facilityAllocate.WarnQty;
+     
         facilityAllocate.CreateDate = DateTime.Now;
         facilityAllocate.LastModifyDate = DateTime.Now;
         facilityAllocate.CreateUser = this.CurrentUser.Code;

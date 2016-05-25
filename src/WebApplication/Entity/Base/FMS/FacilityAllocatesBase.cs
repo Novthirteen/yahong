@@ -6,10 +6,10 @@ using com.Sconit.Entity.MasterData;
 
 //TODO: Add other using statements here
 
-namespace com.Sconit.Facility.Entity
+namespace com.Sconit.Entity.FMS
 {
     [Serializable]
-    public abstract class FacilityAllocateBase : EntityBase
+    public abstract class FacilityAllocatesBase : EntityBase
     {
         #region O/R Mapping Properties
 		
@@ -25,28 +25,28 @@ namespace com.Sconit.Facility.Entity
 				_id = value;
 			}
 		}
-        private Item _item;
-        public Item Item
+        private string _itemCode;
+        public string ItemCode
         {
             get
             {
-                return _item;
+                return _itemCode;
             }
             set
             {
-                _item = value;
+                _itemCode = value;
             }
         }
-        private FacilityMaster _facilityMaster;
-        public FacilityMaster FacilityMaster
+        private string _fCID;
+        public string FCID
         {
             get
             {
-                return _facilityMaster;
+                return _fCID;
             }
             set
             {
-                _facilityMaster = value;
+                _fCID = value;
             }
         }
 		private Boolean _isActive;
@@ -155,7 +155,7 @@ namespace com.Sconit.Facility.Entity
 
         public override bool Equals(object obj)
         {
-            FacilityAllocateBase another = obj as FacilityAllocateBase;
+            FacilityAllocatesBase another = obj as FacilityAllocatesBase;
 
             if (another == null)
             {

@@ -22,6 +22,7 @@ namespace com.Sconit.Entity
         public static readonly string CODE_MASTER_FACILITY_STATUS_SCRAP = "Scrap";
         public static readonly string CODE_MASTER_FACILITY_STATUS_SELL = "Sell";
         public static readonly string CODE_MASTER_FACILITY_STATUS_LOSE = "Lose";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_INUSE = "InUse";
 
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_START = "MaintainStart";
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_FINISH = "MaintainFinish";

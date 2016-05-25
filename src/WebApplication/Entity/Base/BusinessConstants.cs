@@ -696,6 +696,20 @@ namespace com.Sconit.Entity
         public static readonly string CODE_MASTER_ORDER_RWO_TYPE = "RwoType";
         public static readonly string CODE_MASTER_ORDER_RWO_TYPE_VALUE_ONLINE = "Online";
         public static readonly string CODE_MASTER_ORDER_RWO_TYPE_VALUE_INSP = "Insp";
+
+
+        public static readonly string CODE_MASTER_FACILITY_STATUS = "FacilityStatus";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_TEST = "Test";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_AVAILABLE = "Available";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_INSPECT = "Inspect";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_MAINTAIN = "Maintain";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_FIX = "Fixing";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_LEND = "Lend";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_ENVELOP = "Envelop";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_SCRAP = "Scrap";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_SELL = "Sell";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_LOSE = "Lose";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_INUSE = "InUse";
         #endregion
     }
 }

@@ -237,7 +237,25 @@
     <Compile Include="Service\Rep\RepRepairOrderSheetMgr.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="**\*.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\CheckListDetail.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\CheckListMaster.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\CheckListOrderDetail.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\CheckListOrderMaster.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityAllocate.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityCategory.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityDistribution.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityDistributionDetail.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityItem.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityMaintainPlan.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityMaster.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityStock.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityStockDetail.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityStockMaster.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityTrans.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\MaintainPlan.hbm.xml" />
+    <EmbeddedResource Include="Entity\Base\Facility\RepairOrder.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

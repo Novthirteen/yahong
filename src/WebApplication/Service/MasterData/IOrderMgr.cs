@@ -111,6 +111,8 @@ namespace com.Sconit.Service.MasterData
 
         void ReleaseOrder(string orderNo, User user, bool autoHandleAbstractItem, bool isForce);
 
+        void ReleaseOrder(string orderNo, User user, bool autoHandleAbstractItem, bool isForce, bool isJumpFacilityCheck);
+
         void StartOrder(OrderHead orderHead, string userCode);
 
         void StartOrder(string orderNo, string userCode);

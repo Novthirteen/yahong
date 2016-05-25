@@ -79,12 +79,6 @@ public partial class Facility_FacilityAllocate_List : ListModuleBase
             lblAllocateType.Text = this.TheLanguageMgr.TranslateMessage(facilityAllocate.AllocateType, this.CurrentUser);
 
          
-
-            LinkButton lbtnDelete = (LinkButton)(e.Row.FindControl("lbtnDelete"));
-            if (facilityAllocate.AllocatedQty > 0)
-            {
-                lbtnDelete.Visible = false;
-            }
         }
     }
 

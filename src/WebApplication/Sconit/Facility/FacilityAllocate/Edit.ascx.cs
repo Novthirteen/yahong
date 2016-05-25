@@ -63,12 +63,10 @@ public partial class Facility_FacilityAllocate_Edit : EditModuleBase
     protected void ODS_FacilityAllocate_Updating(object sender, ObjectDataSourceMethodEventArgs e)
     {
         FacilityAllocate facilityAllocate = (FacilityAllocate)e.InputParameters[0];
-        //  facilityAllocate =  TheFacilityAllocateMgr.LoadFacilityAllocate(this.Id);
         string fcId = ((Label)(this.FV_FacilityAllocate.FindControl("lblFCID"))).Text;
         string itemCode = ((Label)(this.FV_FacilityAllocate.FindControl("lblItemCode"))).Text;
         facilityAllocate.FacilityMaster = TheFacilityMasterMgr.LoadFacilityMaster(fcId);
         facilityAllocate.Item = TheItemMgr.LoadItem(itemCode);
-        facilityAllocate.AllocatedQty = Convert.ToDecimal(((TextBox)(this.FV_FacilityAllocate.FindControl("tbAllocatedQty"))).Text);
         facilityAllocate.LastModifyDate = DateTime.Now;
         facilityAllocate.LastModifyUser = this.CurrentUser.Code;
     }

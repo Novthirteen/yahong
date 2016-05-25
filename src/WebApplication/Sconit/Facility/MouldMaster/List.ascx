@@ -29,7 +29,7 @@
                         <asp:Label ID="lblStatus" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.RefenceCode}"
+                <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.MouldNumber}"
                     SortExpression="RefenceCode" />
                 <asp:BoundField DataField="Specification" HeaderText="${Facility.FacilityMaster.Specification}"
                     SortExpression="Specification" />

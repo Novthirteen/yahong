@@ -5,10 +5,10 @@ using com.Sconit.Entity;
 
 //TODO: Add other using statements here
 
-namespace com.Sconit.Facility.Entity
+namespace com.Sconit.Entity.FMS
 {
     [Serializable]
-    public abstract class FacilityMasterBase : EntityBase
+    public abstract class FacilityMastersBase : EntityBase
     {
         #region O/R Mapping Properties
 		
@@ -541,10 +541,14 @@ namespace com.Sconit.Facility.Entity
             }
         }
 
-        public string ParentCategory { get; set; }
-      
-        public Decimal NextMaintainQty { get; set; }
+     
+        public Decimal NextMaintainQty{get;set;}
+
+
         public Decimal NextWarnQty { get; set; }
+
+        public string ParentCategory { get; set; }
+    
         public Decimal UseQty { get; set; }
         #endregion
 
@@ -562,7 +566,7 @@ namespace com.Sconit.Facility.Entity
 
         public override bool Equals(object obj)
         {
-            FacilityMasterBase another = obj as FacilityMasterBase;
+            FacilityMastersBase another = obj as FacilityMastersBase;
 
             if (another == null)
             {

@@ -15,14 +15,9 @@
                         <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.Name")%>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="${Facility.FacilityMaster.RefenceCode}" SortExpression="FacilityMaster.RefenceCode">
+                <asp:TemplateField HeaderText="${Facility.FacilityAllocate.RefenceCode}" SortExpression="FacilityMaster.RefenceCode">
                     <ItemTemplate>
                         <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.RefenceCode")%>
-                    </ItemTemplate>
-                </asp:TemplateField>
-                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Category}" SortExpression="FacilityMaster.Category">
-                    <ItemTemplate>
-                        <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.Category")%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="${Facility.FacilityAllocate.ItemCode}" SortExpression="Item.Code">
@@ -40,12 +35,10 @@
                         <asp:Label ID="lblAllocateType" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="AllocatedQty" HeaderText="${Facility.FacilityAllocate.AllocatedQty}"
-                    SortExpression="AllocatedQty" DataFormatString="{0:0.###}" />
-                <asp:BoundField DataField="WarnQty" HeaderText="${Facility.FacilityAllocate.WarnQty}"
-                    SortExpression="WarnQty" DataFormatString="{0:0.###}" />
-                <asp:BoundField DataField="NextWarnQty" HeaderText="${Facility.FacilityAllocate.NextWarnQty}"
-                    SortExpression="NextWarnQty" DataFormatString="{0:0.###}" />
+                <asp:BoundField DataField="MouldCount" HeaderText="${Facility.FacilityAllocate.MouldCount}"
+                    SortExpression="MouldCount" />
+                <asp:BoundField DataField="GroupName" HeaderText="${Facility.FacilityAllocate.GroupName}"
+                    SortExpression="GroupName" />
                 <asp:CheckBoxField DataField="IsActive" HeaderText="${Facility.FacilityAllocate.IsActive}"
                     SortExpression="IsActive" />
                 <asp:TemplateField HeaderText="${Common.GridView.Action}">

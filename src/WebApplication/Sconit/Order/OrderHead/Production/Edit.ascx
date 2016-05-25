@@ -373,6 +373,8 @@
         </EditItemTemplate>
     </asp:FormView>
     <div class="tablefooter">
+        跳过设备检查
+        <asp:CheckBox ID="cbForceSubmit" runat="server"></asp:CheckBox>
         <sc1:Button ID="btnEdit" runat="server" Text="${Common.Button.Save}" CssClass="button2"
             OnClick="btnEdit_Click" FunctionId="EditOrder" />
         <sc1:Button ID="btnCheck" runat="server" Text="${MasterData.Order.Button.Check}"

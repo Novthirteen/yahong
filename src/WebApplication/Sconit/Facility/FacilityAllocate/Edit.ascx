@@ -6,37 +6,7 @@
 <link rel="stylesheet" type="text/css" href="Js/tag-it/tagit.ui-zendesk.css" />
 <script language="javascript" type="text/javascript" src="Js/ui.core-min.js"></script>
 <script language="javascript" type="text/javascript" src="Js/tag-it.js"></script>
-<script language="javascript" type="text/javascript">
 
-    $(document).ready(function () {
-
-        BindAssignStartUser();
-    });
-
-
-    function BindAssignStartUser() {
-
-        Sys.Net.WebServiceProxy.invoke('Webservice/UserMgrWS.asmx', 'GetAllUser', false,
-                                {},
-                            function OnSucceeded(result, eventArgs) {
-                                //alert("第" + times + "次追加数据.");
-                                if (result != null) {
-                                    var tags = result;
-
-                                    $('#<%=this.FV_FacilityAllocate.FindControl("tbAssignStartUser").ClientID %>').tagit({
-                                        availableTags: tags,
-                                        allowNotDefinedTags: false,
-                                        removeConfirmation: true
-                                    });
-
-                                }
-                            },
-            function OnFailed(error) {
-                alert(error.get_message());
-            }
-        );
-    }
-</script>
 <div id="divFV" runat="server">
     <asp:FormView ID="FV_FacilityAllocate" runat="server" DataSourceID="ODS_FacilityAllocate"
         DefaultMode="Edit" Width="100%" DataKeyNames="Id" OnDataBound="FV_FacilityAllocate_DataBound">
@@ -75,43 +45,25 @@
                             <asp:HiddenField ID="hfAllocateType" Value='<%# Bind("AllocateType") %>' runat="server" />
                         </td>
                     </tr>
-                    <tr>
-                        <td class="td01">
-                            <asp:Literal ID="ltlWarnQty" runat="server" Text="${Facility.FacilityAllocate.WarnQty}:" />
+                     <tr>
+                       <td class="td01">
+                            <asp:Literal ID="ltlMouldCount" runat="server" Text="${Facility.FacilityAllocate.MouldCount}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbWarnQty" runat="server" Text='<%# Bind("WarnQty","{0:0.##}") %>' />
-                            <asp:RequiredFieldValidator ID="rfvWarnQty" runat="server" ErrorMessage="${Facility.FacilityAllocate.WarnQty.Required}"
-                                Display="Dynamic" ControlToValidate="tbWarnQty" ValidationGroup="vgSave" />
+                            <asp:TextBox ID="tbMouldCount" runat="server" Text='<%# Bind("MouldCount","{0:0.##}") %>' />
+                            <asp:RequiredFieldValidator ID="rfvMouldCount" runat="server" ErrorMessage="${Facility.FacilityAllocate.MouldCount.Required}"
+                                Display="Dynamic" ControlToValidate="tbMouldCount" ValidationGroup="vgSave" />
                         </td>
-                        <td class="td01">
-                            <asp:Literal ID="ltlNextWarnQty" runat="server" Text="${Facility.FacilityAllocate.NextWarnQty}:" />
-                        </td>
-                        <td class="td02">
-                            <asp:TextBox ID="tbNextWarnQty" runat="server" Text='<%# Bind("NextWarnQty","{0:0.##}") %>' />
-                                <asp:RequiredFieldValidator ID="rfvNextWarnQty" runat="server" ErrorMessage="${Facility.FacilityAllocate.NextWarnQty.Required}"
-                                Display="Dynamic" ControlToValidate="tbNextWarnQty" ValidationGroup="vgSave" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="td01">
-                            <asp:Literal ID="ltlAllocatedQty" runat="server" Text="${Facility.FacilityAllocate.AllocatedQty}:" />
+                          <td class="td01">
+                            <asp:Literal ID="ltlGroupName" runat="server" Text="${Facility.FacilityAllocate.GroupName}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbAllocatedQty" runat="server" Text='<%# Bind("AllocatedQty","{0:0.##}") %>'
-                                ReadOnly="true" />
-                            <asp:HiddenField ID="hfAllocateQty" runat="server" Value='<%# Bind("AllocatedQty") %>' />
+                            <asp:TextBox ID="tbGroupName" runat="server" Text='<%# Bind("GroupName") %>' />
+                            
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="td01">
-                            <asp:Literal ID="lblAssignStartUser" runat="server" Text="${ISI.TSK.AssignStartUser}:" />
-                        </td>
-                        <td class="td02" colspan="5">
-                            <asp:TextBox ID="tbAssignStartUser" runat="server" CssClass="inputRequired" Text='<%# Bind("StartUpUser") %>'
-                                Width="100%" />
-                        </td>
-                    </tr>
+                      </tr>
+                  
+                  
                     <tr>
                         <td class="td01">
                         </td>

@@ -26,7 +26,7 @@ using System.Text;
 using com.Sconit.Entity.View;
 using com.Sconit.Service.Ext.Hql;
 using com.Sconit.Entity.MRP;
-
+using com.Sconit.Entity.FMS;
 
 namespace com.Sconit.Service.MasterData.Impl
 {
@@ -71,6 +71,7 @@ namespace com.Sconit.Service.MasterData.Impl
         public IBomDetailMgrE bomDetailMgr { set; get; }
         public IRoutingDetailMgrE routingDetailMgr { set; get; }
         public IHqlMgrE hqlMgr { set; get; }
+        public IGenericMgr genericMgr { get; set; }
 
         private string[] FlowHead2OrderHeadCloneFields = new string[] 
             { 
@@ -245,6 +246,15 @@ namespace com.Sconit.Service.MasterData.Impl
                 bool isReGenerateOrderLocTrans = false;
                 bool isReGenerateOrderOperation = false;
 
+
+                #region 检查模具号
+                if (orderHead.SubType == BusinessConstants.CODE_MASTER_ORDER_SUB_TYPE_VALUE_NML && (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
+                    || orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING))
+                {
+                    CheckFacilityAllocate(orderHead.OrderDetails);
+                }
+                #endregion
+
                 if (updateDetail
                     && (!EntityHelper.EntityPropertyEquals(oldOrderHead, orderHead, "LocationFrom.Code")
                     || !EntityHelper.EntityPropertyEquals(oldOrderHead, orderHead, "LocationTo.Code")))
@@ -269,6 +279,8 @@ namespace com.Sconit.Service.MasterData.Impl
                     //如果订单计划数更改，则orderloctrans的计划用量也随之更改
                     foreach (OrderDetail orderDetail in oldOrderHead.OrderDetails)
                     {
+
+
                         List<OrderLocationTransaction> orderLocTrans = this.orderLocationTransactionMgrE.GetOrderLocationTransaction(orderDetail.Id).ToList();
                         foreach (OrderLocationTransaction targetOrderLocTrans in orderLocTrans)
                         {
@@ -546,8 +558,24 @@ namespace com.Sconit.Service.MasterData.Impl
             #region 创建OrderDetail
             if (orderHead.OrderDetails != null && orderHead.OrderDetails.Count > 0)
             {
+                #region 查询所有的FacilityAllocate
+                var facilityAllocatesList = hqlMgr.FindAll<FacilityAllocates>("from FacilityAllocates where IsActive = 1");
+                #endregion
+
                 foreach (OrderDetail orderDetail in orderHead.OrderDetails)
                 {
+
+                    #region 模具编号记到TextField3字段
+                    if (orderHead.SubType == BusinessConstants.CODE_MASTER_ORDER_SUB_TYPE_VALUE_NML && (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
+                || orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING))
+                    {
+                        FacilityAllocates facilityAllocates = facilityAllocatesList.Where(p => p.ItemCode == orderDetail.Item.Code).FirstOrDefault();
+                        if (facilityAllocates != null)
+                        {
+                            orderDetail.TextField3 = facilityAllocates.FCID;
+                        }
+                    }
+                    #endregion
                     CreateOrderDetailSubsidiary(orderDetail);
                 }
             }
@@ -1310,6 +1338,12 @@ namespace com.Sconit.Service.MasterData.Impl
         [Transaction(TransactionMode.Requires)]
         public void ReleaseOrder(string orderNo, User user, bool autoHandleAbstractItem, bool isForce)
         {
+            ReleaseOrder(orderNo, user, autoHandleAbstractItem, false, false);
+        }
+
+        [Transaction(TransactionMode.Requires)]
+        public void ReleaseOrder(string orderNo, User user, bool autoHandleAbstractItem, bool isForce, bool isJumpFacilityCheck)
+        {
             OrderHead orderHead = orderHeadMgrE.LoadOrderHead(orderNo);
             //权限校验
             //if (!OrderHelper.CheckOrderOperationAuthrize(orderHead, user, BusinessConstants.ORDER_OPERATION_SUBMIT_ORDER))
@@ -1319,6 +1353,42 @@ namespace com.Sconit.Service.MasterData.Impl
 
             if (orderHead.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_CREATE)
             {
+                #region 检查设备是否需要保养
+
+                if (orderHead.SubType == BusinessConstants.CODE_MASTER_ORDER_SUB_TYPE_VALUE_NML && (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
+                || orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING))
+                {
+                    IList<FacilityMasters> facilityMastersList = hqlMgr.FindAll<FacilityMasters>("  from FacilityMasters where ParentCategory = ? and Status = ?", new object[] { "YH_MJ", BusinessConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE });
+                    IList<FacilityAllocates> facilityAllocatesList = hqlMgr.FindAll<FacilityAllocates>("  from FacilityAllocates where IsActive = ?", new object[] { true });
+                    IList<FacilityMasters> useFacilityMastersList = new List<FacilityMasters>();
+                    foreach (OrderDetail od in orderHead.OrderDetails)
+                    {
+                        if (!string.IsNullOrEmpty(od.TextField3))
+                        {
+                            FacilityMasters facility = facilityMastersList.Where(p => p.FCID == od.TextField3).FirstOrDefault();
+                            FacilityAllocates facilityAllocates = facilityAllocatesList.Where(p => p.FCID == od.TextField3 && p.ItemCode == od.Item.Code).FirstOrDefault();
+                            if (facility == null)
+                            {
+                                throw new BusinessErrorException("Order.Error.FacilityStatusNotAvaliable", od.TextField3);
+                            }
+                            if (!isJumpFacilityCheck && (facility.UseQty + od.OrderedQty / facilityAllocates.MouldCount) > facility.NextMaintainQty)
+                            {
+                                throw new BusinessErrorException("Order.Error.FacilityUseQtyError", od.TextField3, facility.UseQty.ToString("0.##"), od.OrderedQty.ToString("0.##"), facility.NextMaintainQty.ToString("0.##"));
+                            }
+                            useFacilityMastersList.Add(facility);
+
+                        }
+                    }
+                    foreach (FacilityMasters f in useFacilityMastersList)
+                    {
+                        f.Status = BusinessConstants.CODE_MASTER_FACILITY_STATUS_INUSE;
+                        f.LastModifyDate = DateTime.Now;
+                        f.LastModifyUser = user.Code;
+                        hqlMgr.Update(f);
+                    }
+                }
+                #endregion
+
                 //this.AllocateOrderHeadDicount(orderHead);
                 if (!isForce && orderHead.SubType == BusinessConstants.CODE_MASTER_ORDER_SUB_TYPE_VALUE_NML
                         && (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
@@ -2287,7 +2357,11 @@ namespace com.Sconit.Service.MasterData.Impl
                     receiptDetail.RejectedQty = orderDetail.CurrentRejectQty;
                     receiptDetail.ScrapQty = orderDetail.CurrentScrapQty;
                     receiptDetail.PutAwayBinCode = orderDetail.PutAwayBinCode;
+
+                    //把模具字段带过去
+                    receiptDetail.TextField3 = orderDetail.TextField3;
                     receiptDetail.Receipt = receipt;
+
 
                     receipt.AddReceiptDetail(receiptDetail);
                 }
@@ -3053,6 +3127,26 @@ namespace com.Sconit.Service.MasterData.Impl
             }
             #endregion
 
+            #region 处理模具使用次数
+
+            if (receipt.OrderType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
+             || receipt.OrderType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING)
+            {
+                var facilityAllocatesList = hqlMgr.FindAll<FacilityAllocates>("from FacilityAllocates where IsActive = 1");
+                foreach (ReceiptDetail d in receipt.ReceiptDetails)
+                {
+                    FacilityAllocates facilityAllocates = facilityAllocatesList.Where(p => p.ItemCode == d.OrderLocationTransaction.Item.Code && p.FCID == d.TextField3).FirstOrDefault();
+                    if (facilityAllocates != null)
+                    {
+                        FacilityMasters facilityMasters = hqlMgr.FindById<FacilityMasters>(d.TextField3);
+                        facilityMasters.UseQty += (d.ReceivedQty + d.RejectedQty +d.ScrapQty) / facilityAllocates.MouldCount;
+                        hqlMgr.Update(facilityMasters);
+                    }
+                }
+            }
+
+            #endregion
+
             return receipt;
         }
 
@@ -3395,6 +3489,50 @@ namespace com.Sconit.Service.MasterData.Impl
             //}
             //#endregion
 
+            #region 处理模具,发保养任务
+            if (orderHead.SubType == BusinessConstants.CODE_MASTER_ORDER_SUB_TYPE_VALUE_NML && (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
+                || orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING))
+            {
+                foreach (OrderDetail orderDetail in orderHead.OrderDetails)
+                {
+                    if (!string.IsNullOrEmpty(orderDetail.TextField3))
+                    {
+                        FacilityMasters facilityMasters = hqlMgr.FindById<FacilityMasters>(orderDetail.TextField3);
+                        facilityMasters.Status = BusinessConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE;
+                        facilityMasters.LastModifyUser = user.Code;
+                        facilityMasters.LastModifyDate = DateTime.Now;
+                        hqlMgr.Update(facilityMasters);
+
+                        #region 记事务
+                        #endregion
+
+                        #region 记保养任务
+                        FacilityMaintainPlans facilityMaintainPlans = hqlMgr.FindAll<FacilityMaintainPlans>(" from FacilityMaintainPlans where FCID = ? and MPCode = ?", new object[] { orderDetail.TextField3, "YH_MP_1" }).FirstOrDefault();
+                        if (facilityMaintainPlans == null)
+                        {
+                            facilityMaintainPlans = new FacilityMaintainPlans();
+                            facilityMaintainPlans.NextMaintainDate = DateTime.Now;
+                            facilityMaintainPlans.NextWarnDate = DateTime.Now;
+                            facilityMaintainPlans.StartDate = DateTime.Now;
+                            facilityMaintainPlans.MaintainPlanCode = "YH_MP_1";
+                            facilityMaintainPlans.FCID = orderDetail.TextField3;
+                            hqlMgr.Create(facilityMaintainPlans);
+                        }
+                        else
+                        {
+                            facilityMaintainPlans.NextMaintainDate = DateTime.Now;
+                            facilityMaintainPlans.NextWarnDate = DateTime.Now;
+                            facilityMaintainPlans.StartDate = DateTime.Now;
+                            hqlMgr.Update(facilityMaintainPlans);
+                        }
+
+                        #endregion
+                    }
+                }
+            }
+            #endregion
+
+
             DateTime nowDate = DateTime.Now;
             orderHead.Status = BusinessConstants.CODE_MASTER_STATUS_VALUE_COMPLETE;
             orderHead.CompleteDate = nowDate;
@@ -3492,6 +3630,9 @@ namespace com.Sconit.Service.MasterData.Impl
                 #endregion
             }
 
+     
+
+
             if (isComplete)
             {
                 DateTime nowDate = DateTime.Now;
@@ -3507,6 +3648,48 @@ namespace com.Sconit.Service.MasterData.Impl
                 if (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION)
                 {
                     this.costMgr.RecordProductionSettingCostTransaction(orderHead, user);
+                }
+                #endregion
+
+                #region 处理模具,发保养任务
+                if (orderHead.SubType == BusinessConstants.CODE_MASTER_ORDER_SUB_TYPE_VALUE_NML && (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION
+                  || orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING))
+                {
+                    foreach (OrderDetail orderDetail in oldOrderHead.OrderDetails)
+                    {
+                        if (!string.IsNullOrEmpty(orderDetail.TextField3))
+                        {
+                            FacilityMasters facilityMasters = hqlMgr.FindById<FacilityMasters>(orderDetail.TextField3);
+                            facilityMasters.Status = BusinessConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE;
+                            facilityMasters.LastModifyUser = user.Code;
+                            facilityMasters.LastModifyDate = DateTime.Now;
+                            hqlMgr.Update(facilityMasters);
+
+                            #region 记事务
+                            #endregion
+
+                            #region 记保养任务
+                            FacilityMaintainPlans facilityMaintainPlans = hqlMgr.FindAll<FacilityMaintainPlans>(" from FacilityMaintainPlans where FCID = ? and MPCode = ?", new object[] { orderDetail.TextField3, "YH_MP_1" }).FirstOrDefault();
+                            if (facilityMaintainPlans == null)
+                            {
+                                facilityMaintainPlans = new FacilityMaintainPlans();
+                                facilityMaintainPlans.NextMaintainDate = DateTime.Now;
+                                facilityMaintainPlans.NextWarnDate = DateTime.Now;
+                                facilityMaintainPlans.StartDate = DateTime.Now;
+                                facilityMaintainPlans.MaintainPlanCode = "YH_MP_1";
+                                facilityMaintainPlans.FCID = orderDetail.TextField3;
+                                hqlMgr.Create(facilityMaintainPlans);
+                            }
+                            else
+                            {
+                                facilityMaintainPlans.NextMaintainDate = DateTime.Now;
+                                facilityMaintainPlans.NextWarnDate = DateTime.Now;
+                                facilityMaintainPlans.StartDate = DateTime.Now;
+                                hqlMgr.Update(facilityMaintainPlans);
+                            }
+                            #endregion
+                        }
+                    }
                 }
                 #endregion
             }
@@ -5311,6 +5494,25 @@ namespace com.Sconit.Service.MasterData.Impl
             }
             #endregion
 
+        }
+
+
+        private void CheckFacilityAllocate(IList<OrderDetail> orderDetailList)
+        {
+            #region 检查模具数是否符合条件
+            var facilityAllocatesList = hqlMgr.FindAll<FacilityAllocates>("from FacilityAllocates where IsActive = 1");
+            foreach (OrderDetail orderDetail in orderDetailList)
+            {
+                if (!string.IsNullOrEmpty(orderDetail.TextField3))
+                {
+                    var facilityAllocates = facilityAllocatesList.Where(p => p.ItemCode == orderDetail.Item.Code && p.FCID == orderDetail.TextField3).FirstOrDefault();
+                    if (facilityAllocates == null)
+                    {
+                        throw new BusinessErrorException("Order.Error.FacilityAllocatesNotExist", orderDetail.Item.Code, orderDetail.TextField3);
+                    }
+                }
+            }
+            #endregion
         }
         #endregion
     }

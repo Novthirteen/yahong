@@ -384,7 +384,14 @@ public partial class Order_OrderDetail_List : ModuleBase
                             decimal orderQty = Decimal.Parse(tbOrderQty.Text.Trim());
 
                             TextBox tbRemark = (TextBox)row.FindControl("tbRemark");
+                        
                             orderDetail.Remark = tbRemark.Text.Trim();
+
+                            if (this.ModuleType == BusinessConstants.CODE_MASTER_FLOW_TYPE_VALUE_PRODUCTION || this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_SUBCONCTRACTING)
+                            {
+                                 TextBox tbFCID = (TextBox)row.FindControl("tbFCID");
+                                 orderDetail.TextField3 = tbFCID.Text.Trim();
+                            }
 
                             if (orderQty != 0)
                             {
@@ -1204,11 +1211,13 @@ public partial class Order_OrderDetail_List : ModuleBase
             this.GV_List.Columns[7].Visible = true;  //外包装
             this.GV_List.Columns[9].Visible = false;  //来源库位
             this.GV_List.Columns[11].Visible = false;  //物料清单
+            this.GV_List.Columns[25].Visible = false; //模具编号
         }
         else if (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_DISTRIBUTION)
         {
             this.GV_List.Columns[10].Visible = false;  //目的库位
             this.GV_List.Columns[11].Visible = false;  //物料清单
+            this.GV_List.Columns[25].Visible = false; //模具编号
         }
         else if (orderHead.Type == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION)
         {
@@ -1220,6 +1229,7 @@ public partial class Order_OrderDetail_List : ModuleBase
             this.GV_List.Columns[11].Visible = false;  //物料清单
             this.GV_List.Columns[9].Visible = true;  //来源库位
             this.GV_List.Columns[10].Visible = true;  //目的库位
+            this.GV_List.Columns[25].Visible = false; //模具编号
         }
 
         #endregion
@@ -1236,7 +1246,7 @@ public partial class Order_OrderDetail_List : ModuleBase
             this.GV_List.Columns[18].Visible = false;  //次品数量
             this.GV_List.Columns[19].Visible = false;  //废品数量
 
-            this.GV_List.Columns[25].Visible = true;   //操作按钮
+            this.GV_List.Columns[26].Visible = true;   //操作按钮
         }
         else if (orderHead.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_SUBMIT)
         {
@@ -1246,7 +1256,7 @@ public partial class Order_OrderDetail_List : ModuleBase
             this.GV_List.Columns[17].Visible = false;  //收货数量
             this.GV_List.Columns[18].Visible = false;  //次品数量
             this.GV_List.Columns[19].Visible = false;  //废品数量
-            this.GV_List.Columns[25].Visible = false;   //操作按钮
+            this.GV_List.Columns[26].Visible = false;   //操作按钮
         }
         else if (orderHead.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_CANCEL)
         {
@@ -1256,7 +1266,7 @@ public partial class Order_OrderDetail_List : ModuleBase
             this.GV_List.Columns[17].Visible = false;  //收货数量
             this.GV_List.Columns[18].Visible = false;  //次品数量
             this.GV_List.Columns[19].Visible = false;  //废品数量
-            this.GV_List.Columns[25].Visible = false;   //操作按钮
+            this.GV_List.Columns[26].Visible = false;   //操作按钮
         }
         else if (orderHead.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_INPROCESS)
         {
@@ -1268,7 +1278,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = true;   //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_DISTRIBUTION)
             {
@@ -1278,7 +1288,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION)
             {
@@ -1288,7 +1298,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = true;  //收货数量
                 this.GV_List.Columns[18].Visible = true;  //次品数量
                 this.GV_List.Columns[19].Visible = true;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_TRANSFER)
             {
@@ -1298,7 +1308,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = true;   //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
         }
         else if (orderHead.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_COMPLETE)
@@ -1311,7 +1321,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_DISTRIBUTION)
             {
@@ -1321,7 +1331,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION)
             {
@@ -1331,7 +1341,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_TRANSFER)
             {
@@ -1341,7 +1351,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
         }
         else if (orderHead.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_CLOSE)
@@ -1354,7 +1364,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_DISTRIBUTION)
             {
@@ -1364,7 +1374,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_PRODUCTION)
             {
@@ -1374,7 +1384,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
             else if (this.ModuleType == BusinessConstants.CODE_MASTER_ORDER_TYPE_VALUE_TRANSFER)
             {
@@ -1384,7 +1394,7 @@ public partial class Order_OrderDetail_List : ModuleBase
                 this.GV_List.Columns[17].Visible = false;  //收货数量
                 this.GV_List.Columns[18].Visible = false;  //次品数量
                 this.GV_List.Columns[19].Visible = false;  //废品数量
-                this.GV_List.Columns[25].Visible = false;   //操作按钮
+                this.GV_List.Columns[26].Visible = false;   //操作按钮
             }
         }
         #endregion

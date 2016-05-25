@@ -133,7 +133,7 @@
                             <asp:TextBox ID="tbPrice" runat="server" Text='<%# Bind("Price") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="lblRefenceCode" runat="server" Text="${Facility.FacilityMaster.RefenceCode}:" />
+                            <asp:Literal ID="lblRefenceCode" runat="server" Text="${Facility.FacilityMaster.MouldNumber}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbRefenceCode" runat="server" Text='<%# Bind("RefenceCode") %>' />

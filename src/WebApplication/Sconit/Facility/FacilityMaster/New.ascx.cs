@@ -73,7 +73,7 @@ public partial class Facility_FacilityMaster_New : NewModuleBase
     {
 
         facilityMaster = (FacilityMaster)e.InputParameters[0];
-        facilityMaster.FCID = TheNumberControlMgr.GenerateNumber(FacilityConstants.CODE_PREFIX_FACILITY);
+        //facilityMaster.FCID = TheNumberControlMgr.GenerateNumber(FacilityConstants.CODE_PREFIX_FACILITY);
         facilityMaster.CreateDate = DateTime.Now;
         facilityMaster.LastModifyDate = DateTime.Now;
         FacilityCategory facilityCategoty = TheFacilityCategoryMgr.LoadFacilityCategory(facilityMaster.Category);
@@ -96,7 +96,7 @@ public partial class Facility_FacilityMaster_New : NewModuleBase
             facilityMaster.CurrChargePersonName = TheUserMgr.LoadUser(facilityMaster.CurrChargePerson).Name;
         }
 
-
+        facilityMaster.ParentCategory = facilityCategoty.ParentCategory == null? facilityCategoty.Code:facilityCategoty.ParentCategory;
         facilityMaster.CreateUser = this.CurrentUser.Code;
         facilityMaster.LastModifyUser = this.CurrentUser.Code;
         facilityMaster.IsInStore = true;
@@ -140,5 +140,14 @@ public partial class Facility_FacilityMaster_New : NewModuleBase
         return isDup;
     }
 
+    protected void checkFCIDExists(object source, ServerValidateEventArgs args)
+    {
+        String fcId = ((TextBox)(this.FV_FacilityMaster.FindControl("tbFCID"))).Text;
+        if (TheFacilityMasterMgr.LoadFacilityMaster(fcId) != null)
+        {
+            args.IsValid = false;
+        }
+
+    }
 
 }

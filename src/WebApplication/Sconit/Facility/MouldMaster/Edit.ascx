@@ -189,7 +189,7 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="lbReferenceNo" runat="server" Text="${Facility.FacilityMaster.RefenceCode}:" />
+                            <asp:Literal ID="lbReferenceNo" runat="server" Text="${Facility.FacilityMaster.MouldNumber}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbRefenceCode" runat="server" Text='<%# Bind("RefenceCode") %>' />
@@ -219,10 +219,10 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlMaintainTypePeriod" runat="server" Text="${Facility.FacilityMaster.MaintainTypePeriod}:" />
+                            <asp:Literal ID="ltlUseQty" runat="server" Text="${Facility.FacilityMaster.UseQty}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbMaintainTypePeriod" runat="server" Text='<%# Bind("MaintainTypePeriod") %>'
+                            <asp:TextBox ID="tbUseQty" runat="server" Text='<%# Bind("UseQty") %>'
                                 ReadOnly="true" />
                         </td>
                         <td class="td01">

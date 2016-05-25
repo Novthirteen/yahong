@@ -444,6 +444,8 @@ namespace com.Sconit.Entity.MasterData
                 _textField2 = value;
             }
         }
+
+        //Ä£¾ß±àºÅ
         private string _textField3;
         public string TextField3
         {

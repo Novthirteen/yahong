@@ -36,6 +36,12 @@ namespace com.Sconit.Facility.Service.Impl
             {
                 facilityMaintainPlan.NextMaintainQty = facilityMaintainPlan.StartQty + interval;
                 facilityMaintainPlan.NextWarnQty = facilityMaintainPlan.NextMaintainQty - leadTime;
+
+
+                FacilityMaster facilityMaster = facilityMaintainPlan.FacilityMaster;
+                facilityMaster.NextMaintainQty = facilityMaintainPlan.StartQty + interval;
+                facilityMaster.NextWarnQty = facilityMaintainPlan.NextMaintainQty - leadTime;
+                this.Update(facilityMaster);
             }
             else
             {
@@ -96,6 +102,12 @@ namespace com.Sconit.Facility.Service.Impl
                     oldFacilityMaintainPlan.StartQty = facilityMaintainPlan.StartQty;
                     oldFacilityMaintainPlan.NextMaintainQty = oldFacilityMaintainPlan.StartQty + interval;
                     oldFacilityMaintainPlan.NextWarnQty = oldFacilityMaintainPlan.NextMaintainQty - leadTime;
+
+
+                    FacilityMaster facilityMaster = facilityMaintainPlan.FacilityMaster;
+                    facilityMaster.NextMaintainQty = oldFacilityMaintainPlan.StartQty + interval;
+                    facilityMaster.NextWarnQty = oldFacilityMaintainPlan.NextMaintainQty - leadTime;
+                    this.Update(facilityMaster);
                 }
                 else
                 {

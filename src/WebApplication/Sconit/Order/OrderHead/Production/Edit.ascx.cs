@@ -216,9 +216,7 @@ public partial class Order_OrderHead_Edit : EditModuleBase
     {
         try
         {
-            // this.ucDetail.SaveCallBack();
-
-            this.TheOrderMgr.ReleaseOrder(this.OrderNo, this.CurrentUser, true);
+            this.TheOrderMgr.ReleaseOrder(this.OrderNo, this.CurrentUser, true, false,this.cbForceSubmit.Checked);
 
             this.FV_Order.DataBind();
 

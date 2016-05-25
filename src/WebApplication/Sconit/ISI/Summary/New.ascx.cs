@@ -201,7 +201,7 @@ public partial class ISI_Summary_New : NewModuleBase
 
             this.tbStandardQty.Text = Summary.StandardQty.ToString();
             this.cbIsCheckup.Checked = Summary.IsCheckup;
-            this.tbUserCode.Text = this.CurrentUser.LongCodeName;
+        //    this.tbUserCode.Text = this.CurrentUser.LongCodeName;
 
         }
     }

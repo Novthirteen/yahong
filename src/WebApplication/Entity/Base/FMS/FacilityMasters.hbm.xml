@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
-	<class name="com.Sconit.Facility.Entity.FacilityMaster, com.Sconit.Facility" table="Fac_Facility" lazy="false">
+	<class name="com.Sconit.Entity.FMS.FacilityMasters, com.Sconit.Entity" table="Fac_Facility" lazy="false">
 		<id name="FCID" column="FCID" type="String" unsaved-value="null" >
 			<generator class="assigned" />
 		</id>
@@ -49,7 +49,8 @@
 		<property name="RefenceCode" column="RefCode" type="String" length="50" />
 		<property name="MaintainGroup" column="MaintainGroup" type="String" length="50" />
 		<property name="PrintTemplate" column="PrintTemplate" type="String" length="50" />
-	
+
+		
 		<property name="UseQty" column="UseQty" type="Decimal"  />
 		<property name="NextWarnQty" column="NextWarnQty" type="Decimal"  />
 		<property name="NextMaintainQty" column="NextMaintainQty" type="Decimal"  />

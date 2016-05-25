@@ -63,7 +63,7 @@ public partial class ISI_PermissionTrack_Main : com.Sconit.Web.MainModuleBase
                 }
             }
 
-            UpdateView();
+        //    UpdateView();
         }
         catch (Exception ex)
         {

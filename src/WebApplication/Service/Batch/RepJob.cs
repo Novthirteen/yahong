@@ -59,7 +59,7 @@ namespace com.Sconit.Service.Batch
                 }
                 if (debugMode != null && string.IsNullOrEmpty(mailList))
                 {
-                    mailList = "tiansu@yfgm.com.cn";
+                    mailList = "wangxiang@sconit.com";
                 }
                 log.Info(key + ",发送列表：" + mailList);
                 if (string.IsNullOrEmpty(mailList)) return;

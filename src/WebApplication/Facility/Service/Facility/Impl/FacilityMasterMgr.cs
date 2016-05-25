@@ -347,8 +347,8 @@ namespace com.Sconit.Facility.Service.Impl
             criteria.CreateAlias("MaintainPlan", "m");
             criteria.Add(Expression.Or(Expression.And(Expression.IsNotNull("NextWarnDate"), Expression.Le("NextWarnDate", DateTime.Now)),
               Expression.And(Expression.Eq("m.Type",FacilityConstants.CODE_MASTER_FACILITY_MAINTAIN_TYPE_FREQUENCY),
-                Expression.And(Expression.IsNotNull("f.MaintainTypePeriod"), Expression.LeProperty("NextWarnQty", "f.MaintainTypePeriod")))));
-            criteria.Add(Expression.In("f.Status", new string[] { FacilityConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE, FacilityConstants.CODE_MASTER_FACILITY_STATUS_FIX, FacilityConstants.CODE_MASTER_FACILITY_STATUS_INSPECT, FacilityConstants.CODE_MASTER_FACILITY_STATUS_MAINTAIN }));
+                Expression.And(Expression.IsNotNull("f.UseQty"), Expression.LeProperty("NextWarnQty", "f.UseQty")))));
+           // criteria.Add(Expression.In("f.Status", new string[] { FacilityConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE, FacilityConstants.CODE_MASTER_FACILITY_STATUS_FIX, FacilityConstants.CODE_MASTER_FACILITY_STATUS_INSPECT, FacilityConstants.CODE_MASTER_FACILITY_STATUS_MAINTAIN }));
             IList<FacilityMaintainPlan> facilityMaintainPlanList = criteriaMgrE.FindAll<FacilityMaintainPlan>(criteria);
             #endregion
 
@@ -466,63 +466,8 @@ namespace com.Sconit.Facility.Service.Impl
         [Transaction(TransactionMode.Requires)]
         public void GenerateMouldISITasks()
         {
-            #region 取所有到时间的预防计划的设施
-            DetachedCriteria criteria = DetachedCriteria.For(typeof(FacilityAllocate));
-            criteria.CreateAlias("FacilityMaster", "f");
-            criteria.Add(Expression.GeProperty("AllocatedQty", "NextWarnQty"));
-            criteria.Add(Expression.In("f.Status", new string[] { FacilityConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE, FacilityConstants.CODE_MASTER_FACILITY_STATUS_FIX, FacilityConstants.CODE_MASTER_FACILITY_STATUS_INSPECT, FacilityConstants.CODE_MASTER_FACILITY_STATUS_MAINTAIN }));
-            IList<FacilityAllocate> facilityAllocateList = criteriaMgrE.FindAll<FacilityAllocate>(criteria);
-            #endregion
-
-            #region 生成ISI任务
-            User monitorUser = userMgrE.LoadUser(BusinessConstants.SYSTEM_USER_MONITOR);
-            if (facilityAllocateList != null && facilityAllocateList.Count > 0)
-            {
-                foreach (FacilityAllocate facilityAllocate in facilityAllocateList)
-                {
-                    #region 生成ISI任务
-                    DateTime maintainDate = DateTime.Now;
-
-                    TaskMstr task = new TaskMstr();
-                    task.Subject = "设施代码：" + facilityAllocate.FacilityMaster.FCID + ",资产编号：" + facilityAllocate.FacilityMaster.AssetNo + ",参考号：" + facilityAllocate.FacilityMaster.RefenceCode + ",需要进行保养";
-                    task.Priority = BusinessConstants.CODE_MASTER_ORDER_PRIORITY_VALUE_NORMAL;
-                    task.Desc1 = "设施代码：" + facilityAllocate.FacilityMaster.FCID + ",资产编号：" + facilityAllocate.FacilityMaster.AssetNo + ",设施名称：" + facilityAllocate.FacilityMaster.Name + ",参考号：" + facilityAllocate.FacilityMaster.RefenceCode + ",开模数已达" + facilityAllocate.AllocatedQty.ToString("0.##") + ",需要进行保养";
-                    task.IsAutoRelease = true;
-                    task.Desc2 = facilityAllocate.FacilityMaster.FCID;  //设施代码，给保养关闭任务用
-                   // task.ExtNo = facilityAllocate.MaintainPlan.Code; //策略代码，给附件用的
-                    task.RefNo = facilityAllocate.FacilityMaster.FCID; //设施代码，后面修改后给保养关闭用的
-
-                    #region 写死的
-                    task.TaskSubType = taskSubTypeMgrE.LoadTaskSubType("SSGL");
-                    task.UserName = monitorUser.Name;
-                    task.Email = monitorUser.Email;
-                    task.MobilePhone = monitorUser.MobliePhone;
-                    task.TaskAddress = monitorUser.Address;
-                    task.Type = ISIConstants.ISI_TASK_TYPE_PLAN;
-                    task.PlanStartDate = DateTime.Now;
-                    task.PlanCompleteDate = DateTime.Now.AddDays(1);
-                    #endregion
-
-                    #region 需要分配人的话
-                    task.AssignStartUser = facilityAllocate.StartUpUser;
-                    task.AssignStartUserNm = userSubscriptionMgrE.GetUserName(task.StartedUser);
-                    task.TaskAddress = facilityAllocate.FacilityMaster.ChargeSite;
-                    #endregion
-
-                    taskMgrE.CreateTask(task, monitorUser);
-                    taskMgrE.AssignTask(task.Code, task.BackYards, task.TaskSubTypeCode, new string[] { task.AssignStartUser }, task.PlanStartDate.Value, task.PlanCompleteDate.Value, task.Desc2, task.ExpectedResults, monitorUser);
-                    // taskMgrE.ConfirmTask(task.Code, monitorUser);
-                    #endregion
-
-                    #region 更新下次时间、数量
-                    facilityAllocate.NextWarnQty = facilityAllocate.NextWarnQty + facilityAllocate.WarnQty;
-                    base.Update(facilityAllocate);
-
-                    #endregion
-
-                }
-            }
-            #endregion
+          
+         
         }
 
         [Transaction(TransactionMode.Unspecified)]

@@ -10,6 +10,19 @@
                 <table class="mtable">
                     <tr>
                         <td class="td01">
+                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbFCID" runat="server" Text='<%# Bind("FCID") %>' />
+                               <asp:RequiredFieldValidator ID="rfvFCID" runat="server" ErrorMessage="${Facility.FacilityMaster.FCID.Required}"
+                                Display="Dynamic" ControlToValidate="tbFCID" ValidationGroup="vgSave" />
+                            <asp:CustomValidator ID="cvInsert" runat="server" ControlToValidate="tbFCID" ErrorMessage="${Facility.FacilityMaster.FCID.Exists}"
+                                Display="Dynamic" ValidationGroup="vgSave" OnServerValidate="checkFCIDExists" />
+                        </td>
+                      
+                    </tr>
+                    <tr>
+                        <td class="td01">
                             <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />
                         </td>
                         <td class="td02">

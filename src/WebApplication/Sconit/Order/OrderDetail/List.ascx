@@ -289,6 +289,11 @@
                             <asp:TextBox ID="tbRemark" runat="server" Width="50" Text='<%# Bind("Remark") %>' />
                         </ItemTemplate>
                     </asp:TemplateField>
+                    <asp:TemplateField HeaderText="${MasterData.Order.OrderDetail.FCID}">
+                        <ItemTemplate>
+                            <asp:TextBox ID="tbFCID" runat="server" Width="100" Text='<%# Bind("TextField3") %>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="${Common.GridView.Action}" Visible="false">
                         <ItemTemplate>
                             <cc1:LinkButton ID="lbtnAdd" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "ID") %>'

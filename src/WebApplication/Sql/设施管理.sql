@@ -1221,3 +1221,4 @@ insert into CodeMstr values('ISIType','WFS',10,0,'流程')
 
 
 update ISI_TaskSubType set IsAutoAssign=1,IsReport=1,IsOpen=1,IsEC=1,IsAutoStart=0,IsAutoComplete=0,IsAutoClose=0,IsAutoStatus=0,IsAssignUser=1,IsTrace=1;
+insert into CodeMstr values('FacilityStatus','InUse',25,0,'使用中');
