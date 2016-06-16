@@ -10,31 +10,31 @@
                 <table class="mtable">
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID}:" />
+                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID.Equipment}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbFCID" runat="server" Text='<%# Bind("FCID") %>' />
-                               <asp:RequiredFieldValidator ID="rfvFCID" runat="server" ErrorMessage="${Facility.FacilityMaster.FCID.Required}"
+                               <asp:RequiredFieldValidator ID="rfvFCID" runat="server" ErrorMessage="${Facility.FacilityMaster.FCID.Equipment.Required}"
                                 Display="Dynamic" ControlToValidate="tbFCID" ValidationGroup="vgSave" />
-                            <asp:CustomValidator ID="cvInsert" runat="server" ControlToValidate="tbFCID" ErrorMessage="${Facility.FacilityMaster.FCID.Exists}"
+                            <asp:CustomValidator ID="cvInsert" runat="server" ControlToValidate="tbFCID" ErrorMessage="${Facility.FacilityMaster.FCID.Equipment.Exists}"
                                 Display="Dynamic" ValidationGroup="vgSave" OnServerValidate="checkFCIDExists" />
                         </td>
                       
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />
+                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name.Equipment}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbName" runat="server" Text='<%# Bind("Name") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category}:" />
+                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Equipment}:" />
                         </td>
                         <td class="td02">
                             <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                                 Text='<%# Bind("Category") %>' ValueField="Code" ServicePath="FacilityCategoryMgr.service"
-                                ServiceMethod="GetAllFacilityCategory" CssClass="inputRequired" />
+                                ServiceMethod="GetAllEquipmentCategory" CssClass="inputRequired" />
                             <asp:RequiredFieldValidator ID="rfvCategory" runat="server" ErrorMessage="${Facility.FacilityMaster.Category.Required}"
                                 Display="Dynamic" ControlToValidate="tbCategory" ValidationGroup="vgSave" />
                         </td>

@@ -10,7 +10,7 @@
                 <table class="mtable">
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID}:" />
+                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID.Equipment}:" />
                         </td>
                         <td class="td02">
                             <asp:Label ID="lblFCID" runat="server" Text='<%# Bind("FCID") %>' />
@@ -31,7 +31,7 @@
                                                           <asp:HiddenField ID="ParentCategory" runat="server" Value='<%# Bind("ParentCategory") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />
+                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name.Equipment}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbName" runat="server" Text='<%# Bind("Name") %>' />
@@ -39,12 +39,12 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category}:" />
+                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Equipment}:" />
                         </td>
                         <td class="td02">
                             <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                                 Text='<%# Bind("Category") %>' ValueField="Code" ServicePath="FacilityCategoryMgr.service"
-                                ServiceMethod="GetAllFacilityCategory" CssClass="inputRequired" ReadOnly="true" />
+                                ServiceMethod="GetAllEquipmentCategory" CssClass="inputRequired" ReadOnly="true" />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification}:" />

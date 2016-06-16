@@ -43,6 +43,14 @@ public partial class Facility_FacilityFix_List : ListModuleBase
         this.GV_List.Execute();
     }
 
+    protected void lbtnFixStart_Click(object sender, EventArgs e)
+    {
+        if (FixStartEvent != null)
+        {
+            string code = ((LinkButton)sender).CommandArgument;
+            FixStartEvent(code, e);
+        }
+    }
 
     protected void lbtnFixFinish_Click(object sender, EventArgs e)
     {
@@ -87,7 +95,7 @@ public partial class Facility_FacilityFix_List : ListModuleBase
     }
 
 
-    protected void lbtnFixStart_Click(object sender, EventArgs e)
+    protected void lbtnFixStart1_Click(object sender, EventArgs e)
     {
         this.FCID = ((LinkButton)sender).CommandArgument;
         //this.ucConfirmInfo.Visible = true;

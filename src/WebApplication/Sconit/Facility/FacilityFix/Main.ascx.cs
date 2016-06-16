@@ -22,6 +22,7 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
     {
         this.ucSearch.SearchEvent += new System.EventHandler(this.Search_Render);
         this.ucFinish.FinishBackEvent += new System.EventHandler(this.FinishBack_Render);
+        this.ucList.FixStartEvent += new System.EventHandler(this.ListStart_Render);
         this.ucList.FixFinishEvent += new System.EventHandler(this.ListFinish_Render);
         this.ucTrans.BackEvent += new System.EventHandler(this.Back_Render);
         this.ucFinish.BackEvent += new System.EventHandler(this.Back_Render);
@@ -58,10 +59,20 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
         this.ucList.Visible = false;
     }
 
+    //The event handler when user click link "Start" link of ucList
+    void ListStart_Render(object sender, EventArgs e)
+    {
+        this.ucStart.Visible = true;
+        this.ucFinish.Visible = false;
+        this.ucSearch.Visible = false;
+        this.ucList.Visible = false;
+        this.ucStart.InitPageParameter((string)sender);
+    }
 
     //The event handler when user click link "Finish" link of ucList
     void ListFinish_Render(object sender, EventArgs e)
     {
+        this.ucStart.Visible = false;
         this.ucFinish.Visible = true;
         this.ucSearch.Visible = false;
         this.ucList.Visible = false;
@@ -71,6 +82,7 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
     //The event handler when user click button "Back" button of ucFinish
     void FinishBack_Render(object sender, EventArgs e)
     {
+        this.ucStart.Visible = false;
         this.ucFinish.Visible = false;
         this.ucSearch.Visible = false;
         this.ucList.Visible = false;
@@ -81,6 +93,7 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
     //The event handler when user click button "Back" button of ucFinish
     void Back_Render(object sender, EventArgs e)
     {
+        this.ucStart.Visible = false;
         this.ucFinish.Visible = false;
         this.ucSearch.Visible = true;
         this.ucList.Visible = true;

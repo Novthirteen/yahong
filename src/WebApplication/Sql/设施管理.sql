@@ -1222,3 +1222,19 @@ insert into CodeMstr values('ISIType','WFS',10,0,'流程')
 
 update ISI_TaskSubType set IsAutoAssign=1,IsReport=1,IsOpen=1,IsEC=1,IsAutoStart=0,IsAutoComplete=0,IsAutoClose=0,IsAutoStatus=0,IsAssignUser=1,IsTrace=1;
 insert into CodeMstr values('FacilityStatus','InUse',25,0,'使用中');
+
+
+insert into CodeMstr values('FacilityStatus','BreakDown',45,0,'故障');
+
+insert into acc_menu values ('Menu.Facility.FacilityInspectOrder',1,'保修单','~/Main.aspx?mid=Facility.FacilityInspectOrder',1,'~/Images/Nav/Item.png',getdate(),'su',getdate(),'su',null)
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('Menu.Facility.FacilityInspectOrder','保修单','Facility')
+insert into ACC_MenuCommon(Menu, ParentMenu, Level_, Seq, IsActive, CreateDate, CreateUser, LastModifyDate, LastModifyUser)
+select 'Menu.Facility.FacilityInspectOrder','Menu.Facility.Trans',3,55,1,GETDATE(),'su',GETDATE(),'su'
+
+
+
+insert into CodeMstr values('FixOrderStatus','Create',10,1,'创建')
+insert into CodeMstr values('FixOrderStatus','Submit',20,0,'提交')
+insert into CodeMstr values('FixOrderStatus','InProcess',30,0,'执行中')
+insert into CodeMstr values('FixOrderStatus','Complete',40,0,'完成')
+insert into CodeMstr values('FixOrderStatus','Close',50,0,'关闭')

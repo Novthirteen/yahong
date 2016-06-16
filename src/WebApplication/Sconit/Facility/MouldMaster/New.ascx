@@ -10,25 +10,37 @@
                 <table class="mtable">
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />
+                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID.Mould}:" />
+                        </td>
+                        <td class="td02">
+                            <asp:TextBox ID="tbFCID" runat="server" Text='<%# Bind("FCID") %>' />
+                            <asp:RequiredFieldValidator ID="rfvFCID" runat="server" ErrorMessage="${Facility.FacilityMaster.FCID.Mould.Required}"
+                                Display="Dynamic" ControlToValidate="tbFCID" ValidationGroup="vgSave" />
+                            <asp:CustomValidator ID="cvInsert" runat="server" ControlToValidate="tbFCID" ErrorMessage="${Facility.FacilityMaster.FCID.Mould.Exists}"
+                                Display="Dynamic" ValidationGroup="vgSave" OnServerValidate="checkFCIDExists" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td01">
+                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbName" runat="server" Text='<%# Bind("Name") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category}:" />
+                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Mould}:" />
                         </td>
                         <td class="td02">
                             <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                                 Text='<%# Bind("Category") %>' ValueField="Code" ServicePath="FacilityCategoryMgr.service"
-                                ServiceMethod="GetAllFacilityCategory" CssClass="inputRequired" />
+                                ServiceMethod="GetAllMouldCategory" CssClass="inputRequired" />
                             <asp:RequiredFieldValidator ID="rfvCategory" runat="server" ErrorMessage="${Facility.FacilityMaster.Category.Required}"
                                 Display="Dynamic" ControlToValidate="tbCategory" ValidationGroup="vgSave" />
                         </td>
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification}:" />
+                            <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbSpecification" runat="server" Text='<%# Bind("Specification") %>' />
@@ -49,7 +61,7 @@
                                 onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlManufacturer" runat="server" Text="${Facility.FacilityMaster.Manufacturer}:" />
+                            <asp:Literal ID="ltlManufacturer" runat="server" Text="${Facility.FacilityMaster.Manufacturer.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbManufacturer" runat="server" Text='<%# Bind("Manufacturer") %>' />
@@ -57,7 +69,7 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlSerialNo" runat="server" Text="${Facility.FacilityMaster.SerialNo}:" />
+                            <asp:Literal ID="ltlSerialNo" runat="server" Text="${Facility.FacilityMaster.SerialNo.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbSerialNo" runat="server" Text='<%# Bind("SerialNo") %>' />
@@ -71,7 +83,7 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlWarrantyInfo" runat="server" Text="${Facility.FacilityMaster.WarrantyInfo}:" />
+                            <asp:Literal ID="ltlWarrantyInfo" runat="server" Text="${Facility.FacilityMaster.WarrantyInfo.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbWarrantyInfo" runat="server" Text='<%# Bind("WarrantyInfo") %>' />
@@ -83,8 +95,8 @@
                             <asp:TextBox ID="tbTechInfo" runat="server" Text='<%# Bind("TechInfo") %>' />
                         </td>
                     </tr>
-                    <tr>
-                        <td class="td01">
+                    <tr style="display:none">
+                        <td class="td01" >
                             <asp:Literal ID="ltlSupplier" runat="server" Text="${Facility.FacilityMaster.Supplier}:" />
                         </td>
                         <td class="td02">
@@ -163,7 +175,7 @@
                                 Text='<%# Bind("CurrChargePerson") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlChargeSite" runat="server" Text="${Facility.FacilityMaster.ChargeSite}:" />
+                            <asp:Literal ID="ltlChargeSite" runat="server" Text="${Facility.FacilityMaster.ChargeSite.Mould}:" />
                         </td>
                         <td class="td02">
                             <uc3:textbox ID="tbChargeSite" runat="server" Visible="true" Width="250" DescField="ChargeSite"
@@ -191,7 +203,6 @@
                         </td>
                     </tr>
                     <tr>
-                    
                         <td class="td01">
                             <asp:Literal ID="ltlMaintainType" runat="server" Text="${Facility.FacilityMaster.MaintainType}:" />
                         </td>
@@ -200,13 +211,12 @@
                                 ValueField="MaintainType" ServicePath="FacilityMasterMgr.service" ServiceMethod="GetMaintainTypeList"
                                 Text='<%# Bind("MaintainType") %>' />
                         </td>
-                         <td class="td01">
+                        <td class="td01">
                         </td>
                         <td class="td02">
                         </td>
                     </tr>
                     <tr>
-                       
                         <td class="td01">
                             <asp:Literal ID="ltlRemark" runat="server" Text="${Facility.FacilityMaster.Remark}:" />
                         </td>

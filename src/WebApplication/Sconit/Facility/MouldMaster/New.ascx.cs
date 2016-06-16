@@ -73,7 +73,7 @@ public partial class Facility_MouldMaster_New : NewModuleBase
     {
 
         facilityMaster = (FacilityMaster)e.InputParameters[0];
-        facilityMaster.FCID = TheNumberControlMgr.GenerateNumber(FacilityConstants.CODE_PREFIX_FACILITY);
+       // facilityMaster.FCID = TheNumberControlMgr.GenerateNumber(FacilityConstants.CODE_PREFIX_FACILITY);
         facilityMaster.CreateDate = DateTime.Now;
         facilityMaster.LastModifyDate = DateTime.Now;
         FacilityCategory facilityCategoty = TheFacilityCategoryMgr.LoadFacilityCategory(facilityMaster.Category);
@@ -140,5 +140,14 @@ public partial class Facility_MouldMaster_New : NewModuleBase
         return isDup;
     }
 
+    protected void checkFCIDExists(object source, ServerValidateEventArgs args)
+    {
+        String fcId = ((TextBox)(this.FV_FacilityMaster.FindControl("tbFCID"))).Text;
+        if (TheFacilityMasterMgr.LoadFacilityMaster(fcId) != null)
+        {
+            args.IsValid = false;
+        }
+
+    }
 
 }

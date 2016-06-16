@@ -1,4 +1,6 @@
 using System;
+using com.Sconit.Facility.Entity;
+using System.Collections.Generic;
 
 //TODO: Add other using statements here.
 
@@ -8,7 +10,9 @@ namespace com.Sconit.Facility.Service
     {
         #region Customized Methods
 
-        //TODO: Add other methods here.
+         IList<FacilityCategory> GetAllMouldCategory();
+
+         IList<FacilityCategory> GetAllEquipmentCategory();
 
         #endregion Customized Methods
     }

@@ -5,42 +5,30 @@
         <cc1:GridView ID="GV_List" runat="server" AutoGenerateColumns="False" DataKeyNames="FCID"
             ShowSeqNo="true" AllowSorting="true" OnRowDataBound="GV_List_RowDataBound">
             <Columns>
-                <asp:BoundField DataField="FCID" HeaderText="${Facility.FacilityMaster.FCID}" SortExpression="FCID" />
-                <asp:BoundField DataField="AssetNo" HeaderText="${Facility.FacilityMaster.AssetNo}"
-                    SortExpression="AssetNo" />
-                <asp:BoundField DataField="Name" HeaderText="${Facility.FacilityMaster.Name}" SortExpression="Name" />
-                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Category}" SortExpression="Category">
+                <asp:BoundField DataField="FCID" HeaderText="${Facility.FacilityMaster.FCID.Mould}"
+                    SortExpression="FCID" />
+                <asp:BoundField DataField="Name" HeaderText="${Facility.FacilityMaster.Name.Mould}"
+                    SortExpression="Name" />
+                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Category.Mould}" SortExpression="Category">
                     <ItemTemplate>
                         <asp:Label ID="lblCategory" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="MaintainGroup" HeaderText="${Facility.FacilityMaster.MaintainGroup}"
-                    SortExpression="MaintainGroup" />
-                <asp:BoundField DataField="CurrChargePersonName" HeaderText="${Facility.FacilityMaster.CurrChargePerson}"
-                    SortExpression="CurrChargePersonName" />
-                <asp:BoundField DataField="ChargeSite" HeaderText="${Facility.FacilityMaster.ChargeSite}"
+                <asp:BoundField DataField="AssetNo" HeaderText="${Facility.FacilityMaster.AssetNo}"
+                    SortExpression="AssetNo" />
+                <asp:BoundField DataField="ChargeSite" HeaderText="${Facility.FacilityMaster.ChargeSite.Mould}"
                     SortExpression="ChargeSite" />
                 <asp:BoundField DataField="ChargeOrganization" HeaderText="${Facility.FacilityMaster.ChargeOrganization}"
                     SortExpression="ChargeOrganization" />
-                <asp:BoundField DataField="ChargeDate" HeaderText="${Facility.FacilityMaster.ChargeDate}"
-                    SortExpression="ChargeDate" DataFormatString="{0:yyyy-MM-dd}" />
                 <asp:TemplateField HeaderText="${Facility.FacilityMaster.Status}" SortExpression="Status">
                     <ItemTemplate>
                         <asp:Label ID="lblStatus" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.MouldNumber}"
+                <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.RefenceCode.Mould}"
                     SortExpression="RefenceCode" />
-                <asp:BoundField DataField="Specification" HeaderText="${Facility.FacilityMaster.Specification}"
+                <asp:BoundField DataField="Specification" HeaderText="${Facility.FacilityMaster.Specification.Mould}"
                     SortExpression="Specification" />
-                <asp:BoundField DataField="Capacity" HeaderText="${Facility.FacilityMaster.Capacity}"
-                    SortExpression="Capacity" />
-                <asp:BoundField DataField="ManufactureDate" HeaderText="${Facility.FacilityMaster.ManufactureDate}"
-                    SortExpression="ManufactureDate" DataFormatString="{0:yyyy-MM-dd}" />
-                <asp:BoundField DataField="SerialNo" HeaderText="${Facility.FacilityMaster.SerialNo}"
-                    SortExpression="SerialNo" />
-                <asp:BoundField DataField="WarrantyInfo" HeaderText="${Facility.FacilityMaster.WarrantyInfo}"
-                    SortExpression="WarrantyInfo" />
                 <asp:BoundField DataField="EffDate" HeaderText="${Facility.FacilityMaster.EffDate}"
                     SortExpression="EffDate" DataFormatString="{0:yyyy-MM-dd}" />
                 <asp:BoundField DataField="Price" HeaderText="${Facility.FacilityMaster.Price}" SortExpression="Price" />
@@ -49,6 +37,14 @@
                         <asp:Label ID="lblOwner" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
+                <asp:BoundField DataField="OwnerDescription" HeaderText="${Facility.FacilityMaster.OwnerDescription}"
+                    SortExpression="OwnerDescription" />
+ 
+                <asp:BoundField DataField="WarrantyInfo" HeaderText="${Facility.FacilityMaster.WarrantyInfo.Mould}"
+                    SortExpression="WarrantyInfo" />
+
+                <asp:BoundField DataField="UseQty" HeaderText="${Facility.FacilityMaster.UseQty}"
+                    SortExpression="UseQty" DataFormatString="{0:0.##}" />
                 <asp:TemplateField HeaderText="${Common.GridView.Action}">
                     <ItemTemplate>
                         <asp:LinkButton ID="lbtnEdit" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "FCID") %>'

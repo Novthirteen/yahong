@@ -269,7 +269,7 @@ public partial class Facility_FacilityMaster_Search : SearchModuleBase
 
 
         #region 类别多选
-        IList<FacilityCategory> categoryList = TheFacilityCategoryMgr.GetAllFacilityCategory();
+        IList<FacilityCategory> categoryList = TheFacilityCategoryMgr.GetAllEquipmentCategory();
         if (categoryList != null && categoryList.Count > 0)
         {
             foreach (FacilityCategory category in categoryList)

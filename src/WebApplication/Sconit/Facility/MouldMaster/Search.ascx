@@ -6,13 +6,13 @@
     <table class="mtable">
         <tr>
             <td class="td01">
-                <asp:Literal ID="lblFCID" runat="server" Text="${Facility.FacilityMaster.FCID}:" />
+                <asp:Literal ID="lblFCID" runat="server" Text="${Facility.FacilityMaster.FCID.Mould}:" />
             </td>
             <td class="td02">
                 <asp:TextBox ID="tbFCID" runat="server" />
             </td>
             <td class="td01">
-                <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />
+                <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name.Mould}:" />
             </td>
             <td class="td02">
                 <asp:TextBox ID="tbName" runat="server"></asp:TextBox>
@@ -46,7 +46,7 @@
                     MaxDropdownHeight="200" />
             </td>
             <td class="td01">
-                <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category}:" />
+                <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Mould}:" />
             </td>
             <td class="td02">
                 <%--  <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
@@ -69,11 +69,11 @@
             </td>
             <td class="td01">
                 <asp:Literal ID="ltlIsAsset" runat="server" Text="${Facility.FacilityMaster.IsAsset}:" />
-                <asp:CheckBox ID="cbIsAsset" runat="server" Checked="true" />
+                <asp:CheckBox ID="cbIsAsset" runat="server" />
             </td>
             <td class="td02">
                 <asp:Literal ID="ltlIsAssetAll" runat="server" Text="${Facility.FacilityMaster.All}:" />
-                <asp:CheckBox ID="cbIsAssetAll" runat="server" />
+                <asp:CheckBox ID="cbIsAssetAll" runat="server" Checked="true" />
             </td>
         </tr>
         <tr>
@@ -88,7 +88,7 @@
                 <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification}:" />
             </td>
             <td class="td02">
-                <asp:TextBox ID="tbSpecification" runat="server" />
+                <asp:TextBox ID="tbSpecification" runat="server"/>
             </td>
         </tr>
         <tr>
@@ -101,7 +101,7 @@
                     ValueField="ChargeSite" ServicePath="FacilityMasterMgr.service" ServiceMethod="GetFacilityChargeSite" />
             </td>
             <td class="td01">
-                <asp:Literal ID="ltlRefenceCode" runat="server" Text="${Facility.FacilityMaster.RefenceCode}:" />
+                <asp:Literal ID="ltlRefenceCode" runat="server" Text="${Facility.FacilityMaster.RefenceCode.Mould}:" />
             </td>
             <td class="td02">
                 <asp:TextBox ID="tbRefenceCode" runat="server" />
@@ -123,7 +123,7 @@
             </td>
             <td class="td02">
                 <asp:Literal ID="lblIsOffBalanceAll" runat="server" Text="${Facility.FacilityMaster.All}:" />
-                <asp:CheckBox ID="cbIsOffBalanceAll" runat="server" />
+                <asp:CheckBox ID="cbIsOffBalanceAll" runat="server"  Checked="true"/>
             </td>
         </tr>
         <tr>
@@ -154,10 +154,10 @@
                         OnClick="btnCreateMaintain_Click" CssClass="query" />
                     <cc1:Button ID="btnNew" runat="server" Text="${Common.Button.New}" OnClick="btnNew_Click"
                         CssClass="add" FunctionId="CreateFacility" />
-                    <cc1:Button ID="btnImport" runat="server" Text="${Common.Button.ImportMaintainPlan}"
-                        OnClick="btnImport_Click" CssClass="button2" FunctionId="CreateFacility" />
-                    <cc1:Button ID="btnPrint" runat="server" Text="${Common.Button.Print}" OnClick="btnPrint_Click"
-                        CssClass="button2" FunctionId="CreateFacility" />
+                   <%-- <cc1:Button ID="btnImport" runat="server" Text="${Common.Button.ImportMaintainPlan}"
+                        OnClick="btnImport_Click" CssClass="button2" FunctionId="CreateFacility" />--%>
+                   <%-- <cc1:Button ID="btnPrint" runat="server" Text="${Common.Button.Print}" OnClick="btnPrint_Click"
+                        CssClass="button2" FunctionId="CreateFacility" />--%>
                 </div>
             </td>
         </tr>

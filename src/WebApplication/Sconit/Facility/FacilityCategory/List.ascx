@@ -15,7 +15,7 @@
                 <asp:BoundField DataField="ChargeSite" HeaderText="${Facility.FacilityCategory.ChargeSite}"
                     SortExpression="ChargeSite" />
                 <asp:BoundField DataField="ChargeOrganization" HeaderText="${Facility.FacilityCategory.ChargeOrganization}"
-                    SortExpression="ChargeOrganization" />
+                    SortExpression="ChargeOrganization" DataFormatString="{0:0.##}"/>
                 <asp:TemplateField HeaderText="${Common.GridView.Action}">
                     <ItemTemplate>
                         <asp:LinkButton ID="lbtnEdit" runat="server" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "Code") %>'

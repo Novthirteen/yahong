@@ -5,17 +5,15 @@
         <cc1:GridView ID="GV_List" runat="server" AutoGenerateColumns="False" DataKeyNames="FCID"
             ShowSeqNo="true" AllowSorting="true" OnRowDataBound="GV_List_RowDataBound">
             <Columns>
-                <asp:BoundField DataField="FCID" HeaderText="${Facility.FacilityMaster.FCID}" SortExpression="FCID" />
-                <asp:BoundField DataField="AssetNo" HeaderText="${Facility.FacilityMaster.AssetNo}"
-                    SortExpression="AssetNo" />
-                <asp:BoundField DataField="Name" HeaderText="${Facility.FacilityMaster.Name}" SortExpression="Name" />
-                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Category}" SortExpression="Category">
+                <asp:BoundField DataField="FCID" HeaderText="${Facility.FacilityMaster.FCID.Equipment}" SortExpression="FCID" />
+                <asp:BoundField DataField="Name" HeaderText="${Facility.FacilityMaster.Name.Equipment}" SortExpression="Name" />
+                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Category.Equipment}" SortExpression="Category">
                     <ItemTemplate>
                         <asp:Label ID="lblCategory" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="MaintainGroup" HeaderText="${Facility.FacilityMaster.MaintainGroup}"
-                    SortExpression="MaintainGroup" />
+                   <asp:BoundField DataField="AssetNo" HeaderText="${Facility.FacilityMaster.AssetNo}"
+                    SortExpression="AssetNo" />
                 <asp:BoundField DataField="CurrChargePersonName" HeaderText="${Facility.FacilityMaster.CurrChargePerson}"
                     SortExpression="CurrChargePersonName" />
                 <asp:BoundField DataField="ChargeSite" HeaderText="${Facility.FacilityMaster.ChargeSite}"

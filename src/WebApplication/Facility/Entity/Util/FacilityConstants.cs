@@ -11,6 +11,8 @@ namespace com.Sconit.Entity
         #region Facility
         public static readonly string CODE_PREFIX_FACILITY = "FC";
         public static readonly string CODE_PREFIX_FACILITYSTOCKTAKE = "FS";
+        public static readonly string CODE_PREFIX_FACILITYFIXORDER = "FF";
+
         public static readonly string CODE_MASTER_FACILITY_STATUS = "FacilityStatus";
         public static readonly string CODE_MASTER_FACILITY_STATUS_TEST = "Test";
         public static readonly string CODE_MASTER_FACILITY_STATUS_AVAILABLE = "Available";
@@ -23,6 +25,7 @@ namespace com.Sconit.Entity
         public static readonly string CODE_MASTER_FACILITY_STATUS_SELL = "Sell";
         public static readonly string CODE_MASTER_FACILITY_STATUS_LOSE = "Lose";
         public static readonly string CODE_MASTER_FACILITY_STATUS_INUSE = "InUse";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_BREAKDOWN = "BreakDown";
 
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_START = "MaintainStart";
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_FINISH = "MaintainFinish";
@@ -41,6 +44,7 @@ namespace com.Sconit.Entity
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_SCRAP = "Scrap";
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_CREATE = "Create";
         public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_ENABLE = "Enable";
+        public static readonly string CODE_MASTER_FACILITY_TRANSTYPE_REPORT = "Report";
 
         public static readonly string CODE_MASTER_FACILITY_MAINTAIN_TYPE_ONCE = "Once";
         public static readonly string CODE_MASTER_FACILITY_MAINTAIN_TYPE_MINUTE = "Minute";
@@ -70,6 +74,15 @@ namespace com.Sconit.Entity
         public static readonly string PERMISSION_PAGE_VALUE_FACILITYITEMWARNREP = "FacilityItemWarnRep";
 
         public static readonly string ENTITYPREFERENCE_DOWNTIME_WARNTIME = "DowntimeWarnTime";
+
+
+        public static readonly string CODE_MASTER_FIX_ORDER_STATUS = "FixOrderStatus";
+        public static readonly string CODE_MASTER_FIX_ORDER_CREATE = "Create";
+        public static readonly string CODE_MASTER_FIX_ORDER_SUBMIT = "Submit";
+        public static readonly string CODE_MASTER_FIX_ORDER_INPROCESS = "InProcess";
+        public static readonly string CODE_MASTER_FIX_ORDER_COMPLETE = "Complete";
+        public static readonly string CODE_MASTER_FIX_ORDER_CLOSE = "Close";
+
         #endregion
     }
 }

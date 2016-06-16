@@ -117,12 +117,14 @@
     <Compile Include="Entity\Base\Facility\FacilityStockDetailBase.cs" />
     <Compile Include="Entity\Base\Facility\FacilityStockMasterBase.cs" />
     <Compile Include="Entity\Base\Facility\FacilityTransBase.cs" />
+    <Compile Include="Entity\Base\Facility\FacilityFixOrderBase.cs" />
     <Compile Include="Entity\Base\Facility\MaintainPlanBase.cs" />
     <Compile Include="Entity\Base\Facility\RepairOrder.cs" />
     <Compile Include="Entity\Facility\FacilityAllocate.cs" />
     <Compile Include="Entity\Facility\FacilityCategory.cs" />
     <Compile Include="Entity\Facility\FacilityDistribution.cs" />
     <Compile Include="Entity\Facility\FacilityDistributionDetail.cs" />
+    <Compile Include="Entity\Facility\FacilityFixOrder.cs" />
     <Compile Include="Entity\Facility\FacilityItem.cs" />
     <Compile Include="Entity\Facility\FacilityMaintainPlan.cs" />
     <Compile Include="Entity\Facility\FacilityMaster.cs" />
@@ -301,6 +303,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Entity\Base\Facility\FacilityFixOrder.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

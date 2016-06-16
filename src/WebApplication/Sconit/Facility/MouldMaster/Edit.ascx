@@ -10,7 +10,7 @@
                 <table class="mtable">
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID}:" />
+                            <asp:Literal ID="ltlFCID" runat="server" Text="${Facility.FacilityMaster.FCID.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:Label ID="lblFCID" runat="server" Text='<%# Bind("FCID") %>' />
@@ -31,7 +31,7 @@
                               <asp:HiddenField ID="ParentCategory" runat="server" Value='<%# Bind("ParentCategory") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name}:" />
+                            <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbName" runat="server" Text='<%# Bind("Name") %>' />
@@ -39,15 +39,15 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category}:" />
+                            <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Mould}:" />
                         </td>
                         <td class="td02">
                             <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                                 Text='<%# Bind("Category") %>' ValueField="Code" ServicePath="FacilityCategoryMgr.service"
-                                ServiceMethod="GetAllFacilityCategory" CssClass="inputRequired" ReadOnly="true" />
+                                ServiceMethod="GetAllMouldCategory" CssClass="inputRequired" ReadOnly="true" />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification}:" />
+                            <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbSpecification" runat="server" Text='<%# Bind("Specification") %>' />
@@ -70,13 +70,13 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlManufacturer" runat="server" Text="${Facility.FacilityMaster.Manufacturer}:" />
+                            <asp:Literal ID="ltlManufacturer" runat="server" Text="${Facility.FacilityMaster.Manufacturer.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbManufacturer" runat="server" Text='<%# Bind("Manufacturer") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlSerialNo" runat="server" Text="${Facility.FacilityMaster.SerialNo}:" />
+                            <asp:Literal ID="ltlSerialNo" runat="server" Text="${Facility.FacilityMaster.SerialNo.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbSerialNo" runat="server" Text='<%# Bind("SerialNo") %>' />
@@ -90,7 +90,7 @@
                             <asp:TextBox ID="tbAssetNo" runat="server" Text='<%# Bind("AssetNo") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlWarrantyInfo" runat="server" Text="${Facility.FacilityMaster.WarrantyInfo}:" />
+                            <asp:Literal ID="ltlWarrantyInfo" runat="server" Text="${Facility.FacilityMaster.WarrantyInfo.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbWarrantyInfo" runat="server" Text='<%# Bind("WarrantyInfo") %>' />
@@ -110,7 +110,7 @@
                             <asp:TextBox ID="tbSupplier" runat="server" Text='<%# Bind("Supplier") %>' />
                         </td>
                     </tr>
-                    <tr>
+                   <tr style="display:none">
                         <td class="td01">
                             <asp:Literal ID="ltlSupplierInfo" runat="server" Text="${Facility.FacilityMaster.SupplierInfo}:" />
                         </td>
@@ -164,7 +164,7 @@
                             <asp:HiddenField ID="hfCurrChargePersonName" runat="server" Value='<%# Bind("CurrChargePersonName") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="ltlChargeSite" runat="server" Text="${Facility.FacilityMaster.ChargeSite}:" />
+                            <asp:Literal ID="ltlChargeSite" runat="server" Text="${Facility.FacilityMaster.ChargeSite.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbChargeSite" runat="server" Text='<%# Bind("ChargeSite") %>' ReadOnly="true" />
@@ -189,7 +189,7 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="lbReferenceNo" runat="server" Text="${Facility.FacilityMaster.MouldNumber}:" />
+                            <asp:Literal ID="lbReferenceNo" runat="server" Text="${Facility.FacilityMaster.RefenceCode.Mould}:" />
                         </td>
                         <td class="td02">
                             <asp:TextBox ID="tbRefenceCode" runat="server" Text='<%# Bind("RefenceCode") %>' />
@@ -222,7 +222,7 @@
                             <asp:Literal ID="ltlUseQty" runat="server" Text="${Facility.FacilityMaster.UseQty}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbUseQty" runat="server" Text='<%# Bind("UseQty") %>'
+                            <asp:TextBox ID="tbUseQty" runat="server" Text='<%# Bind("UseQty","{0:0.##}") %>'
                                 ReadOnly="true" />
                         </td>
                         <td class="td01">

@@ -35,7 +35,7 @@ namespace com.Sconit.Facility.Service.Impl
         public ICriteriaMgrE criteriaMgrE { get; set; }
         public ITaskMgrE taskMgrE { get; set; }
         public IUserSubscriptionMgrE userSubscriptionMgrE { get; set; }
-        
+
         public ITaskMstrMgrE taskMasterMgrE { get; set; }
         public ITaskSubTypeMgrE taskSubTypeMgrE { get; set; }
         public IUserMgrE userMgrE { get; set; }
@@ -49,11 +49,11 @@ namespace com.Sconit.Facility.Service.Impl
         public void UpdateFacilityMasterAndCreateFacilityTrans(FacilityMaster facilityMaster, FacilityTrans facilityTrans, string status, string userCode)
         {
 
-            UpdateFacilityMasterAndCreateFacilityTrans( facilityMaster,  facilityTrans,  status,  userCode,string.Empty);
+            UpdateFacilityMasterAndCreateFacilityTrans(facilityMaster, facilityTrans, status, userCode, string.Empty);
         }
 
         [Transaction(TransactionMode.Requires)]
-        public void UpdateFacilityMasterAndCreateFacilityTrans(FacilityMaster facilityMaster, FacilityTrans facilityTrans, string status, string userCode,string taskCode)
+        public void UpdateFacilityMasterAndCreateFacilityTrans(FacilityMaster facilityMaster, FacilityTrans facilityTrans, string status, string userCode, string taskCode)
         {
 
             #region 记事务
@@ -122,7 +122,7 @@ namespace com.Sconit.Facility.Service.Impl
             #endregion
         }
         [Transaction(TransactionMode.Requires)]
-        public void UpdateFacilityAndCreateFacilityTransAndRepairOrder(FacilityMaster facilityMaster, FacilityTrans facilityTrans, RepairOrder repairOrder,string status)
+        public void UpdateFacilityAndCreateFacilityTransAndRepairOrder(FacilityMaster facilityMaster, FacilityTrans facilityTrans, RepairOrder repairOrder, string status)
         {
 
             #region 记事务
@@ -144,10 +144,10 @@ namespace com.Sconit.Facility.Service.Impl
             #endregion
 
             #region RepairOrder
-            switch(status)
+            switch (status)
             {
                 case "Create":
-                    genericMgr.Create(repairOrder); 
+                    genericMgr.Create(repairOrder);
                     break;
                 case "Update":
                     genericMgr.Update(repairOrder);
@@ -346,9 +346,9 @@ namespace com.Sconit.Facility.Service.Impl
             criteria.CreateAlias("FacilityMaster", "f");
             criteria.CreateAlias("MaintainPlan", "m");
             criteria.Add(Expression.Or(Expression.And(Expression.IsNotNull("NextWarnDate"), Expression.Le("NextWarnDate", DateTime.Now)),
-              Expression.And(Expression.Eq("m.Type",FacilityConstants.CODE_MASTER_FACILITY_MAINTAIN_TYPE_FREQUENCY),
+              Expression.And(Expression.Eq("m.Type", FacilityConstants.CODE_MASTER_FACILITY_MAINTAIN_TYPE_FREQUENCY),
                 Expression.And(Expression.IsNotNull("f.UseQty"), Expression.LeProperty("NextWarnQty", "f.UseQty")))));
-           // criteria.Add(Expression.In("f.Status", new string[] { FacilityConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE, FacilityConstants.CODE_MASTER_FACILITY_STATUS_FIX, FacilityConstants.CODE_MASTER_FACILITY_STATUS_INSPECT, FacilityConstants.CODE_MASTER_FACILITY_STATUS_MAINTAIN }));
+            // criteria.Add(Expression.In("f.Status", new string[] { FacilityConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE, FacilityConstants.CODE_MASTER_FACILITY_STATUS_FIX, FacilityConstants.CODE_MASTER_FACILITY_STATUS_INSPECT, FacilityConstants.CODE_MASTER_FACILITY_STATUS_MAINTAIN }));
             IList<FacilityMaintainPlan> facilityMaintainPlanList = criteriaMgrE.FindAll<FacilityMaintainPlan>(criteria);
             #endregion
 
@@ -466,8 +466,8 @@ namespace com.Sconit.Facility.Service.Impl
         [Transaction(TransactionMode.Requires)]
         public void GenerateMouldISITasks()
         {
-          
-         
+
+
         }
 
         [Transaction(TransactionMode.Unspecified)]
@@ -841,7 +841,7 @@ namespace com.Sconit.Facility.Service.Impl
         {
 
             int transId = 0;
-            
+
             if (fcIdList != null && fcIdList.Count > 0)
             {
                 DateTime dateTimeNow = DateTime.Now;
@@ -879,6 +879,43 @@ namespace com.Sconit.Facility.Service.Impl
                 }
             }
             return transId;
+        }
+
+
+        [Transaction(TransactionMode.Requires)]
+        public void CreateFacilityFixOrder(FacilityFixOrder facilityFixOrder)
+        {
+
+            base.Create(facilityFixOrder);
+
+            FacilityMaster facilityMaster = this.FindById<FacilityMaster>(facilityFixOrder.FCID);
+
+            #region 记报修事务
+            FacilityTrans facilityTrans = new FacilityTrans();
+            facilityTrans.CreateDate = facilityFixOrder.CreateDate;
+            facilityTrans.CreateUser = facilityFixOrder.CreateUser;
+            facilityTrans.EffDate = facilityMaster.CreateDate;
+            facilityTrans.FCID = facilityMaster.FCID;
+            facilityTrans.FromChargePerson = facilityMaster.CurrChargePerson;
+            facilityTrans.FromChargePersonName = facilityMaster.CurrChargePersonName;
+            facilityTrans.FromOrganization = facilityMaster.ChargeOrganization;
+            facilityTrans.FromChargeSite = facilityMaster.ChargeSite;
+            facilityTrans.ToChargePerson = facilityMaster.CurrChargePerson;
+            facilityTrans.ToChargePersonName = facilityMaster.CurrChargePersonName;
+            facilityTrans.ToOrganization = facilityMaster.ChargeOrganization;
+            facilityTrans.ToChargeSite = facilityMaster.ChargeSite;
+            facilityTrans.TransType = FacilityConstants.CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_START;
+
+            facilityTransMgrE.CreateFacilityTrans(facilityTrans);
+            #endregion
+
+            #region 更新设备状态
+            facilityMaster.Status = FacilityConstants.CODE_MASTER_FACILITY_STATUS_BREAKDOWN;
+            facilityMaster.LastModifyDate = facilityFixOrder.CreateDate;
+            facilityMaster.LastModifyUser = facilityFixOrder.CreateUser;
+            this.UpdateFacilityMaster(facilityMaster);
+
+            #endregion
         }
         #endregion Customized Methods
     }
