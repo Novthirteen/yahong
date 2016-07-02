@@ -22,6 +22,7 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
     {
         this.ucSearch.SearchEvent += new System.EventHandler(this.Search_Render);
         this.ucFinish.FinishBackEvent += new System.EventHandler(this.FinishBack_Render);
+        this.ucStart.StartBackEvent += new System.EventHandler(this.StartBack_Render);
         this.ucList.FixStartEvent += new System.EventHandler(this.ListStart_Render);
         this.ucList.FixFinishEvent += new System.EventHandler(this.ListFinish_Render);
         this.ucTrans.BackEvent += new System.EventHandler(this.Back_Render);
@@ -78,6 +79,18 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
         this.ucList.Visible = false;
         this.ucFinish.InitPageParameter((string)sender);
     }
+
+    //The event handler when user click button "Back" button of ucFinish
+    void StartBack_Render(object sender, EventArgs e)
+    {
+        this.ucStart.Visible = false;
+        this.ucFinish.Visible = false;
+        this.ucSearch.Visible = false;
+        this.ucList.Visible = false;
+        this.ucTrans.InitPageParameter(((int)sender).ToString());
+        this.ucTrans.Visible = true;
+    }
+
 
     //The event handler when user click button "Back" button of ucFinish
     void FinishBack_Render(object sender, EventArgs e)

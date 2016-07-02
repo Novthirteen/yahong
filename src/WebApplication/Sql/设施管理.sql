@@ -1226,8 +1226,8 @@ insert into CodeMstr values('FacilityStatus','InUse',25,0,'使用中');
 
 insert into CodeMstr values('FacilityStatus','BreakDown',45,0,'故障');
 
-insert into acc_menu values ('Menu.Facility.FacilityInspectOrder',1,'保修单','~/Main.aspx?mid=Facility.FacilityInspectOrder',1,'~/Images/Nav/Item.png',getdate(),'su',getdate(),'su',null)
-insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('Menu.Facility.FacilityInspectOrder','保修单','Facility')
+insert into acc_menu values ('Menu.Facility.FacilityInspectOrder',1,'报修单','~/Main.aspx?mid=Facility.FacilityFixOrder',1,'~/Images/Nav/Item.png',getdate(),'su',getdate(),'su',null)
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('Menu.Facility.FacilityInspectOrder','报修单','Facility')
 insert into ACC_MenuCommon(Menu, ParentMenu, Level_, Seq, IsActive, CreateDate, CreateUser, LastModifyDate, LastModifyUser)
 select 'Menu.Facility.FacilityInspectOrder','Menu.Facility.Trans',3,55,1,GETDATE(),'su',GETDATE(),'su'
 

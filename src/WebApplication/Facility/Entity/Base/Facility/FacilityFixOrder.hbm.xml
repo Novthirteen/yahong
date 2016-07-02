@@ -18,7 +18,6 @@
 		<property name="FixExpense" column="FixExpense" type="Decimal"  />
 		<property name="CreateUser" column="CreateUser" type="String" length="50" />
 		<property name="CreateDate" column="CreateDate" type="DateTime"  />
-		<property name="CreateUser" column="CreateUser" type="String" length="50" />
 		<property name="ReleaseDate" column="ReleaseDate" type="DateTime"  />
 		<property name="ReleaseUser" column="ReleaseUser" type="String" length="50" />
 		<property name="StartDate" column="StartDate" type="DateTime"  />

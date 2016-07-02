@@ -66,7 +66,7 @@ public partial class Facility_FacilityFix_Start : EditModuleBase
             string description = this.tbDescription.Text.Trim();
             string fcid = this.tbFCID.Text.Trim();
 
-            FacilityMaster facilityMaster = TheFacilityMasterMgr.LoadFacilityMaster(fcid);
+         
 
             TheFacilityMasterMgr.CreateFacilityFixOrder(facilityFixOrder);
 
