@@ -5,10 +5,10 @@
     <table class="mtable">
         <tr>
             <td class="ttd01">
-                <asp:Literal ID="lblInspectNo" runat="server" Text="${Facility.FacilityFixOrder.InspectNo}:" />
+                <asp:Literal ID="lblFixNo" runat="server" Text="${Facility.FacilityFixOrder.FixNo}:" />
             </td>
             <td class="ttd02">
-                <asp:TextBox ID="tbInspectNo" runat="server" />
+                <asp:TextBox ID="tbFixNo" runat="server" />
             </td>
             <td class="td01">
                 <asp:Literal ID="lblStatus" runat="server" Text="${Common.CodeMaster.Status}:" />
@@ -56,8 +56,6 @@
             </td>
             <td class="ttd02">
                 <asp:Button ID="btnSearch" runat="server" Text="${Common.Button.Search}" OnClick="btnSearch_Click"
-                    CssClass="button2" />
-                <asp:Button ID="btnNew" runat="server" Text="${Common.Button.New}" OnClick="btnNew_Click"
                     CssClass="button2" />
                 <asp:Button ID="btnExport" runat="server" Text="${Common.Button.Export}" CssClass="button2"
                     OnClick="btnSearch_Click" />

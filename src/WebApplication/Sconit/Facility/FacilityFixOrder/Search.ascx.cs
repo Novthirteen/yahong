@@ -18,12 +18,12 @@ using com.Sconit.Entity;
 using NHibernate.Expression;
 using System.Collections.Generic;
 using com.Sconit.Utility;
+using com.Sconit.Facility.Entity;
 
 
 public partial class Facility_FacilityFixOrder_Search : SearchModuleBase
 {
     public event EventHandler SearchEvent;
-    public event EventHandler NewEvent;
     private IDictionary<string, string> dicParam;
 
     protected override void InitPageParameter(IDictionary<string, string> actionParameter)
@@ -41,18 +41,14 @@ public partial class Facility_FacilityFixOrder_Search : SearchModuleBase
             this.tbEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
     }
-    protected void btnNew_Click(object sender, EventArgs e)
-    {
-        if (NewEvent != null)
-        {
-            NewEvent(sender, e);
-        }
-    }
+   
     protected void btnSearch_Click(object sender, EventArgs e)
     {
         this.dicParam = new Dictionary<string, string>();
 
-        this.dicParam.Add("inspectNo", this.tbInspectNo.Text.Trim());
+        this.dicParam.Add("fixNo", this.tbFixNo.Text.Trim());
+        this.dicParam.Add("fcid", this.tbFCID.Text.Trim());
+        this.dicParam.Add("referenceNo", this.tbReferenceNo.Text.Trim());
         this.dicParam.Add("startDate", this.tbStartDate.Text.Trim());
         this.dicParam.Add("endDate", this.tbEndDate.Text.Trim());
         this.dicParam.Add("createUser", this.tbCreateUser.Text.Trim());
@@ -85,15 +81,27 @@ public partial class Facility_FacilityFixOrder_Search : SearchModuleBase
 
     private object CollectMasterParam(bool isExport)
     {
-        DetachedCriteria selectCriteria = DetachedCriteria.For(typeof(InspectOrder));
-        DetachedCriteria selectCountCriteria = DetachedCriteria.For(typeof(InspectOrder))
+        DetachedCriteria selectCriteria = DetachedCriteria.For(typeof(FacilityFixOrder));
+        DetachedCriteria selectCountCriteria = DetachedCriteria.For(typeof(FacilityFixOrder))
             .SetProjection(Projections.ProjectionList()
-           .Add(Projections.Count("InspectNo")));
+           .Add(Projections.Count("FixNo")));
 
-        if (this.dicParam["inspectNo"] != string.Empty)
+        if (this.dicParam["fixNo"] != string.Empty)
         {
-            selectCriteria.Add(Expression.Eq("InspectNo", this.dicParam["inspectNo"]));
-            selectCountCriteria.Add(Expression.Eq("InspectNo", this.dicParam["inspectNo"]));
+            selectCriteria.Add(Expression.Eq("FixNo", this.dicParam["fixNo"]));
+            selectCountCriteria.Add(Expression.Eq("FixNo", this.dicParam["fixNo"]));
+        }
+
+        if (this.dicParam["fcid"] != string.Empty)
+        {
+            selectCriteria.Add(Expression.Eq("FCID", this.dicParam["fcid"]));
+            selectCountCriteria.Add(Expression.Eq("FCID", this.dicParam["fcid"]));
+        }
+
+        if (this.dicParam["referenceNo"] != string.Empty)
+        {
+            selectCriteria.Add(Expression.Eq("ReferenceCode", this.dicParam["referenceNo"]));
+            selectCountCriteria.Add(Expression.Eq("ReferenceCode", this.dicParam["referenceNo"]));
         }
 
         if (this.dicParam["startDate"] != string.Empty)
@@ -114,8 +122,8 @@ public partial class Facility_FacilityFixOrder_Search : SearchModuleBase
         }
         if (this.dicParam["createUser"] != string.Empty)
         {
-            selectCriteria.Add(Expression.Eq("CreateUser.Code", this.dicParam["createUser"]));
-            selectCountCriteria.Add(Expression.Eq("CreateUser.Code", this.dicParam["createUser"]));
+            selectCriteria.Add(Expression.Eq("CreateUser", this.dicParam["createUser"]));
+            selectCountCriteria.Add(Expression.Eq("CreateUser", this.dicParam["createUser"]));
         }
         
         return new object[] { selectCriteria, selectCountCriteria, isExport, true };

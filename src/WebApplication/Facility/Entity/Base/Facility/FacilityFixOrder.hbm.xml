@@ -7,7 +7,7 @@
 		<property name="Status" column="Status" type="String" length="50" />
 		<property name="FCID" column="FCID" type="String" length="50"/>
 		<property name="FacilityName" column="FcName" type="String" length="100" />
-		<property name="RefenceCode" column="RefCode" type="String" length="50" />
+		<property name="ReferenceCode" column="RefCode" type="String" length="50" />
 		<property name="Shift" column="Shift" type="String" length="50" />
 		<property name="Customer" column="Customer" type="String" length="50" />
 		<property name="Description" column="Desc1" type="String" length="255" />

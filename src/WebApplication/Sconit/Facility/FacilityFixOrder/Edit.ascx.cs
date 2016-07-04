@@ -9,7 +9,7 @@ using com.Sconit.Facility.Entity;
 using com.Sconit.Entity;
 using com.Sconit.Entity.Exception;
 
-public partial class Facility_FacilityFix_Start : EditModuleBase
+public partial class Facility_FacilityFixOrder_Edit : EditModuleBase
 {
     public event EventHandler BackEvent;
     public event EventHandler StartBackEvent;
@@ -25,10 +25,18 @@ public partial class Facility_FacilityFix_Start : EditModuleBase
     {
         if (!string.IsNullOrEmpty(code))
         {
-            FacilityMaster facilityMaster = TheFacilityMasterMgr.LoadFacilityMaster(code);
-            this.tbFCID.Text = facilityMaster.FCID;
-            this.tbFacilityName.Text = facilityMaster.Name;
-            this.tbReferenceNo.Text = facilityMaster.RefenceCode;
+          
+
+            FacilityFixOrder facilityFixOrder = TheGenericMgr.FindById<FacilityFixOrder>(code);
+            this.tbCustomer.Text = facilityFixOrder.Customer;
+            this.tbDescription.Text = facilityFixOrder.Description;
+            this.tbEffectiveDate.Text = facilityFixOrder.EffectiveDate.ToString("yyyy-MM-dd");
+            this.tbFacilityName.Text = facilityFixOrder.FacilityName;
+            this.tbFCID.Text = facilityFixOrder.FCID;
+            this.tbFixSite.Text = facilityFixOrder.FixSite;
+            this.tbReferenceNo.Text = facilityFixOrder.ReferenceCode;
+            this.tbResult.Text = facilityFixOrder.Result;
+            this.tbShift.Text = facilityFixOrder.Shift;
         }
     }
 

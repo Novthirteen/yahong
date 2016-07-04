@@ -21,7 +21,7 @@ namespace com.Sconit.Facility.Entity
 
         public string FacilityName { get; set; }
 
-        public string RefenceCode { get; set; }
+        public string ReferenceCode { get; set; }
 
         public string Shift { get; set; }
 

@@ -34,7 +34,6 @@ public partial class Facility_FacilityFixOrder_Main : MainModuleBase
 
         this.ucSearch.SearchEvent += new System.EventHandler(this.Search_Render);
         this.ucList.EditEvent += new System.EventHandler(this.ListEdit_Render);
-        this.ucSearch.NewEvent += new System.EventHandler(this.New_Render);
     
     }
 
@@ -54,17 +53,15 @@ public partial class Facility_FacilityFixOrder_Main : MainModuleBase
     {
         this.ucSearch.Visible = false;
         this.ucList.Visible = false;
-      
+        this.ucEdit.Visible = true;
+        this.ucEdit.InitPageParameter((string)sender);
     }
-
-
 
     //The event handler when user click link "View" link of ucList
     void ListView_Render(object sender, EventArgs e)
     {
         this.ucSearch.Visible = false;
         this.ucList.Visible = false;
-     
     }
 
     //The event handler when user click link "Back" button of unRepackInfo

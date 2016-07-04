@@ -18,6 +18,7 @@ using NHibernate.Expression;
 using com.Sconit.Entity;
 using com.Sconit.Entity.Exception;
 using com.Sconit.Entity.Distribution;
+using com.Sconit.Facility.Entity;
 
 public partial class Facility_FacilityFixOrder_List : ListModuleBase
 {
@@ -62,8 +63,8 @@ public partial class Facility_FacilityFixOrder_List : ListModuleBase
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            InspectOrder inspectOrder = (InspectOrder)e.Row.DataItem;
-            if (inspectOrder.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_CREATE)
+            FacilityFixOrder facilityFixOrder = (FacilityFixOrder)e.Row.DataItem;
+            if (facilityFixOrder.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_CREATE)
             {
                 if ((LinkButton)e.Row.FindControl("lbtnDelete") != null)
                     ((LinkButton)e.Row.FindControl("lbtnDelete")).Visible = true;

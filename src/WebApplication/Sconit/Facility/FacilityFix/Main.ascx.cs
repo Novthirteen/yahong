@@ -27,6 +27,7 @@ public partial class Facility_FacilityFix_Main : MainModuleBase
         this.ucList.FixFinishEvent += new System.EventHandler(this.ListFinish_Render);
         this.ucTrans.BackEvent += new System.EventHandler(this.Back_Render);
         this.ucFinish.BackEvent += new System.EventHandler(this.Back_Render);
+        this.ucStart.BackEvent += new System.EventHandler(this.Back_Render);
 
         if (!IsPostBack)
         {
