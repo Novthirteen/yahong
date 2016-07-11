@@ -278,6 +278,19 @@ namespace com.Sconit.Facility.Entity
                 _batchNo = value;
             }
         }
+
+        private string _referenceNo;
+        public string ReferenceNo
+        {
+            get
+            {
+                return _referenceNo;
+            }
+            set
+            {
+                _referenceNo = value;
+            }
+        }
         #endregion
 
         public override int GetHashCode()

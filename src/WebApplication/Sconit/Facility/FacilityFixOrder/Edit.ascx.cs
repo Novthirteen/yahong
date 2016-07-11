@@ -28,6 +28,7 @@ public partial class Facility_FacilityFixOrder_Edit : EditModuleBase
           
 
             FacilityFixOrder facilityFixOrder = TheGenericMgr.FindById<FacilityFixOrder>(code);
+            this.tbFixNo.Text = facilityFixOrder.FixNo;
             this.tbCustomer.Text = facilityFixOrder.Customer;
             this.tbDescription.Text = facilityFixOrder.Description;
             this.tbEffectiveDate.Text = facilityFixOrder.EffectiveDate.ToString("yyyy-MM-dd");
@@ -37,6 +38,54 @@ public partial class Facility_FacilityFixOrder_Edit : EditModuleBase
             this.tbReferenceNo.Text = facilityFixOrder.ReferenceCode;
             this.tbResult.Text = facilityFixOrder.Result;
             this.tbShift.Text = facilityFixOrder.Shift;
+
+            UpdateView(code);
+        }
+    }
+
+
+    public void UpdateView(string fixNo)
+    {
+        FacilityFixOrder facilityFixOrder = TheGenericMgr.FindById<FacilityFixOrder>(fixNo);
+        if (facilityFixOrder.Status == FacilityConstants.CODE_MASTER_FIX_ORDER_CREATE)
+        {
+            this.btnSubmit.Visible = true;
+            this.btnStart.Visible = false;
+            this.btnClose.Visible = false;
+
+            this.tbFixSite.ReadOnly = false;
+            this.tbResult.ReadOnly = false;
+        }
+
+        if (facilityFixOrder.Status == FacilityConstants.CODE_MASTER_FIX_ORDER_SUBMIT)
+        {
+            this.btnSubmit.Visible = false;
+            this.btnStart.Visible = true;
+            this.btnClose.Visible = false;
+
+            this.tbFixSite.ReadOnly = true;
+            this.tbResult.ReadOnly = true;
+
+        }
+
+        if (facilityFixOrder.Status == FacilityConstants.CODE_MASTER_FIX_ORDER_INPROCESS)
+        {
+            this.btnSubmit.Visible = false;
+            this.btnStart.Visible = false;
+            this.btnClose.Visible = false;
+
+            this.tbFixSite.ReadOnly = true;
+            this.tbResult.ReadOnly = true;
+        }
+
+        if (facilityFixOrder.Status == FacilityConstants.CODE_MASTER_FIX_ORDER_COMPLETE)
+        {
+            this.btnSubmit.Visible = false;
+            this.btnStart.Visible = false;
+            this.btnClose.Visible = true;
+
+            this.tbFixSite.ReadOnly = true;
+            this.tbResult.ReadOnly = true;
         }
     }
 
@@ -48,47 +97,54 @@ public partial class Facility_FacilityFixOrder_Edit : EditModuleBase
         }
     }
 
-    protected void btnSave_Click(object sender, EventArgs e)
+    protected void btnSubmit_Click(object sender, EventArgs e)
     {
         try
         {
-
-            FacilityFixOrder facilityFixOrder = new FacilityFixOrder();
-
-            facilityFixOrder.FixNo = TheNumberControlMgr.GenerateNumber(FacilityConstants.CODE_PREFIX_FACILITYFIXORDER);
-            facilityFixOrder.Customer = this.tbCustomer.Text.Trim();
-            facilityFixOrder.Description = this.tbDescription.Text.Trim();
-            facilityFixOrder.EffectiveDate = Convert.ToDateTime(this.tbEffectiveDate.Text.Trim());
-            facilityFixOrder.FCID = this.tbFCID.Text.Trim();
-            facilityFixOrder.FacilityName = this.tbFacilityName.Text.Trim();
-            facilityFixOrder.IsSample = this.cbIsSample.Checked;
-            facilityFixOrder.ReferenceCode = this.tbReferenceNo.Text.Trim();
-            facilityFixOrder.Shift = this.tbShift.Text.Trim();
-
-            facilityFixOrder.Status = FacilityConstants.CODE_MASTER_FIX_ORDER_CREATE;
-            facilityFixOrder.CreateDate = DateTime.Now;
-            facilityFixOrder.CreateUser = this.CurrentUser.Code;
-            facilityFixOrder.LastModifyDate = DateTime.Now;
-            facilityFixOrder.LastModifyUser = this.CurrentUser.Code;
-
-            string description = this.tbDescription.Text.Trim();
-            string fcid = this.tbFCID.Text.Trim();
-
-         
-
-            TheFacilityMasterMgr.CreateFacilityFixOrder(facilityFixOrder);
-
-
-            ShowSuccessMessage("Facility.FacilityMaster.FacilityMasterMaintainStart.Successfully", facilityFixOrder.FixNo);
-
-
-            StartBackEvent(facilityFixOrder.FixNo, e);
+            string fixNo = this.tbFixNo.Text.Trim();
+            TheFacilityFixOrderMgr.ReleaseFacilityFixOrder(fixNo,this.CurrentUser.Code);
+            ShowSuccessMessage("Facility.FacilityFixOrder.FacilityFixOrderSubmitSuccessfully", fixNo);
+            UpdateView( fixNo);
         }
         catch (BusinessErrorException ex)
         {
             this.ShowErrorMessage(ex);
         }
+    
     }
 
+    protected void btnStart_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string fixNo = this.tbFixNo.Text.Trim();
+            TheFacilityFixOrderMgr.StartFacilityFixOrder(fixNo, this.CurrentUser.Code);
+            ShowSuccessMessage("Facility.FacilityFixOrder.FacilityFixOrderStartSuccessfully", fixNo);
+            UpdateView(fixNo);
+        }
+        catch (BusinessErrorException ex)
+        {
+            this.ShowErrorMessage(ex);
+        }
+
+    }
+
+ 
+
+    protected void btnClose_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string fixNo = this.tbFixNo.Text.Trim();
+            TheFacilityFixOrderMgr.CloseFacilityFixOrder(fixNo, this.CurrentUser.Code);
+            ShowSuccessMessage("Facility.FacilityFixOrder.FacilityFixOrderCloseSuccessfully", fixNo);
+            UpdateView(fixNo);
+        }
+        catch (BusinessErrorException ex)
+        {
+            this.ShowErrorMessage(ex);
+        }
+
+    }
 
 }

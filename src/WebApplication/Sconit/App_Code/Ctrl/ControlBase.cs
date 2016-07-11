@@ -386,6 +386,7 @@ namespace com.Sconit.Web
         protected IFacilityDistributionMgrE TheFacilityDistributionMgr { get { return GetService<IFacilityDistributionMgrE>("FacilityDistributionMgr.service"); } }
         protected IFacilityDistributionDetailMgrE TheFacilityDistributionDetailMgr { get { return GetService<IFacilityDistributionDetailMgrE>("FacilityDistributionDetailMgr.service"); } }
         protected IFacilityAllocateMgrE TheFacilityAllocateMgr { get { return GetService<IFacilityAllocateMgrE>("FacilityAllocateMgr.service"); } }
+        protected IFacilityFixOrderMgrE TheFacilityFixOrderMgr { get { return GetService<IFacilityFixOrderMgrE>("FacilityFixOrderMgr.service"); } }
         #endregion
 
      

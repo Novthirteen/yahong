@@ -42,9 +42,10 @@
                             <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Equipment}:" />
                         </td>
                         <td class="td02">
-                            <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
+                           <%-- <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                                 Text='<%# Bind("Category") %>' ValueField="Code" ServicePath="FacilityCategoryMgr.service"
-                                ServiceMethod="GetAllEquipmentCategory" CssClass="inputRequired" ReadOnly="true" />
+                                ServiceMethod="GetAllEquipmentCategory" CssClass="inputRequired" ReadOnly="true" />--%>
+                             <asp:TextBox ID="tbCategory" runat="server" Text='<%# Bind("Category") %>' ReadOnly="true" />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification}:" />

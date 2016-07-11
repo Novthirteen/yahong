@@ -52,6 +52,16 @@
                         </td>
                     </tr>
                     <tr>
+                     <tr>
+                        <td class="td01">
+                            <asp:Literal ID="ltlISITaskCode" runat="server" Text="${Facility.FacilityFixOrder.FixNo}:" />
+                        </td>
+                        <td class="td02" colspan="3">
+                            <asp:TextBox ID="tbFixNo" runat="server" ReadOnly="true" />
+                        </td>
+                    </tr>
+                    </tr>
+                    <tr>
                         <td class="td01">
                             <asp:Literal ID="ltlRemark" runat="server" Text="${Facility.FacilityFix.Remark}:" />
                         </td>

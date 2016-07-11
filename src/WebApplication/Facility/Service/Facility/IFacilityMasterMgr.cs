@@ -69,9 +69,6 @@ namespace com.Sconit.Facility.Service
 
         int BatchMaintainFinish(IList<string> fcTransIdList, string startDate, string endDate, string remark, User user);
 
-
-        void CreateFacilityFixOrder(FacilityFixOrder facilityFixOrder);
-        
         #endregion Customized Methods
     }
 }

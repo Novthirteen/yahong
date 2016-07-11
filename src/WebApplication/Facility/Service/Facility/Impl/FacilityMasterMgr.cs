@@ -81,6 +81,18 @@ namespace com.Sconit.Facility.Service.Impl
             UpdateFacilityMaster(facilityMaster);
             #endregion
 
+
+            #region 报修单关闭
+            if (facilityTrans.TransType == FacilityConstants.CODE_MASTER_FACILITY_TRANSTYPE_FIX_FINISH)
+            {
+                FacilityFixOrder facilityFixOrder = genericMgr.FindById<FacilityFixOrder>(facilityTrans.ReferenceNo);
+                facilityFixOrder.Status = FacilityConstants.CODE_MASTER_FIX_ORDER_COMPLETE;
+                facilityFixOrder.CompleteDate = DateTime.Now;
+                facilityFixOrder.CompleteUser = userCode;
+                genericMgr.Update(facilityFixOrder);
+            }
+            #endregion
+
             #region 保养和检测的需要自动关闭对应的ISI任务
             if (facilityTrans.TransType == FacilityConstants.CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_FINISH
                 || facilityTrans.TransType == FacilityConstants.CODE_MASTER_FACILITY_TRANSTYPE_INSPECT_FINISH)
@@ -882,41 +894,7 @@ namespace com.Sconit.Facility.Service.Impl
         }
 
 
-        [Transaction(TransactionMode.Requires)]
-        public void CreateFacilityFixOrder(FacilityFixOrder facilityFixOrder)
-        {
 
-            base.Create(facilityFixOrder);
-
-            FacilityMaster facilityMaster = this.FindById<FacilityMaster>(facilityFixOrder.FCID);
-
-            #region 记报修事务
-            FacilityTrans facilityTrans = new FacilityTrans();
-            facilityTrans.CreateDate = facilityFixOrder.CreateDate;
-            facilityTrans.CreateUser = facilityFixOrder.CreateUser;
-            facilityTrans.EffDate = facilityMaster.CreateDate;
-            facilityTrans.FCID = facilityMaster.FCID;
-            facilityTrans.FromChargePerson = facilityMaster.CurrChargePerson;
-            facilityTrans.FromChargePersonName = facilityMaster.CurrChargePersonName;
-            facilityTrans.FromOrganization = facilityMaster.ChargeOrganization;
-            facilityTrans.FromChargeSite = facilityMaster.ChargeSite;
-            facilityTrans.ToChargePerson = facilityMaster.CurrChargePerson;
-            facilityTrans.ToChargePersonName = facilityMaster.CurrChargePersonName;
-            facilityTrans.ToOrganization = facilityMaster.ChargeOrganization;
-            facilityTrans.ToChargeSite = facilityMaster.ChargeSite;
-            facilityTrans.TransType = FacilityConstants.CODE_MASTER_FACILITY_TRANSTYPE_MAINTAIN_START;
-
-            facilityTransMgrE.CreateFacilityTrans(facilityTrans);
-            #endregion
-
-            #region 更新设备状态
-            facilityMaster.Status = FacilityConstants.CODE_MASTER_FACILITY_STATUS_BREAKDOWN;
-            facilityMaster.LastModifyDate = facilityFixOrder.CreateDate;
-            facilityMaster.LastModifyUser = facilityFixOrder.CreateUser;
-            this.UpdateFacilityMaster(facilityMaster);
-
-            #endregion
-        }
         #endregion Customized Methods
     }
 }

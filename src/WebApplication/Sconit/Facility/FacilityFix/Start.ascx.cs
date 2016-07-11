@@ -68,7 +68,7 @@ public partial class Facility_FacilityFix_Start : EditModuleBase
 
          
 
-            TheFacilityMasterMgr.CreateFacilityFixOrder(facilityFixOrder);
+            TheFacilityFixOrderMgr.CreateFacilityFixOrder(facilityFixOrder);
 
 
             ShowSuccessMessage("Facility.FacilityMaster.FacilityMasterMaintainStart.Successfully", facilityFixOrder.FixNo);

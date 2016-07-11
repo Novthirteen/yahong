@@ -34,7 +34,7 @@ public partial class Facility_FacilityFixOrder_Main : MainModuleBase
 
         this.ucSearch.SearchEvent += new System.EventHandler(this.Search_Render);
         this.ucList.EditEvent += new System.EventHandler(this.ListEdit_Render);
-    
+        this.ucEdit.BackEvent += new System.EventHandler(this.Back_Render);
     }
 
     //The event handler when user click button "Search" button
@@ -42,7 +42,7 @@ public partial class Facility_FacilityFixOrder_Main : MainModuleBase
     {
         this.ucList.SetSearchCriteria((DetachedCriteria)((object[])sender)[0], (DetachedCriteria)((object[])sender)[1]);
         this.ucList.Visible = true;
-        this.ucList.isGroup = (bool)((object[])sender)[3];
+     //   this.ucList.isGroup = (bool)((object[])sender)[3];
         this.ucList.isExport = (bool)((object[])sender)[2];
         this.ucList.UpdateView();
 
@@ -67,6 +67,7 @@ public partial class Facility_FacilityFixOrder_Main : MainModuleBase
     //The event handler when user click link "Back" button of unRepackInfo
     void Back_Render(object sender, EventArgs e)
     {
+        this.ucEdit.Visible = false;
         this.ucSearch.Visible = true;
         this.ucList.Visible = true;
    

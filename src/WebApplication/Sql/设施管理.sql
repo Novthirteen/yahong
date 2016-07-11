@@ -1238,3 +1238,15 @@ insert into CodeMstr values('FixOrderStatus','Submit',20,0,'提交')
 insert into CodeMstr values('FixOrderStatus','InProcess',30,0,'执行中')
 insert into CodeMstr values('FixOrderStatus','Complete',40,0,'完成')
 insert into CodeMstr values('FixOrderStatus','Close',50,0,'关闭')
+
+
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('SubmitFixOrder','报修单提交','FacilityOperation')
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('StartFixOrder','报修单开始','FacilityOperation')
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('CompleteFixOrder','报修单完成','FacilityOperation')
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('CloseFixOrder','报修单关闭','FacilityOperation')
+
+
+alter table Fac_FacilityTrans add RefNo varchar(50);
+
+
+insert into CodeMstr values('FacilityStatus','Repaired',55,0,'维修完成');

@@ -48,6 +48,11 @@ public partial class Facility_FacilityFix_Finish : EditModuleBase
         this.ODS_FacilityMaster.SelectParameters["fcId"].DefaultValue = this.FCID;
         this.ODS_FacilityMaster.DataBind();
 
+        FacilityFixOrder facilityFixOrder = TheFacilityFixOrderMgr.GetFacilityFixOrder(code);
+        if (facilityFixOrder != null)
+        {
+            ((TextBox)(this.FV_FacilityTrans.FindControl("tbFixNo"))).Text = facilityFixOrder.FixNo;
+        }
     }
 
     protected void btnBack_Click(object sender, EventArgs e)
@@ -69,13 +74,14 @@ public partial class Facility_FacilityFix_Finish : EditModuleBase
             string remark = ((TextBox)(this.FV_FacilityTrans.FindControl("tbRemark"))).Text;
             string startDate = ((TextBox)(this.FV_FacilityTrans.FindControl("tbStartDate"))).Text;
             string endDate = ((TextBox)(this.FV_FacilityTrans.FindControl("tbEndDate"))).Text;
+            string fixNo = ((TextBox)(this.FV_FacilityTrans.FindControl("tbFixNo"))).Text;
 
             FacilityTrans facilityTrans = new FacilityTrans();
             FacilityTrans oldFacilityTrans = TheFacilityTransMgr.LoadFacilityTrans(Convert.ToInt32(id));
 
             CloneHelper.CopyProperty(oldFacilityTrans, facilityTrans, EditFields, true);
 
-
+            facilityTrans.ReferenceNo = fixNo;
             facilityTrans.CreateDate = DateTime.Now;
             facilityTrans.CreateUser = this.CurrentUser.Code;
 
@@ -92,7 +98,7 @@ public partial class Facility_FacilityFix_Finish : EditModuleBase
             facilityTrans.Remark = remark;
             facilityTrans.TransType = FacilityConstants.CODE_MASTER_FACILITY_TRANSTYPE_FIX_FINISH;
 
-            TheFacilityMasterMgr.UpdateFacilityMasterAndCreateFacilityTrans(facilityMaster, facilityTrans, FacilityConstants.CODE_MASTER_FACILITY_STATUS_AVAILABLE, this.CurrentUser.Code);
+            TheFacilityMasterMgr.UpdateFacilityMasterAndCreateFacilityTrans(facilityMaster, facilityTrans, FacilityConstants.CODE_MASTER_FACILITY_STATUS_REPAIRED, this.CurrentUser.Code);
             ShowSuccessMessage("Facility.FacilityMaster.FacilityMasterFixFinish.Successfully", this.FCID);
 
             FinishBackEvent(facilityTrans.Id, e);

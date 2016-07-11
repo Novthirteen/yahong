@@ -5,7 +5,7 @@
     <fieldset>
         <legend>${Facility.FixOrder.FixOrder}</legend>
         <table class="mtable">
-           <tr>
+            <tr>
                 <td class="td01">
                     <asp:Literal ID="ltlFixNo" runat="server" Text="${Facility.FacilityFixOrder.FixNo}:" />
                 </td>
@@ -65,13 +65,13 @@
                     <asp:Literal ID="ltlIsSample" runat="server" Text="${Facility.FixOrder.IsSample}:" />
                 </td>
                 <td class="td02">
-                    <asp:CheckBox ID="cbIsSample" runat="server"  Enabled="false"/>
+                    <asp:CheckBox ID="cbIsSample" runat="server" Enabled="false" />
                 </td>
                 <td class="td01">
                     <asp:Literal ID="ltlFixSite" runat="server" Text="${Facility.FixOrder.FixSite}:" />
                 </td>
                 <td class="td02">
-                    <asp:TextBox ID="tbFixSite" runat="server" />
+                    <asp:TextBox ID="tbFixSite" runat="server"  ReadOnly="true"/>
                 </td>
             </tr>
             <tr>
@@ -88,7 +88,7 @@
                     <asp:Literal ID="ltlResult" runat="server" Text="${Facility.FixOrder.Result}:" />
                 </td>
                 <td class="td02" colspan="3">
-                    <asp:TextBox ID="tbResult" runat="server" TextMode="MultiLine" Height="50" Width="75%" />
+                    <asp:TextBox ID="tbResult" runat="server" TextMode="MultiLine" Height="50" Width="75%"  ReadOnly="true"/>
                 </td>
             </tr>
             <tr>
@@ -100,8 +100,12 @@
                 </td>
                 <td class="td02">
                     <div class="buttons">
-                        <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Text="${Common.Button.Submit}"
-                            CssClass="apply" ValidationGroup="vgSave" />
+                        <cc1:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Text="${Common.Button.Submit}"
+                            CssClass="apply" FunctionId="SubmitFixOrder" ValidationGroup="vgSubmit" />
+                        <cc1:Button ID="btnStart" runat="server" OnClick="btnStart_Click" Text="${Common.Button.Start}"
+                            CssClass="apply" FunctionId="StartFixOrder" />
+                        <cc1:Button ID="btnClose" runat="server" OnClick="btnClose_Click" Text="${Common.Button.Close}"
+                            CssClass="apply" FunctionId="CloseFixOrder" />
                         <asp:Button ID="btnBack" runat="server" Text="${Common.Button.Back}" OnClick="btnBack_Click"
                             CssClass="back" />
                     </div>

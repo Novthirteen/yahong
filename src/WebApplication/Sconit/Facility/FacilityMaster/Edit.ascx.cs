@@ -52,7 +52,7 @@ public partial class Facility_FacilityMaster_Edit : EditModuleBase
         FacilityMaster facilityMaster = (FacilityMaster)(((FormView)(sender)).DataItem);
         if (facilityMaster != null)
         {
-            ((Controls_TextBox)(this.FV_FacilityMaster.FindControl("tbCategory"))).Text = (facilityMaster.Category == null) ? string.Empty : facilityMaster.Category;
+            //((TextBox)(this.FV_FacilityMaster.FindControl("tbCategory"))).Text = (facilityMaster.Category == null) ? string.Empty : facilityMaster.Category;
             ((CodeMstrDropDownList)(this.FV_FacilityMaster.FindControl("ddlOwner"))).SelectedValue = facilityMaster.Owner;
             ((Controls_TextBox)(this.FV_FacilityMaster.FindControl("tbMaintainGroup"))).Text = (facilityMaster.MaintainGroup == null) ? string.Empty : facilityMaster.MaintainGroup;
             ((Controls_TextBox)(this.FV_FacilityMaster.FindControl("tbMaintainType"))).Text = (facilityMaster.MaintainType == null) ? string.Empty : facilityMaster.MaintainType;

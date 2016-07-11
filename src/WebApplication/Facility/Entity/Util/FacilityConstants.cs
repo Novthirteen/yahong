@@ -19,6 +19,7 @@ namespace com.Sconit.Entity
         public static readonly string CODE_MASTER_FACILITY_STATUS_INSPECT = "Inspect";
         public static readonly string CODE_MASTER_FACILITY_STATUS_MAINTAIN = "Maintain";
         public static readonly string CODE_MASTER_FACILITY_STATUS_FIX = "Fixing";
+        public static readonly string CODE_MASTER_FACILITY_STATUS_REPAIRED = "Repaired";
         public static readonly string CODE_MASTER_FACILITY_STATUS_LEND = "Lend";
         public static readonly string CODE_MASTER_FACILITY_STATUS_ENVELOP = "Envelop";
         public static readonly string CODE_MASTER_FACILITY_STATUS_SCRAP = "Scrap";

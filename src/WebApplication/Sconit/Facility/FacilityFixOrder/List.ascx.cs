@@ -23,16 +23,13 @@ using com.Sconit.Facility.Entity;
 public partial class Facility_FacilityFixOrder_List : ListModuleBase
 {
     public EventHandler EditEvent;
+
     public bool isExport
     {
         get { return ViewState["isExport"] == null ? false : (bool)ViewState["isExport"]; }
         set { ViewState["isExport"] = value; }
     }
-    public bool isGroup
-    {
-        get { return ViewState["isGroup"] == null ? false : (bool)ViewState["isGroup"]; }
-        set { ViewState["isGroup"] = value; }
-    }
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -64,11 +61,9 @@ public partial class Facility_FacilityFixOrder_List : ListModuleBase
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             FacilityFixOrder facilityFixOrder = (FacilityFixOrder)e.Row.DataItem;
-            if (facilityFixOrder.Status == BusinessConstants.CODE_MASTER_STATUS_VALUE_CREATE)
-            {
-                if ((LinkButton)e.Row.FindControl("lbtnDelete") != null)
-                    ((LinkButton)e.Row.FindControl("lbtnDelete")).Visible = true;
-            }
+          
+            Label lblStatus = (Label)(e.Row.FindControl("lblStatus"));
+            lblStatus.Text = this.TheLanguageMgr.TranslateMessage(facilityFixOrder.Status, this.CurrentUser);
         }
     }
 

@@ -28,7 +28,7 @@
                             <asp:HiddenField ID="hfStatus" runat="server" Value='<%# Bind("Status") %>' />
                             <asp:HiddenField ID="hfOldChargePerson" runat="server" Value='<%# Bind("OldChargePerson") %>' />
                             <asp:HiddenField ID="hfChargeDate" runat="server" Value='<%# Bind("ChargeDate") %>' />
-                              <asp:HiddenField ID="ParentCategory" runat="server" Value='<%# Bind("ParentCategory") %>' />
+                            <asp:HiddenField ID="ParentCategory" runat="server" Value='<%# Bind("ParentCategory") %>' />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlName" runat="server" Text="${Facility.FacilityMaster.Name.Mould}:" />
@@ -42,9 +42,10 @@
                             <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Mould}:" />
                         </td>
                         <td class="td02">
-                            <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
+                            <%-- <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                                 Text='<%# Bind("Category") %>' ValueField="Code" ServicePath="FacilityCategoryMgr.service"
-                                ServiceMethod="GetAllMouldCategory" CssClass="inputRequired" ReadOnly="true" />
+                                ServiceMethod="GetAllMouldCategory" CssClass="inputRequired" ReadOnly="true" />--%>
+                            <asp:TextBox ID="tbCategory" runat="server" Text='<%# Bind("Category") %>' ReadOnly="true" />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlSpecification" runat="server" Text="${Facility.FacilityMaster.Specification.Mould}:" />
@@ -110,7 +111,7 @@
                             <asp:TextBox ID="tbSupplier" runat="server" Text='<%# Bind("Supplier") %>' />
                         </td>
                     </tr>
-                   <tr style="display:none">
+                    <tr style="display: none">
                         <td class="td01">
                             <asp:Literal ID="ltlSupplierInfo" runat="server" Text="${Facility.FacilityMaster.SupplierInfo}:" />
                         </td>

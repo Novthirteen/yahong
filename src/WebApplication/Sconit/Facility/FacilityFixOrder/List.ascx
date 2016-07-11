@@ -17,7 +17,7 @@
                     SortExpression="ReferenceCode" />
                 <asp:TemplateField HeaderText="${Common.CodeMaster.Status}" SortExpression="Status">
                     <ItemTemplate>
-                        <%# DataBinder.Eval(Container.DataItem, "Status")%>
+                        <asp:Label ID="lblStatus" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="${MasterData.Common.CreateUser}" SortExpression="CreateUser">

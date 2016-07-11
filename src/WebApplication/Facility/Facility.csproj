@@ -206,6 +206,7 @@
     <Compile Include="Service\Base\Facility\Impl\FacilityStockMasterBaseMgr.cs" />
     <Compile Include="Service\Base\Facility\Impl\FacilityTransBaseMgr.cs" />
     <Compile Include="Service\Base\Facility\Impl\MaintainPlanBaseMgr.cs" />
+    <Compile Include="Service\Facility\IFacilityFixOrderMgr.cs" />
     <Compile Include="Service\Facility\ICheckListMgr.cs" />
     <Compile Include="Service\Facility\IFacilityAllocateMgr.cs" />
     <Compile Include="Service\Facility\IFacilityCategoryMgr.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Service\Facility\IFacilityTransMgr.cs" />
     <Compile Include="Service\Facility\IMaintainPlanMgr.cs" />
     <Compile Include="Service\Facility\Impl\CheckListMgr.cs" />
+    <Compile Include="Service\Facility\Impl\FacilityFixOrderMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityAllocateMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityCategoryMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityDistributionDetailMgr.cs" />
@@ -231,6 +233,7 @@
     <Compile Include="Service\Facility\Impl\FacilityStockMasterMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityStockMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityTransMgr.cs" />
+    <Compile Include="Service\Facility\Impl\Ilist.cs" />
     <Compile Include="Service\Facility\Impl\MaintainPlanMgr.cs" />
     <Compile Include="Service\Job\GenerateMaintainJob.cs" />
     <Compile Include="Service\Rep\RepCheckListOrderMgr.cs" />
