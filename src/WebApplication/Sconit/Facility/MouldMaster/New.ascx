@@ -83,10 +83,10 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="ltlWarrantyInfo" runat="server" Text="${Facility.FacilityMaster.WarrantyInfo.Mould}:" />
+                            <asp:Literal ID="ltlWorkLife" runat="server" Text="${Facility.FacilityMaster.WorkLife.Mould}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbWarrantyInfo" runat="server" Text='<%# Bind("WarrantyInfo") %>' />
+                            <asp:TextBox ID="tbWorkLife" runat="server" Text='<%# Bind("WorkLife") %>' />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlTechInfo" runat="server" Text="${Facility.FacilityMaster.TechInfo}:" />
@@ -145,10 +145,10 @@
                             <asp:TextBox ID="tbPrice" runat="server" Text='<%# Bind("Price") %>' />
                         </td>
                         <td class="td01">
-                            <asp:Literal ID="lblRefenceCode" runat="server" Text="${Facility.FacilityMaster.MouldNumber}:" />
+                            <asp:Literal ID="lblReferenceCode" runat="server" Text="${Facility.FacilityMaster.MouldNumber}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbRefenceCode" runat="server" Text='<%# Bind("RefenceCode") %>' />
+                            <asp:TextBox ID="tbReferenceCode" runat="server" Text='<%# Bind("ReferenceCode") %>' />
                         </td>
                     </tr>
                     <tr>

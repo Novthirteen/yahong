@@ -5,19 +5,19 @@
         <cc1:GridView ID="GV_List" runat="server" AutoGenerateColumns="False" DataKeyNames="Id"
             ShowSeqNo="true" AllowSorting="true" OnRowDataBound="GV_List_RowDataBound">
             <Columns>
-                <asp:TemplateField HeaderText="${Facility.FacilityMaster.FCID}" SortExpression="FacilityMaster.FCID">
+                <asp:TemplateField HeaderText="${Facility.FacilityMaster.FCID.Mould}" SortExpression="FacilityMaster.FCID">
                     <ItemTemplate>
                         <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.FCID")%>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Name}" SortExpression="FacilityMaster.Name">
+                <asp:TemplateField HeaderText="${Facility.FacilityMaster.Name.Mould}" SortExpression="FacilityMaster.Name">
                     <ItemTemplate>
                         <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.Name")%>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="${Facility.FacilityAllocate.RefenceCode}" SortExpression="FacilityMaster.RefenceCode">
+                <asp:TemplateField HeaderText="${Facility.FacilityAllocate.ReferenceCode}" SortExpression="FacilityMaster.ReferenceCode">
                     <ItemTemplate>
-                        <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.RefenceCode")%>
+                        <%# DataBinder.Eval(Container.DataItem, "FacilityMaster.ReferenceCode")%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="${Facility.FacilityAllocate.ItemCode}" SortExpression="Item.Code">

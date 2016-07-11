@@ -9,7 +9,7 @@
                 <asp:BoundField DataField="AssetNo" HeaderText="${Facility.FacilityMaster.AssetNo}"
                     SortExpression="AssetNo" />
                 <asp:BoundField DataField="Name" HeaderText="${Facility.FacilityMaster.Name}" SortExpression="Name" />
-                 <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.RefenceCode}" SortExpression="RefenceCode" />
+                 <asp:BoundField DataField="ReferenceCode" HeaderText="${Facility.FacilityMaster.ReferenceCode}" SortExpression="ReferenceCode" />
                 <asp:BoundField DataField="Capacity" HeaderText="${Facility.FacilityMaster.Capacity}"
                     SortExpression="Capacity" />
                 <asp:BoundField DataField="ManufactureDate" HeaderText="${Facility.FacilityMaster.ManufactureDate}"

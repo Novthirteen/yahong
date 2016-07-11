@@ -379,9 +379,9 @@ namespace com.Sconit.Facility.Service.Impl
                     }
 
                     TaskMstr task = new TaskMstr();
-                    task.Subject = "设施代码：" + facilityPlan.FacilityMaster.FCID + ",资产编号：" + facilityPlan.FacilityMaster.AssetNo + ",参考号：" + facilityPlan.FacilityMaster.RefenceCode + ",需要进行：" + facilityPlan.MaintainPlan.Description;
+                    task.Subject = "设施代码：" + facilityPlan.FacilityMaster.FCID + ",资产编号：" + facilityPlan.FacilityMaster.AssetNo + ",参考号：" + facilityPlan.FacilityMaster.ReferenceCode + ",需要进行：" + facilityPlan.MaintainPlan.Description;
                     task.Priority = BusinessConstants.CODE_MASTER_ORDER_PRIORITY_VALUE_NORMAL;
-                    task.Desc1 = "设施代码：" + facilityPlan.FacilityMaster.FCID + ",资产编号：" + facilityPlan.FacilityMaster.AssetNo + ",设施名称：" + facilityPlan.FacilityMaster.Name + ",参考号：" + facilityPlan.FacilityMaster.RefenceCode + ",需要进行：" + facilityPlan.MaintainPlan.Description + ",日期：" + maintainDate.ToShortDateString();
+                    task.Desc1 = "设施代码：" + facilityPlan.FacilityMaster.FCID + ",资产编号：" + facilityPlan.FacilityMaster.AssetNo + ",设施名称：" + facilityPlan.FacilityMaster.Name + ",参考号：" + facilityPlan.FacilityMaster.ReferenceCode + ",需要进行：" + facilityPlan.MaintainPlan.Description + ",日期：" + maintainDate.ToShortDateString();
                     task.IsAutoRelease = true;
                     task.Desc2 = facilityPlan.FacilityMaster.FCID;  //设施代码，给保养关闭任务用
                     task.ExtNo = facilityPlan.MaintainPlan.Code; //策略代码，给附件用的

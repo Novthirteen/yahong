@@ -101,10 +101,10 @@
                     ValueField="ChargeSite" ServicePath="FacilityMasterMgr.service" ServiceMethod="GetFacilityChargeSite" />
             </td>
             <td class="td01">
-                <asp:Literal ID="ltlRefenceCode" runat="server" Text="${Facility.FacilityMaster.RefenceCode}:" />
+                <asp:Literal ID="ltlReferenceCode" runat="server" Text="${Facility.FacilityMaster.ReferenceCode}:" />
             </td>
             <td class="td02">
-                <asp:TextBox ID="tbRefenceCode" runat="server" />
+                <asp:TextBox ID="tbReferenceCode" runat="server" />
             </td>
         </tr>
         <tr>

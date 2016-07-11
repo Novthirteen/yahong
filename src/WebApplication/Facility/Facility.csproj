@@ -233,7 +233,6 @@
     <Compile Include="Service\Facility\Impl\FacilityStockMasterMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityStockMgr.cs" />
     <Compile Include="Service\Facility\Impl\FacilityTransMgr.cs" />
-    <Compile Include="Service\Facility\Impl\Ilist.cs" />
     <Compile Include="Service\Facility\Impl\MaintainPlanMgr.cs" />
     <Compile Include="Service\Job\GenerateMaintainJob.cs" />
     <Compile Include="Service\Rep\RepCheckListOrderMgr.cs" />

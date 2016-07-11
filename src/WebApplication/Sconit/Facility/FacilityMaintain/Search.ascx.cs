@@ -91,8 +91,8 @@ public partial class Facility_FacilityMaintain_Search : SearchModuleBase
             }
             if (this.tbRefNo.Text.Trim() != string.Empty)
             {
-                selectCriteria.Add(Expression.Like("RefenceCode", this.tbRefNo.Text.Trim(), MatchMode.Anywhere));
-                selectCountCriteria.Add(Expression.Like("RefenceCode", this.tbRefNo.Text.Trim(), MatchMode.Anywhere));
+                selectCriteria.Add(Expression.Like("ReferenceCode", this.tbRefNo.Text.Trim(), MatchMode.Anywhere));
+                selectCountCriteria.Add(Expression.Like("ReferenceCode", this.tbRefNo.Text.Trim(), MatchMode.Anywhere));
             }
 
             SearchEvent((new object[] { selectCriteria, selectCountCriteria }), null);

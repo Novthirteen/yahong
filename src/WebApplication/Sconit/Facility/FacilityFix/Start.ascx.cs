@@ -28,7 +28,7 @@ public partial class Facility_FacilityFix_Start : EditModuleBase
             FacilityMaster facilityMaster = TheFacilityMasterMgr.LoadFacilityMaster(code);
             this.tbFCID.Text = facilityMaster.FCID;
             this.tbFacilityName.Text = facilityMaster.Name;
-            this.tbReferenceNo.Text = facilityMaster.RefenceCode;
+            this.tbReferenceNo.Text = facilityMaster.ReferenceCode;
         }
     }
 

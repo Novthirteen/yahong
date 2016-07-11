@@ -46,10 +46,10 @@
 		<property name="MaintainTypePeriod" column="MaintainTypePeriod" type="Int32"  />
 		<property name="IsOffBalance" column="IsOffBalance" type="Boolean" />
 		<property name="IsAsset" column="IsAsset" type="Boolean" />
-		<property name="RefenceCode" column="RefCode" type="String" length="50" />
+		<property name="ReferenceCode" column="RefCode" type="String" length="50" />
 		<property name="MaintainGroup" column="MaintainGroup" type="String" length="50" />
 		<property name="PrintTemplate" column="PrintTemplate" type="String" length="50" />
-	
+		<property name="WorkLife" column="WorkLife" type="Decimal"  />
 		<property name="UseQty" column="UseQty" type="Decimal"  />
 		<property name="NextWarnQty" column="NextWarnQty" type="Decimal"  />
 		<property name="NextMaintainQty" column="NextMaintainQty" type="Decimal"  />

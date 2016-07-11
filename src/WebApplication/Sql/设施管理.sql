@@ -1250,3 +1250,20 @@ alter table Fac_FacilityTrans add RefNo varchar(50);
 
 
 insert into CodeMstr values('FacilityStatus','Repaired',55,0,'维修完成');
+
+
+
+insert into ACC_Menu(Code, Version, Desc_, PageUrl, IsActive, ImageUrl, CreateDate, CreateUser, LastModifyDate, LastModifyUser, Remark)
+select 'Menu.Facility.MouldUseWarn',1,'模具使用提醒','~/Main.aspx?mid=Facility.MouldUseWarn',1,'~/Images/Nav/Item.png',GETDATE(),'su',GETDATE(),'su',''
+
+insert into ACC_MenuCommon(Menu, ParentMenu, Level_, Seq, IsActive, CreateDate, CreateUser, LastModifyDate, LastModifyUser)
+select 'Menu.Facility.MouldUseWarn','Menu.Facility.Info',3,60,1,GETDATE(),'su',GETDATE(),'su'
+
+insert into acc_permission (pm_code,pm_desc,pm_catecode) values ('Menu.Facility.MouldUseWarn','模具使用提醒','Facility')
+
+
+alter table Fac_Facility add [UseQty] decimal(18,8);
+alter table Fac_Facility add [WorkLife] decimal(18,8);
+
+
+insert into CodeMstr values ('FacilityTransType','Report',66,0,'报修');

@@ -27,8 +27,8 @@
                         <asp:Label ID="lblStatus" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.RefenceCode}"
-                    SortExpression="RefenceCode" />
+                <asp:BoundField DataField="ReferenceCode" HeaderText="${Facility.FacilityMaster.ReferenceCode}"
+                    SortExpression="ReferenceCode" />
                 <asp:BoundField DataField="Specification" HeaderText="${Facility.FacilityMaster.Specification}"
                     SortExpression="Specification" />
                 <asp:BoundField DataField="Capacity" HeaderText="${Facility.FacilityMaster.Capacity}"

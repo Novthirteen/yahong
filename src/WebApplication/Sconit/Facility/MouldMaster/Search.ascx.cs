@@ -176,10 +176,10 @@ public partial class Facility_MouldMaster_Search : SearchModuleBase
             selectCountCriteria.Add(Expression.Like("ChargeSite", this.tbChargeSite.Text.Trim(), MatchMode.Anywhere));
         }
 
-        if (this.tbRefenceCode.Text.Trim() != string.Empty)
+        if (this.tbReferenceCode.Text.Trim() != string.Empty)
         {
-            selectCriteria.Add(Expression.Like("RefenceCode", this.tbRefenceCode.Text.Trim(), MatchMode.Anywhere));
-            selectCountCriteria.Add(Expression.Like("RefenceCode", this.tbRefenceCode.Text.Trim(), MatchMode.Anywhere));
+            selectCriteria.Add(Expression.Like("ReferenceCode", this.tbReferenceCode.Text.Trim(), MatchMode.Anywhere));
+            selectCountCriteria.Add(Expression.Like("ReferenceCode", this.tbReferenceCode.Text.Trim(), MatchMode.Anywhere));
         }
 
         if (this.tbChargeOrganization.Text.Trim() != string.Empty)

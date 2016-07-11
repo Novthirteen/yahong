@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Search.ascx.cs" Inherits="Facility_FacilityAllocate_Search" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Search.ascx.cs" Inherits="Facility_MouldUseWarn_Search" %>
 <%@ Register Assembly="com.Sconit.Control" Namespace="com.Sconit.Control" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/TextBox.ascx" TagName="textbox" TagPrefix="uc3" %>
 <fieldset>
@@ -12,20 +12,13 @@
                     ValueField="FCID" ServicePath="FacilityMasterMgr.service" ServiceMethod="GetAllFacilityMaster" />
             </td>
             <td class="td01">
-                <asp:Literal ID="ltlItemCode" runat="server" Text="${Facility.FacilityAllocate.ItemCode}:" />
-            </td>
-            <td class="td02">
-                <uc3:textbox ID="tbItemCode" runat="server" Visible="true" Width="250" DescField="Description"
-                    ValueField="Code" ServicePath="ItemMgr.service" ServiceMethod="GetCacheAllItem" />
-            </td>
-        </tr>
-        <tr>
-            <td class="td01">
                 <asp:Literal ID="ltlReferenceCode" runat="server" Text="${Facility.FacilityMaster.ReferenceCode.Mould}:" />
             </td>
             <td class="td02">
                 <asp:TextBox ID="tbReferenceCode" runat="server" />
             </td>
+        </tr>
+        <tr>
             <td class="td01">
                 <asp:Literal ID="ltlCategory" runat="server" Text="${Facility.FacilityMaster.Category.Mould}:" />
             </td>
@@ -33,8 +26,13 @@
                 <uc3:textbox ID="tbCategory" runat="server" Visible="true" Width="250" DescField="Description"
                     ValueField="Code" ServicePath="FacilityCategoryMgr.service" ServiceMethod="GetAllMouldCategory" />
             </td>
+             <td class="td01">
+                <asp:Literal ID="ltlIsOverUse" runat="server" Text="${Facility.FacilityMaster.OverUse.Mould}:" />
+            </td>
+            <td class="td02">
+              <asp:CheckBox ID="cbIsOverUse" runat="server" Checked="true"/>
+            </td>
         </tr>
-   
         <tr>
             <td colspan="3">
             </td>
@@ -42,9 +40,7 @@
                 <div class="buttons">
                     <asp:Button ID="btnSearch" runat="server" Text="${Common.Button.Search}" OnClick="btnSearch_Click"
                         CssClass="query" />
-                    <cc1:Button ID="btnNew" runat="server" Text="${Common.Button.New}" OnClick="btnNew_Click"
-                        CssClass="add" FunctionId="CreateFacility" />
-                    <cc1:Button ID="btnExport" runat="server" Text="${Common.Button.Export}" OnClick="btnSearch_Click"
+                    <asp:Button ID="btnExport" runat="server" Text="${Common.Button.Export}" OnClick="btnSearch_Click"
                         CssClass="query" />
                 </div>
             </td>

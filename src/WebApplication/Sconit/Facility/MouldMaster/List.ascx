@@ -25,8 +25,8 @@
                         <asp:Label ID="lblStatus" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="RefenceCode" HeaderText="${Facility.FacilityMaster.RefenceCode.Mould}"
-                    SortExpression="RefenceCode" />
+                <asp:BoundField DataField="ReferenceCode" HeaderText="${Facility.FacilityMaster.ReferenceCode.Mould}"
+                    SortExpression="ReferenceCode" />
                 <asp:BoundField DataField="Specification" HeaderText="${Facility.FacilityMaster.Specification.Mould}"
                     SortExpression="Specification" />
                 <asp:BoundField DataField="EffDate" HeaderText="${Facility.FacilityMaster.EffDate}"
@@ -40,8 +40,8 @@
                 <asp:BoundField DataField="OwnerDescription" HeaderText="${Facility.FacilityMaster.OwnerDescription}"
                     SortExpression="OwnerDescription" />
  
-                <asp:BoundField DataField="WarrantyInfo" HeaderText="${Facility.FacilityMaster.WarrantyInfo.Mould}"
-                    SortExpression="WarrantyInfo" />
+                <asp:BoundField DataField="WorkLife" HeaderText="${Facility.FacilityMaster.WarrantyInfo.Mould}"
+                    SortExpression="WorkLife" />
 
                 <asp:BoundField DataField="UseQty" HeaderText="${Facility.FacilityMaster.UseQty}"
                     SortExpression="UseQty" DataFormatString="{0:0.##}" />

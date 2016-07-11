@@ -190,10 +190,10 @@
                     </tr>
                     <tr>
                         <td class="td01">
-                            <asp:Literal ID="lbReferenceNo" runat="server" Text="${Facility.FacilityMaster.RefenceCode}:" />
+                            <asp:Literal ID="lbReferenceNo" runat="server" Text="${Facility.FacilityMaster.ReferenceCode}:" />
                         </td>
                         <td class="td02">
-                            <asp:TextBox ID="tbRefenceCode" runat="server" Text='<%# Bind("RefenceCode") %>' />
+                            <asp:TextBox ID="tbReferenceCode" runat="server" Text='<%# Bind("ReferenceCode") %>' />
                         </td>
                         <td class="td01">
                             <asp:Literal ID="ltlMaintainGroup" runat="server" Text="${Facility.FacilityMaster.MaintainGroup}:" />

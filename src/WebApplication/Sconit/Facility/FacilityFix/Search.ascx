@@ -34,7 +34,7 @@
         </tr>
           <tr>
             <td class="td01">
-                <asp:Literal ID="ltlRefNo" runat="server" Text="${Facility.FacilityMaster.RefenceCode}:" />
+                <asp:Literal ID="ltlRefNo" runat="server" Text="${Facility.FacilityMaster.ReferenceCode}:" />
             </td>
             <td class="td02">
                 <asp:TextBox ID="tbRefNo" runat="server" />

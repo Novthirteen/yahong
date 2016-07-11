@@ -504,7 +504,7 @@ namespace com.Sconit.Entity.FMS
         }
 
         public string _refenceCode;
-        public string RefenceCode
+        public string ReferenceCode
         {
             get
             {
@@ -550,6 +550,8 @@ namespace com.Sconit.Entity.FMS
         public string ParentCategory { get; set; }
     
         public Decimal UseQty { get; set; }
+
+        public Decimal WorkLife { get; set; }
         #endregion
 
 		public override int GetHashCode()

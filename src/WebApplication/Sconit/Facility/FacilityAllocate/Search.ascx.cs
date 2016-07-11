@@ -56,8 +56,8 @@ public partial class Facility_FacilityAllocate_Search : SearchModuleBase
         selectCountCriteria.CreateAlias("FacilityMaster", "f");
         if (this.tbFCID.Text.Trim() != string.Empty)
         {
-            selectCriteria.Add(Expression.Like("FacilityMaster.FCID", this.tbFCID.Text.Trim(), MatchMode.Anywhere));
-            selectCountCriteria.Add(Expression.Like("FacilityMaster.FCID", this.tbFCID.Text.Trim(), MatchMode.Anywhere));
+            selectCriteria.Add(Expression.Like("f.FCID", this.tbFCID.Text.Trim(), MatchMode.Anywhere));
+            selectCountCriteria.Add(Expression.Like("f.FCID", this.tbFCID.Text.Trim(), MatchMode.Anywhere));
         }
 
         if (this.tbItemCode.Text.Trim() != string.Empty)
@@ -71,10 +71,10 @@ public partial class Facility_FacilityAllocate_Search : SearchModuleBase
             selectCriteria.Add(Expression.Like("f.Category", this.tbCategory.Text.Trim(), MatchMode.Anywhere));
             selectCountCriteria.Add(Expression.Like("f.Category", this.tbCategory.Text.Trim(), MatchMode.Anywhere));
         }
-        if (this.tbRefenceCode.Text.Trim() != string.Empty)
+        if (this.tbReferenceCode.Text.Trim() != string.Empty)
         {
-            selectCriteria.Add(Expression.Like("f.RefenceCode", this.tbRefenceCode.Text.Trim(), MatchMode.Anywhere));
-            selectCountCriteria.Add(Expression.Like("f.RefenceCode", this.tbRefenceCode.Text.Trim(), MatchMode.Anywhere));
+            selectCriteria.Add(Expression.Like("f.ReferenceCode", this.tbReferenceCode.Text.Trim(), MatchMode.Anywhere));
+            selectCountCriteria.Add(Expression.Like("f.ReferenceCode", this.tbReferenceCode.Text.Trim(), MatchMode.Anywhere));
         }
         return new object[] { selectCriteria, selectCountCriteria, isExport, true };
     }
